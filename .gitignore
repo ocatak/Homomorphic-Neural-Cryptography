@@ -1,0 +1,6 @@
+.DS_store
+.vscode
+__pycache__
+Miniconda3*
+nv.sh
+venv
