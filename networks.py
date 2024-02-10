@@ -59,7 +59,7 @@ aoutput_second = process_plaintext(ainput0, ainput2, p2_bits, public_bits)
 alice = Model(inputs=[ainput0, ainput1, ainput2],
               outputs=[aoutput_first, aoutput_second], name='alice')
 
-# Generate the HO network with an input layer and two NAC layers
+# Generate the HO_model network with an input layer and two NAC layers
 units = 2
 # ip = Input(shape=(c3_bits, 2,)) # Define 2 inputs of size c1_bits
 HOinput1 = Input(shape=(c1_bits))  # ciphertext 1
@@ -73,11 +73,11 @@ x = NAC(units)(HOinput)
 x = NAC(1)(x)
 x = Reshape((c3_bits,))(x)
 
-HO = Model(inputs=[HOinput1, HOinput2], outputs=x)
+HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
 
 # Bob network
 binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
-binput1 = Input(shape=(public_bits,))  # private key
+binput1 = Input(shape=(private_bits,))  # private key
 
 binput = concatenate([binput0, binput1], axis=1)
 
@@ -127,15 +127,32 @@ eve = Model(einput, eoutput, name='eve')
 # Alice gets two outputs from 3 inputs
 aliceout1, aliceout2 = alice([ainput0, ainput1, ainput2])
 
-# HO get one output from Alice's two output
-HOout = HO([aliceout1, aliceout2])
+# HO_model get one output from Alice's two output
+HOout = HO_model([aliceout1, aliceout2])
 
-# Eve and bob get one output from HO output with the size of p1+p2
+# Eve and bob get one output from HO_model output with the size of p1+p2
 bobout = bob([HOout, binput1]) 
 eveout = eve(HOout)
 
+abhemodel = Model([ainput0, ainput1, ainput2, binput1],
+                 bobout, name='abhemodel')
 
-# #! Loss functions need to change
+# Loss functions
 eveloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
 bobloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
 
+
+# Build and compile the ABHE model, used for training Alice, Bob and HE networks
+abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+abhemodel.add_loss(abheloss)
+
+# Set the Adam optimizer
+beoptim = Adam(lr=0.0001)
+eveoptim = Adam(lr=0.0001)
+abhemodel.compile(optimizer=beoptim)
+
+# Build and compile the Eve model, used for training Eve net (with Alice frozen)
+alice.trainable = False
+evemodel = Model([ainput0, ainput1, ainput2], eveout, name='evemodel')
+evemodel.add_loss(eveloss)
+evemodel.compile(optimizer=eveoptim)
