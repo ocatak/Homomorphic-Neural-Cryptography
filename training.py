@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -10,17 +10,19 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model
-from EllipticCurve import generate_key_pair, curve
+from EllipticCurve import generate_key_pair
 
-i = 1 # used to save the results to a different file
-curve = curve.name
+# used to save the results to a different file
+i = 1
+optimizer = "a"
+activation = "relu"
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 20 # number of training epochs
-batch_size = 512  # number of training examples utilized in one iteration
+n_epochs = 2 # number of training epochs
+batch_size = 5  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
@@ -93,7 +95,8 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'{curve}/{evecycles}cycle/test-{i}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
+
 
 plt.figure(figsize=(7, 4))
 plt.plot(abelosses[:steps], label='A-B')
@@ -105,12 +108,13 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'{curve}/{evecycles}cycle/figures/restult-{i}.png')
+    f'figures/{optimizer}-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
 
 # Save the results to a text file
 with open('results.txt', "a") as f:
     f.write("Training complete.\n")
-    f.write(f"Curve: {curve}")
+    f.write(f"Optimizer: {optimizer}\n")
+    f.write(f"Activation: {activation}\n")
     f.write("Epochs: {}\n".format(n_epochs))
     f.write("Batch size: {}\n".format(batch_size))
     f.write("Iterations per epoch: {}\n".format(n_batches))
