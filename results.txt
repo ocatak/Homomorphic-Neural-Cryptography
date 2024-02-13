@@ -130,3 +130,11 @@ Decryption accuracy by Bob: 52.0263671875%
 Number of correctly decrypted bits by Eve: 1732
 Decryption accuracy by Eve: 42.28515625%
 
+Training complete.
+Optimizer: a
+Activation: relu
+Epochs: 2
+Batch size: 5
+Iterations per epoch: 13107
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
