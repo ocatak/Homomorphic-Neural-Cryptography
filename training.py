@@ -77,7 +77,7 @@ while epoch < n_epochs:
 
         if iteration % max(1, (n_batches // 100)) == 0:
             print("\rEpoch {:3}: {:3}% | abe: {:2.3f} | eve: {:2.3f} | bob: {:2.3f}".format(
-                epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg))
+                epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg), end="")
             sys.stdout.flush()
 
     epoch += 1
@@ -145,7 +145,7 @@ with open('results.txt', "a") as f:
     print(f"Decryption accuracy: {accuracy}%")
 
     # Eve attempt to decrypt
-    eve_decrypted = eve.predict(cipher3)
+    eve_decrypted = eve.predict([cipher3, public_arr])
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
     
     # Calculate Eve's decryption accuracy
