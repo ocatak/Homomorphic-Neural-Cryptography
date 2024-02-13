@@ -12,15 +12,15 @@ import numpy as np
 from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model
 from EllipticCurve import generate_key_pair, curve
 
-i = 5 # used to save the results to a different file
+i = 1 # used to save the results to a different file
 curve = curve.name
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 2 # number of training epochs
-batch_size = 5  # number of training examples utilized in one iteration
+n_epochs = 20 # number of training epochs
+batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
@@ -61,7 +61,6 @@ while epoch < n_epochs:
         boblosses.append(loss)
         bobavg = np.mean(boblosses0)
 
-        #! Eve will not decrypt p_batch, but c3, outcome of HE
         # Train the EVE network
         alice.trainable = False
         for cycle in range(evecycles):
@@ -145,7 +144,7 @@ with open('results.txt', "a") as f:
     print(f"Decryption accuracy: {accuracy}%")
 
     # Eve attempt to decrypt
-    eve_decrypted = eve.predict([cipher3, public_arr])
+    eve_decrypted = eve.predict(cipher3)
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
     
     # Calculate Eve's decryption accuracy
