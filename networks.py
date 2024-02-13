@@ -101,7 +101,10 @@ bob = Model(inputs=[binput0, binput1],
             outputs=boutput, name='bob')
 
 # Eve network
-einput = Input(shape=(c3_bits,))  # Input will be of shape c3
+einput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
+einput1 = Input(shape=(public_bits, )) # public key
+
+einput = concatenate([einput0, einput1], axis=1)
 
 edense1 = Dense(units=((p1_bits+p2_bits)), activation='tanh')(einput)
 edense2 = Dense(units=((p1_bits+p2_bits)), activation='tanh')(edense1)
@@ -119,7 +122,7 @@ econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
 eoutput = Flatten()(econv4)
 
-eve = Model(einput, eoutput, name='eve')
+eve = Model([einput0, einput1], eoutput, name='eve')
 
 
 # Loss and optimizer
@@ -132,7 +135,7 @@ HOout = HO_model([aliceout1, aliceout2])
 
 # Eve and bob get one output from HO_model output with the size of p1+p2
 bobout = bob([HOout, binput1]) 
-eveout = eve(HOout)
+eveout = eve([HOout, ainput0])
 
 abhemodel = Model([ainput0, ainput1, ainput2, binput1],
                  bobout, name='abhemodel')
