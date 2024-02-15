@@ -1,4 +1,5 @@
 import numpy as np
+from keras.layers import Reshape
 
 # Make index selection deterministic as well
 np.random.seed(0)
@@ -9,7 +10,7 @@ static_index = np.arange(0, 2, dtype=np.int64)
 np.random.shuffle(static_index)
 
 # Generates a static dataset based on an operation function 
-def generate_static_dataset(op_fn, num_samples=864, mode='interpolation',
+def generate_static_dataset(op_fn, num_samples=572, batch_size=5, mode='interpolation',
                             seed=0):
     """
     Generates a dataset given an operation and a mode of working.
@@ -32,29 +33,27 @@ def generate_static_dataset(op_fn, num_samples=864, mode='interpolation',
 
     print("Generating dataset")
 
-    X_dataset = []
+    X1_dataset = []
+    X2_dataset = []
+
     y_dataset = []
 
-    for i in range(num_samples):
-
+    for i in range(batch_size):
         # Get the input stream
-        X = np.random.rand(num_samples, 2)
+        X = np.random.rand(num_samples, 572)
 
-        if mode == 'extrapolation':
-            X *= 100.
-
-        # Select the slices on which we will perform the operation
-        a_index, b_index = static_index[:(len(static_index) // 2)], static_index[(len(static_index) // 2):]
-        a = X[:, a_index]
-        b = X[:, b_index]
-
-        # Get the sum of the slices
-        a = np.sum(a, axis=-1, keepdims=True)
-        b = np.sum(b, axis=-1, keepdims=True)
-
-        # perform the operation on the slices in order to get the target
+        a=X[0]
+        b=X[1]
+        
         Y = op_fn(a, b)
-        X_dataset.append(X)
+
+        X1_dataset.append(a)
+        X2_dataset.append(b)
         y_dataset.append(Y)
 
-    return np.array(X_dataset), np.array(y_dataset)
+
+
+    return  np.array(X1_dataset), np.array(X2_dataset), np.array(y_dataset)
+
+if __name__ == "__main__":
+    generate_static_dataset(lambda x, y: x + y, 2)
