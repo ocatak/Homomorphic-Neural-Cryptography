@@ -12,9 +12,9 @@ plt.rc('legend', fontsize=25)  # fontsize of the legend
 plt.ylim(0, 8)
 
 # Define the number of files, the curve and the number of cycles
-num_files = 5
-curve = 'secp521r1'
-cycles = 2
+num_files = 1
+curve = 'sect163r2'
+cycles = 1
 
 ab_loss = []
 bob_loss = []
@@ -29,7 +29,7 @@ min_eve, max_eve = None, None
 x = list(range(0, 2559))
 
 for i in range(1, num_files + 1):
-    df = pd.read_csv(f'{curve}/{cycles}cycle/test-{i}.csv')
+    df = pd.read_csv(f'{curve}/{cycles}cycle/test-{i}-1.csv')
 
     # ABloss
     y_ab = df['ABloss']

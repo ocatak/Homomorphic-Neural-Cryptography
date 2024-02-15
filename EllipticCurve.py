@@ -4,12 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 import numpy as np
 
 # Set the elliptic curve
-# Curves used in the project:
-# curve = ec.SECP224R1()
-# curve = ec.SECP256R1()
-# curve = ec.SECP256K1()
-curve = ec.SECP384R1()
-#curve = ec.SECP521R1()
+curve = ec.SECT163R2()
 
 # Get the public key and private key shape in bits
 def get_key_shape():

@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -9,19 +9,22 @@ import time
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model
-from EllipticCurve import generate_key_pair, curve
+from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate
+from EllipticCurve import generate_key_pair
 
-i = 5 # used to save the results to a different file
-curve = curve.name
+# used to save the results to a different file
+i = 12
+optimizer = "RMSprop"
+activation = "tanh"
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 2 # number of training epochs
+n_epochs = 20 # number of training epochs
 batch_size = 5  # number of training examples utilized in one iteration
-n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
+#n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
+n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 
@@ -61,7 +64,6 @@ while epoch < n_epochs:
         boblosses.append(loss)
         bobavg = np.mean(boblosses0)
 
-        #! Eve will not decrypt p_batch, but c3, outcome of HE
         # Train the EVE network
         alice.trainable = False
         for cycle in range(evecycles):
@@ -87,6 +89,7 @@ end = time.time()
 print(end - start)
 steps = -1
 
+
 # Save the loss values to a CSV file
 Biodata = {'ABloss': abelosses[:steps],
            'Bobloss': boblosses[:steps],
@@ -94,7 +97,8 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'{curve}/{evecycles}cycle/test-{i}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
+
 
 plt.figure(figsize=(7, 4))
 plt.plot(abelosses[:steps], label='A-B')
@@ -106,12 +110,14 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'{curve}/{evecycles}cycle/figures/restult-{i}.png')
+    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
 
 # Save the results to a text file
-with open('results.txt', "a") as f:
+with open(f'results/results-{i}.txt', "a") as f:
     f.write("Training complete.\n")
-    f.write(f"Curve: {curve}")
+    f.write("learning rate 0.001\n")
+    f.write(f"Optimizer: {optimizer}\n")
+    f.write(f"Activation: {activation}\n")
     f.write("Epochs: {}\n".format(n_epochs))
     f.write("Batch size: {}\n".format(batch_size))
     f.write("Iterations per epoch: {}\n".format(n_batches))
@@ -125,11 +131,17 @@ with open('results.txt', "a") as f:
         0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
     private_arr, public_arr = generate_key_pair(batch_size)
 
+    print(f"P1: {p1_batch}")
+    print(f"P2: {p2_batch}")
+
     # Alice encrypts the message
     cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
+    print(f"Cipher1: {cipher1}")
+    print(f"Cipher2: {cipher2}")
 
     # HO adds the messages
     cipher3 = HO_model.predict([cipher1, cipher2])
+    print(f"Cipher3: {cipher3}")
 
     # Bob attempt to decrypt
     decrypted = bob.predict([cipher3, private_arr])
@@ -145,7 +157,7 @@ with open('results.txt', "a") as f:
     print(f"Decryption accuracy: {accuracy}%")
 
     # Eve attempt to decrypt
-    eve_decrypted = eve.predict(cipher3)
+    eve_decrypted = eve.predict([cipher3, public_arr])
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
     
     # Calculate Eve's decryption accuracy

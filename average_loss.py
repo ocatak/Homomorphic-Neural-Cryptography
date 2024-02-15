@@ -2,7 +2,7 @@ import pandas as pd
 
 # Define the number of files, the curve and the number of cycles
 num_files = 5
-curve = 'secp384r1'
+curve = 'sect163r2'
 cycles = 1
 
 loss = {'ABloss': 0, 'Bobloss': 0, 'Eveloss': 0}

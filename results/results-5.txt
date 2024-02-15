@@ -1,0 +1,15 @@
+Training complete.
+learning rate 0.001
+Optimizer: rsm
+Activation: tanh-sigmoid
+Epochs: 50
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Total number of bits: 4096
+Number of correctly decrypted bits by Bob: 2053
+Decryption accuracy by Bob: 50.1220703125%
+Number of correctly decrypted bits by Eve: 1903
+Decryption accuracy by Eve: 46.4599609375%
+
