@@ -1,0 +1,50 @@
+Training complete.
+learning rate 0.001
+Optimizer: Adamax
+Activation: elu-sigmoid
+Epochs: 50
+Batch size: 1024
+Iterations per epoch: 64
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Total number of bits: 8192
+Number of correctly decrypted bits by Bob: 4077
+Decryption accuracy by Bob: 49.76806640625%
+Number of correctly decrypted bits by Eve: 4077
+Decryption accuracy by Eve: 49.76806640625%
+
+P1: [[1. 0. 0. ... 0. 1. 1.]
+ [0. 0. 1. ... 0. 1. 1.]
+ [0. 1. 0. ... 1. 1. 1.]
+ ...
+ [0. 1. 0. ... 1. 1. 0.]
+ [0. 1. 1. ... 1. 1. 0.]
+ [0. 1. 1. ... 1. 0. 1.]]
+P2: [[0. 1. 1. ... 1. 0. 0.]
+ [0. 0. 1. ... 0. 0. 0.]
+ [1. 1. 1. ... 1. 1. 0.]
+ ...
+ [1. 0. 1. ... 1. 1. 1.]
+ [1. 0. 1. ... 1. 0. 0.]
+ [0. 0. 0. ... 1. 0. 0.]]
+Cipher1: [[1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ ...
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]]
+Cipher2: [[1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ ...
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]
+ [1. 1. 1. ... 1. 1. 1.]]
+Cipher3: [[nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ ...
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]]

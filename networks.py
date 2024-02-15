@@ -1,7 +1,7 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adamax
 from EllipticCurve import get_key_shape
 from nac import NAC
 
@@ -36,20 +36,20 @@ ainput2 = Input(shape=(p2_bits))  # plaintext 2
 def process_plaintext(ainput0, ainput1, p_bits, public_bits):
     ainput = concatenate([ainput0, ainput1], axis=1)
 
-    adense1 = Dense(units=(p_bits + public_bits), activation='relu')(ainput)
+    adense1 = Dense(units=(p_bits + public_bits), activation='elu')(ainput)
     areshape = Reshape((p_bits + public_bits, 1,))(adense1)
 
     aconv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                    padding=pad, activation='relu')(areshape)
+                    padding=pad, activation='elu')(areshape)
 
     aconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                    padding=pad, activation='relu')(aconv1)
+                    padding=pad, activation='elu')(aconv1)
 
     aconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                    padding=pad, activation='relu')(aconv2)
+                    padding=pad, activation='elu')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='relu')(aconv3)
+                    padding=pad, activation='sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -81,17 +81,17 @@ binput1 = Input(shape=(private_bits,))  # private key
 
 binput = concatenate([binput0, binput1], axis=1)
 
-bdense1 = Dense(units=((p1_bits+p2_bits)), activation='relu')(binput)
+bdense1 = Dense(units=((p1_bits+p2_bits)), activation='elu')(binput)
 breshape = Reshape(((p1_bits+p2_bits), 1,))(bdense1)
 
 bconv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                padding=pad, activation='relu')(breshape)
+                padding=pad, activation='elu')(breshape)
 bconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                padding=pad, activation='relu')(bconv1)
+                padding=pad, activation='elu')(bconv1)
 bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                padding=pad, activation='relu')(bconv2)
+                padding=pad, activation='elu')(bconv2)
 bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='relu')(bconv3)
+                padding=pad, activation='sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
 boutput = Flatten()(bconv4)
@@ -106,18 +106,18 @@ einput1 = Input(shape=(public_bits, )) # public key
 
 einput = concatenate([einput0, einput1], axis=1)
 
-edense1 = Dense(units=((p1_bits+p2_bits)), activation='relu')(einput)
-edense2 = Dense(units=((p1_bits+p2_bits)), activation='relu')(edense1)
+edense1 = Dense(units=((p1_bits+p2_bits)), activation='elu')(einput)
+edense2 = Dense(units=((p1_bits+p2_bits)), activation='elu')(edense1)
 ereshape = Reshape(((p1_bits+p2_bits), 1,))(edense2)
 
 econv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                padding=pad, activation='relu')(ereshape)
+                padding=pad, activation='elu')(ereshape)
 econv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                padding=pad, activation='relu')(econv1)
+                padding=pad, activation='elu')(econv1)
 econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                padding=pad, activation='relu')(econv2)
+                padding=pad, activation='elu')(econv2)
 econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='relu')(econv3)
+                padding=pad, activation='sigmoid')(econv3)
 
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
 eoutput = Flatten()(econv4)
@@ -150,8 +150,8 @@ abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits
 abhemodel.add_loss(abheloss)
 
 # Set the Adam optimizer
-beoptim = Adam(lr=0.0001)
-eveoptim = Adam(lr=0.0001)
+beoptim = Adamax(learning_rate=0.001)
+eveoptim = Adamax(learning_rate=0.001)
 abhemodel.compile(optimizer=beoptim)
 
 # Build and compile the Eve model, used for training Eve net (with Alice frozen)

@@ -13,16 +13,16 @@ from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_
 from EllipticCurve import generate_key_pair
 
 # used to save the results to a different file
-i = 1
-optimizer = "a"
-activation = "relu"
+i = 10
+optimizer = "Adamax"
+activation = "elu-sigmoid"
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 2 # number of training epochs
-batch_size = 5  # number of training examples utilized in one iteration
+n_epochs = 50 # number of training epochs
+batch_size = 1024  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
@@ -88,6 +88,7 @@ end = time.time()
 print(end - start)
 steps = -1
 
+
 # Save the loss values to a CSV file
 Biodata = {'ABloss': abelosses[:steps],
            'Bobloss': boblosses[:steps],
@@ -95,7 +96,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-0.01-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -108,11 +109,12 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
+    f'figures/{optimizer}-0.01-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
 
 # Save the results to a text file
-with open('results.txt', "a") as f:
+with open(f'results-{i}.txt', "a") as f:
     f.write("Training complete.\n")
+    f.write("learning rate 0.001\n")
     f.write(f"Optimizer: {optimizer}\n")
     f.write(f"Activation: {activation}\n")
     f.write("Epochs: {}\n".format(n_epochs))
@@ -128,11 +130,17 @@ with open('results.txt', "a") as f:
         0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
     private_arr, public_arr = generate_key_pair(batch_size)
 
+    print(f"P1: {p1_batch}")
+    print(f"P2: {p2_batch}")
+
     # Alice encrypts the message
     cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
+    print(f"Cipher1: {cipher1}")
+    print(f"Cipher2: {cipher2}")
 
     # HO adds the messages
     cipher3 = HO_model.predict([cipher1, cipher2])
+    print(f"Cipher3: {cipher3}")
 
     # Bob attempt to decrypt
     decrypted = bob.predict([cipher3, private_arr])
@@ -148,7 +156,7 @@ with open('results.txt', "a") as f:
     print(f"Decryption accuracy: {accuracy}%")
 
     # Eve attempt to decrypt
-    eve_decrypted = eve.predict(cipher3)
+    eve_decrypted = eve.predict([cipher3, public_arr])
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
     
     # Calculate Eve's decryption accuracy
