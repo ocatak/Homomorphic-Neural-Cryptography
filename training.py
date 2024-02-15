@@ -13,17 +13,18 @@ from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_
 from EllipticCurve import generate_key_pair
 
 # used to save the results to a different file
-i = 11
-optimizer = "Adamax"
-activation = "tanh-sigmoid"
+i = 12
+optimizer = "RMSprop"
+activation = "tanh"
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 50 # number of training epochs
-batch_size = 1024  # number of training examples utilized in one iteration
-n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
+n_epochs = 20 # number of training epochs
+batch_size = 5  # number of training examples utilized in one iteration
+#n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
+n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 

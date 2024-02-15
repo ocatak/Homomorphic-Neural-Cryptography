@@ -1,7 +1,7 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate
-from tensorflow.keras.optimizers import Adamax
+from tensorflow.keras.optimizers import RMSprop
 from EllipticCurve import get_key_shape
 from nac import NAC
 
@@ -9,8 +9,8 @@ learning_rate = 0.001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
-p1_bits = 16  
-p2_bits = 16
+p1_bits = 8
+p2_bits = 8
 
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
@@ -50,7 +50,7 @@ def process_plaintext(ainput0, ainput1, p_bits, public_bits):
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='sigmoid')(aconv3)
+                    padding=pad, activation='hard_sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -92,7 +92,7 @@ bconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(bconv2)
 bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='sigmoid')(bconv3)
+                padding=pad, activation='hard_sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
 boutput = Flatten()(bconv4)
@@ -118,7 +118,7 @@ econv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(econv2)
 econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='sigmoid')(econv3)
+                padding=pad, activation='hard_sigmoid')(econv3)
 
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
 eoutput = Flatten()(econv4)
@@ -151,8 +151,8 @@ abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits
 abhemodel.add_loss(abheloss)
 
 # Set the Adam optimizer
-beoptim = Adamax(learning_rate=learning_rate)
-eveoptim = Adamax(learning_rate=learning_rate)
+beoptim = RMSprop(learning_rate=learning_rate)
+eveoptim = RMSprop(learning_rate=learning_rate)
 abhemodel.compile(optimizer=beoptim)
 
 # Build and compile the Eve model, used for training Eve net (with Alice frozen)
