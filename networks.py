@@ -5,11 +5,12 @@ from tensorflow.keras.optimizers import Adamax
 from EllipticCurve import get_key_shape
 from nac import NAC
 
+learning_rate = 0.001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
-p1_bits = 8  
-p2_bits = 8
+p1_bits = 16  
+p2_bits = 16
 
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
@@ -36,17 +37,17 @@ ainput2 = Input(shape=(p2_bits))  # plaintext 2
 def process_plaintext(ainput0, ainput1, p_bits, public_bits):
     ainput = concatenate([ainput0, ainput1], axis=1)
 
-    adense1 = Dense(units=(p_bits + public_bits), activation='elu')(ainput)
+    adense1 = Dense(units=(p_bits + public_bits), activation='tanh')(ainput)
     areshape = Reshape((p_bits + public_bits, 1,))(adense1)
 
     aconv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                    padding=pad, activation='elu')(areshape)
+                    padding=pad, activation='tanh')(areshape)
 
     aconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                    padding=pad, activation='elu')(aconv1)
+                    padding=pad, activation='tanh')(aconv1)
 
     aconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                    padding=pad, activation='elu')(aconv2)
+                    padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                     padding=pad, activation='sigmoid')(aconv3)
@@ -81,15 +82,15 @@ binput1 = Input(shape=(private_bits,))  # private key
 
 binput = concatenate([binput0, binput1], axis=1)
 
-bdense1 = Dense(units=((p1_bits+p2_bits)), activation='elu')(binput)
+bdense1 = Dense(units=((p1_bits+p2_bits)), activation='tanh')(binput)
 breshape = Reshape(((p1_bits+p2_bits), 1,))(bdense1)
 
 bconv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                padding=pad, activation='elu')(breshape)
+                padding=pad, activation='tanh')(breshape)
 bconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                padding=pad, activation='elu')(bconv1)
+                padding=pad, activation='tanh')(bconv1)
 bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                padding=pad, activation='elu')(bconv2)
+                padding=pad, activation='tanh')(bconv2)
 bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                 padding=pad, activation='sigmoid')(bconv3)
 
@@ -106,16 +107,16 @@ einput1 = Input(shape=(public_bits, )) # public key
 
 einput = concatenate([einput0, einput1], axis=1)
 
-edense1 = Dense(units=((p1_bits+p2_bits)), activation='elu')(einput)
-edense2 = Dense(units=((p1_bits+p2_bits)), activation='elu')(edense1)
+edense1 = Dense(units=((p1_bits+p2_bits)), activation='tanh')(einput)
+edense2 = Dense(units=((p1_bits+p2_bits)), activation='tanh')(edense1)
 ereshape = Reshape(((p1_bits+p2_bits), 1,))(edense2)
 
 econv1 = Conv1D(filters=2, kernel_size=4, strides=1,
-                padding=pad, activation='elu')(ereshape)
+                padding=pad, activation='tanh')(ereshape)
 econv2 = Conv1D(filters=4, kernel_size=2, strides=2,
-                padding=pad, activation='elu')(econv1)
+                padding=pad, activation='tanh')(econv1)
 econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
-                padding=pad, activation='elu')(econv2)
+                padding=pad, activation='tanh')(econv2)
 econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                 padding=pad, activation='sigmoid')(econv3)
 
@@ -150,8 +151,8 @@ abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits
 abhemodel.add_loss(abheloss)
 
 # Set the Adam optimizer
-beoptim = Adamax(learning_rate=0.001)
-eveoptim = Adamax(learning_rate=0.001)
+beoptim = Adamax(learning_rate=learning_rate)
+eveoptim = Adamax(learning_rate=learning_rate)
 abhemodel.compile(optimizer=beoptim)
 
 # Build and compile the Eve model, used for training Eve net (with Alice frozen)

@@ -9,13 +9,13 @@ import time
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model
+from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate
 from EllipticCurve import generate_key_pair
 
 # used to save the results to a different file
-i = 10
+i = 11
 optimizer = "Adamax"
-activation = "elu-sigmoid"
+activation = "tanh-sigmoid"
 
 evelosses = []
 boblosses = []
@@ -96,7 +96,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-0.01-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -109,10 +109,10 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-0.01-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
+    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
 
 # Save the results to a text file
-with open(f'results-{i}.txt', "a") as f:
+with open(f'results/results-{i}.txt', "a") as f:
     f.write("Training complete.\n")
     f.write("learning rate 0.001\n")
     f.write(f"Optimizer: {optimizer}\n")
