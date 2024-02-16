@@ -153,6 +153,8 @@ abhemodel.add_loss(abheloss)
 # Set the Adam optimizer
 beoptim = RMSprop(learning_rate=learning_rate)
 eveoptim = RMSprop(learning_rate=learning_rate)
+optimizer = RMSprop(0.1)
+HO_model.compile(optimizer, 'mse')
 abhemodel.compile(optimizer=beoptim)
 
 # Build and compile the Eve model, used for training Eve net (with Alice frozen)
