@@ -1,5 +1,4 @@
 import numpy as np
-from keras.layers import Reshape
 
 # Make index selection deterministic as well
 np.random.seed(0)
@@ -40,7 +39,7 @@ def generate_static_dataset(op_fn, num_samples=572, batch_size=5, mode='interpol
 
     for i in range(batch_size):
         # Get the input stream
-        X = np.random.rand(num_samples, 572)
+        X = np.random.uniform(low=0.0, high=1.00000001, size=(num_samples, 572))
 
         a=X[0]
         b=X[1]
@@ -50,8 +49,6 @@ def generate_static_dataset(op_fn, num_samples=572, batch_size=5, mode='interpol
         X1_dataset.append(a)
         X2_dataset.append(b)
         y_dataset.append(Y)
-
-
 
     return  np.array(X1_dataset), np.array(X2_dataset), np.array(y_dataset)
 

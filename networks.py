@@ -1,11 +1,11 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate
-from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda
+from tensorflow.keras.optimizers import RMSprop, Adam
 from EllipticCurve import get_key_shape
 from nac import NAC
 
-learning_rate = 0.001
+learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
@@ -50,7 +50,7 @@ def process_plaintext(ainput0, ainput1, p_bits, public_bits):
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(aconv3)
+                    padding=pad, activation='sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -92,10 +92,13 @@ bconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(bconv2)
 bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='hard_sigmoid')(bconv3)
+                padding=pad, activation='sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
-boutput = Flatten()(bconv4)
+bflattened = Flatten()(bconv4)
+
+# Scale the output from [0, 1] to [0, 2] by multiplying by 2
+boutput = Lambda(lambda x: x * 2)(bflattened)
 
 
 bob = Model(inputs=[binput0, binput1],
@@ -118,10 +121,12 @@ econv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(econv2)
 econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='hard_sigmoid')(econv3)
+                padding=pad, activation='sigmoid')(econv3)
 
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
-eoutput = Flatten()(econv4)
+eflattened = Flatten()(econv4)
+
+eoutput = Lambda(lambda x: x * 2)(eflattened)
 
 eve = Model([einput0, einput1], eoutput, name='eve')
 
@@ -144,15 +149,21 @@ abhemodel = Model([ainput0, ainput1, ainput2, binput1],
 # Loss functions
 eveloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
 bobloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
+# bobloss = K.binary_crossentropy(ainput1 + ainput2, bobout)
+# eveloss = K.binary_crossentropy(ainput1 + ainput2, eveout)
 
 
 # Build and compile the ABHE model, used for training Alice, Bob and HE networks
 abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+# alpha = 1.0
+# beta = 1.0
+# desired_metric = 0.1
+# abheloss = alpha * bobloss + beta * (desired_metric - eveloss)
 abhemodel.add_loss(abheloss)
 
 # Set the Adam optimizer
-beoptim = RMSprop(learning_rate=learning_rate)
-eveoptim = RMSprop(learning_rate=learning_rate)
+beoptim = Adam(learning_rate=learning_rate)
+eveoptim = Adam(learning_rate=learning_rate)
 optimizer = RMSprop(0.1)
 HO_model.compile(optimizer, 'mse')
 abhemodel.compile(optimizer=beoptim)

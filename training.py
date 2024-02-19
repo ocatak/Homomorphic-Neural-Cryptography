@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -12,19 +12,19 @@ import numpy as np
 from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate
 from EllipticCurve import generate_key_pair
 from data_utils import generate_static_dataset
-from keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-i = 12
-optimizer = "RMSprop"
-activation = "tanh"
+j = 61
+optimizer = "Adam"
+activation = "relu-hard-sigmoid-lambda"
 
 evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 20 # number of training epochs
-batch_size = 5  # number of training examples utilized in one iteration
+n_epochs = 30 # number of training epochs
+batch_size = 1024  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -36,11 +36,33 @@ num_samples = 572
 epoch = 0
 start = time.time()
 
-
 HO_model.trainable = True
 
 X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size, mode='interpolation')
 X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size, mode='interpolation')
+private_arr, public_arr = generate_key_pair(batch_size)
+
+HO_model.fit([X1_train, X2_train], y_train, batch_size=128, epochs=512,
+    verbose=2, validation_data=([X1_test, X2_test], y_test))
+
+predicted = HO_model.predict([X1_test, X2_test], 128)
+
+print(f"Y_test: {y_test[:3]}")
+print(f"Predicted: {predicted[:3]}")    
+
+def generate_cipher_dataset():
+    p1_batch = np.random.randint(0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
+    p2_batch = np.random.randint(0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+    cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
+
+    cipher3 = []
+    assert callable(task_fn)
+    for i in range(len(cipher1)):
+        Y = task_fn(cipher1[i], cipher2[i])
+        cipher3.append(Y)
+
+    cipher3 = np.array(cipher3)
+    return cipher1, cipher2, cipher3
 
 weights_path = 'weights/%s_weights.h5' % (task_name)
 checkpoint = ModelCheckpoint(weights_path, monitor='val_loss',
@@ -48,9 +70,21 @@ checkpoint = ModelCheckpoint(weights_path, monitor='val_loss',
 
 callbacks = [checkpoint]
 
-HO_model.fit([X1_train, X2_train], y_train, batch_size=64, epochs=500,
-    verbose=2, callbacks=callbacks, validation_data=([X1_test, X2_test], y_test))
+X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset()
+X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset()
 
+
+HO_model.fit([X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=128, epochs=512,
+    verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test, X2_cipher_test], y_cipher_test))
+
+score = HO_model.evaluate([X1_cipher_test, X2_cipher_test], y_cipher_test, batch_size=128)
+
+print(f"Score: {score}")
+
+predicted = HO_model.predict([X1_cipher_test, X2_cipher_test], 128)
+
+print(f"Y_test: {y_cipher_test[:3]}")
+print(f"Predicted: {predicted[:3]}")
 
 HO_model.trainable = False
 
@@ -70,10 +104,6 @@ while epoch < n_epochs:
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
 
             private_arr, public_arr = generate_key_pair(batch_size)
-
-            aliceout1, aliceput2 = alice.predict([public_arr, p1_batch, p2_batch])
-
-            
 
             loss = abhemodel.train_on_batch(
                 [public_arr, p1_batch, p2_batch, private_arr], None)  # calculate the loss
@@ -125,7 +155,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{j}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -138,12 +168,12 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{i}.png')
+    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{j}.png')
 
 # Save the results to a text file
-with open(f'results/results-{i}.txt', "a") as f:
+with open(f'results/results-{j}.txt', "a") as f:
     f.write("Training complete.\n")
-    f.write("learning rate 0.001\n")
+    f.write(f"learning rate {learning_rate}\n")
     f.write(f"Optimizer: {optimizer}\n")
     f.write(f"Activation: {activation}\n")
     f.write("Epochs: {}\n".format(n_epochs))
@@ -152,12 +182,11 @@ with open(f'results/results-{i}.txt', "a") as f:
     f.write("Alice-Bob cycles per iteration: {}\n".format(abecycles))
     f.write("Eve cycles per iteration: {}\n".format(evecycles))
 
-    # Test HO model training
-    predicted = HO_model.predict([X1_test, X2_test], 128)
+    # # Test HO model training
+    # predicted = HO_model.predict([X1_test, X2_test], 128)
 
-    print(y_test[:3])
-    print(predicted[:3])    
-
+    # print(f"Y_test: {y_test[:3]}")
+    # print(f"Predicted: {predicted[:3]}")    
 
     # Test the model
     p1_batch = np.random.randint(
@@ -182,6 +211,9 @@ with open(f'results/results-{i}.txt', "a") as f:
     decrypted = bob.predict([cipher3, private_arr])
     decrypted_bits = np.round(decrypted).astype(int)
 
+    print(f"Bob decrypted: {decrypted}")
+    print(f"Bob decrypted bits: {decrypted_bits}")
+
     # Calculate Bob's decryption accuracy
     correct_bits = np.sum(decrypted_bits == (p1_batch+p2_batch))
     total_bits = np.prod(decrypted_bits.shape)
@@ -194,6 +226,9 @@ with open(f'results/results-{i}.txt', "a") as f:
     # Eve attempt to decrypt
     eve_decrypted = eve.predict([cipher3, public_arr])
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
+
+    print(f"Eve decrypted: {eve_decrypted}")
+    print(f"Eve decrypted bits: {eve_decrypted_bits}")
     
     # Calculate Eve's decryption accuracy
     correct_bits_eve = np.sum(eve_decrypted_bits == (p1_batch+p2_batch))
