@@ -39,7 +39,7 @@ def generate_static_dataset(op_fn, num_samples=572, batch_size=5, mode='interpol
 
     for i in range(batch_size):
         # Get the input stream
-        X = np.random.uniform(low=0.0, high=1.00000001, size=(num_samples, 572))
+        X = np.random.uniform(low=0.0, high=1.00000001, size=(num_samples, num_samples))
 
         a=X[0]
         b=X[1]

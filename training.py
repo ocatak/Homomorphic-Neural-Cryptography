@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -9,13 +9,13 @@ import time
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate
+from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits
 from EllipticCurve import generate_key_pair
 from data_utils import generate_static_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = 63
+j = 67
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -23,7 +23,7 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 30 # number of training epochs
+n_epochs = 50 # number of training epochs
 batch_size = 1024  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
@@ -31,7 +31,7 @@ abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'addition'
 task_fn = lambda x, y: x + y
-num_samples = 572
+num_samples = c3_bits
 
 epoch = 0
 start = time.time()
@@ -155,7 +155,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{j}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{j}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -168,11 +168,12 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{j}.png')
+    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{j}.png')
 
 # Save the results to a text file
 with open(f'results/results-{j}.txt', "a") as f:
     f.write("Training complete.\n")
+    f.write(f"P_bits {p1_bits}\n")
     f.write(f"learning rate {learning_rate}\n")
     f.write(f"Optimizer: {optimizer}\n")
     f.write(f"Activation: {activation}\n")
@@ -181,12 +182,6 @@ with open(f'results/results-{j}.txt', "a") as f:
     f.write("Iterations per epoch: {}\n".format(n_batches))
     f.write("Alice-Bob cycles per iteration: {}\n".format(abecycles))
     f.write("Eve cycles per iteration: {}\n".format(evecycles))
-
-    # # Test HO model training
-    # predicted = HO_model.predict([X1_test, X2_test], 128)
-
-    # print(f"Y_test: {y_test[:3]}")
-    # print(f"Predicted: {predicted[:3]}")    
 
     # Test the model
     p1_batch = np.random.randint(
