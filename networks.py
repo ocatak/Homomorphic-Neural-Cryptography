@@ -9,8 +9,8 @@ learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
-p1_bits = 8
-p2_bits = 8
+p1_bits = 16
+p2_bits = 16
 
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
@@ -50,7 +50,7 @@ def process_plaintext(ainput0, ainput1, p_bits, public_bits):
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='sigmoid')(aconv3)
+                    padding=pad, activation='hard_sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -92,7 +92,7 @@ bconv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(bconv2)
 bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='sigmoid')(bconv3)
+                padding=pad, activation='hard_sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
 bflattened = Flatten()(bconv4)
@@ -121,7 +121,7 @@ econv2 = Conv1D(filters=4, kernel_size=2, strides=2,
 econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                 padding=pad, activation='tanh')(econv2)
 econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                padding=pad, activation='sigmoid')(econv3)
+                padding=pad, activation='hard_sigmoid')(econv3)
 
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
 eflattened = Flatten()(econv4)
