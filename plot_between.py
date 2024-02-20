@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+bits = 8
+
 # Initialize a figure
 plt.figure(figsize=(10, 6))
 plt.rc('font', size=12)  # controls default text size
@@ -9,12 +11,12 @@ plt.rc('axes', labelsize=25)  # fontsize of the x and y labels
 plt.rc('xtick', labelsize=25)  # fontsize of the tick labels
 plt.rc('ytick', labelsize=25)  # fontsize of the tick labels
 plt.rc('legend', fontsize=25)  # fontsize of the legend
-plt.ylim(0, 8)
+plt.ylim(0, bits/2+1)
 
-# Define the number of files, the curve and the number of cycles
-num_files = 1
-curve = 'sect163r2'
+# Define the number of files, test number and the number of cycles
+num_files = 2
 cycles = 1
+number = 56
 
 ab_loss = []
 bob_loss = []
@@ -26,10 +28,10 @@ min_bob, max_bob = None, None
 min_eve, max_eve = None, None
 
 # x is the same for all datasets
-x = list(range(0, 2559))
+x = list(range(0, 3839))
 
 for i in range(1, num_files + 1):
-    df = pd.read_csv(f'{curve}/{cycles}cycle/test-{i}-1.csv')
+    df = pd.read_csv(f'dataset/Adam-0.0001-tanh-hard-sigmoid-lambda-30e-1024b-{number}-{i}.csv')
 
     # ABloss
     y_ab = df['ABloss']
@@ -83,4 +85,4 @@ plt.grid(True, which='both', linestyle='--', linewidth=0.5)
 plt.xlabel('Iterations') 
 plt.ylabel('Loss') 
 plt.legend()
-plt.savefig(f"figures/{curve}-{cycles}cycle.pdf", bbox_inches='tight')
+plt.savefig(f"pdf-figures/{number}-result-2.pdf", bbox_inches='tight')

@@ -1,21 +1,20 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
 import pandas as pd
-import time
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits
 from EllipticCurve import generate_key_pair
-from data_utils import generate_static_dataset
+from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = 69
+j = 70
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -34,58 +33,36 @@ task_fn = lambda x, y: x + y
 num_samples = c3_bits
 
 epoch = 0
-start = time.time()
+
+HO_weights_path = 'weights/%s_weights.h5' % (task_name)
+alice_weights_path = 'weights/alice_weights.h5'
+bob_weights_path = 'weights/bob_weights.h5'
+eve_weights_path = 'weights/eve_weights.h5'
 
 HO_model.trainable = True
 
-X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size, mode='interpolation')
-X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size, mode='interpolation')
+# Train HO model to do addition
+X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size)
+X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size)
 private_arr, public_arr = generate_key_pair(batch_size)
 
 HO_model.fit([X1_train, X2_train], y_train, batch_size=128, epochs=512,
     verbose=2, validation_data=([X1_test, X2_test], y_test))
 
-predicted = HO_model.predict([X1_test, X2_test], 128)
 
-print(f"Y_test: {y_test[:3]}")
-print(f"Predicted: {predicted[:3]}")    
-
-def generate_cipher_dataset():
-    p1_batch = np.random.randint(0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
-    p2_batch = np.random.randint(0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
-    cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
-
-    cipher3 = []
-    assert callable(task_fn)
-    for i in range(len(cipher1)):
-        Y = task_fn(cipher1[i], cipher2[i])
-        cipher3.append(Y)
-
-    cipher3 = np.array(cipher3)
-    return cipher1, cipher2, cipher3
-
-weights_path = 'weights/%s_weights.h5' % (task_name)
-checkpoint = ModelCheckpoint(weights_path, monitor='val_loss',
+checkpoint = ModelCheckpoint(HO_weights_path, monitor='val_loss',
                             verbose=1, save_weights_only=True, save_best_only=True)
 
 callbacks = [checkpoint]
 
-X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset()
-X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset()
-
+# Train HO model with Alice to do addition on encrypted data
+X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)
+X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)
 
 HO_model.fit([X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=128, epochs=512,
     verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test, X2_cipher_test], y_cipher_test))
 
-score = HO_model.evaluate([X1_cipher_test, X2_cipher_test], y_cipher_test, batch_size=128)
-
-print(f"Score: {score}")
-
-predicted = HO_model.predict([X1_cipher_test, X2_cipher_test], 128)
-
-print(f"Y_test: {y_cipher_test[:3]}")
-print(f"Predicted: {predicted[:3]}")
-
+# Save weights
 HO_model.trainable = False
 
 while epoch < n_epochs:
@@ -142,9 +119,11 @@ while epoch < n_epochs:
 
     epoch += 1
 
+alice.save_weights(alice_weights_path)
+bob.save_weights(bob_weights_path)
+eve.save_weights(eve_weights_path)
+
 print("Training complete.")
-end = time.time()
-print(end - start)
 steps = -1
 
 
