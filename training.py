@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -15,7 +15,7 @@ from data_utils import generate_static_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = 67
+j = 69
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -23,8 +23,8 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 50 # number of training epochs
-batch_size = 1024  # number of training examples utilized in one iteration
+n_epochs = 30 # number of training epochs
+batch_size = 512  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -240,3 +240,19 @@ with open(f'results/results-{j}.txt', "a") as f:
     f.write(f"Number of correctly decrypted bits by Eve: {correct_bits_eve}\n")
     f.write(f"Decryption accuracy by Eve: {accuracy_eve}%\n")
     f.write("\n")
+
+    # Bob attempt to decrypt cipher1
+    decrypted_c1 = bob.predict([cipher1, private_arr])
+    decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
+
+    print(f"Bob decrypted P1: {decrypted_c1}")
+    print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
+
+    # Calculate Bob's decryption accuracy
+    correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
+    total_bits_p1 = np.prod(decrypted_bits_c1.shape)
+    accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
+
+    print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
+    print(f"Total number of bits P1: {total_bits_p1}")
+    print(f"Decryption accuracy P1: {accuracy_p1}%")

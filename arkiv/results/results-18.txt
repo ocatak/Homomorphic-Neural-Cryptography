@@ -1,0 +1,25 @@
+Training complete.
+learning rate 0.001
+Optimizer: Adam
+Activation: tanh
+Epochs: 20
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Training complete.
+learning rate 0.001
+Optimizer: Adam
+Activation: tanh
+Epochs: 20
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Total number of bits: 4096
+Number of correctly decrypted bits by Bob: 2038
+Decryption accuracy by Bob: 49.755859375%
+Number of correctly decrypted bits by Eve: 2038
+Decryption accuracy by Eve: 49.755859375%
+
+training with Alice predicted HO
