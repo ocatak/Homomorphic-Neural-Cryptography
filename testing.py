@@ -1,7 +1,12 @@
 from networks import HO_model, alice, bob, eve, p1_bits, p2_bits
 import numpy as np
 from EllipticCurve import generate_key_pair
-from training import batch_size, HO_weights_path, alice_weights_path, bob_weights_path, eve_weights_path
+
+batch_size = 512
+HO_weights_path = 'weights/addition_weights.h5'
+alice_weights_path = 'weights/alice_weights.h5'
+bob_weights_path = 'weights/bob_weights.h5'
+eve_weights_path = 'weights/eve_weights.h5'
 
 HO_model.load_weights(HO_weights_path)
 alice.load_weights(alice_weights_path)
