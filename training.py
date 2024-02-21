@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = 71
+j = "check-input-test-6"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,8 +22,8 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 2 # number of training epochs
-batch_size = 5  # number of training examples utilized in one iteration
+n_epochs = 35 # number of training epochs
+batch_size = 512  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
