@@ -1,9 +1,10 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda
+from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Layer
 from tensorflow.keras.optimizers import RMSprop, Adam
 from EllipticCurve import get_key_shape
 from nac import NAC
+import tensorflow as tf
 
 learning_rate = 0.0001
 
@@ -78,6 +79,22 @@ HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
 
 # Bob network
 binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
+
+binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
+class ConditionalLayer(Layer):
+    def __init__(self, **kwargs):
+        super(ConditionalLayer, self).__init__(**kwargs)
+    def call(self, inputs, *args, **kwargs):
+        # Check if any input value is greater than 1
+        condition = tf.reduce_any(tf.greater(inputs, 1))
+        # Apply the dense layer conditionally
+        output = tf.cond(condition,
+                         lambda: inputs *2,  # Apply if condition is True
+                         lambda: inputs)              # Pass through if condition is False
+        return output
+
+binput0 = ConditionalLayer()(binput0)
+
 binput1 = Input(shape=(private_bits,))  # private key
 
 binput = concatenate([binput0, binput1], axis=1)
@@ -95,11 +112,10 @@ bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                 padding=pad, activation='hard_sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
-bflattened = Flatten()(bconv4)
+boutput = Flatten()(bconv4)
 
 # Scale the output from [0, 1] to [0, 2] by multiplying by 2
-boutput = Lambda(lambda x: x * 2)(bflattened)
-
+# boutput = Lambda(lambda x: x * 2)(bflattened)
 
 bob = Model(inputs=[binput0, binput1],
             outputs=boutput, name='bob')
