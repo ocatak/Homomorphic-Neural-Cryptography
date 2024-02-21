@@ -79,22 +79,6 @@ HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
 
 # Bob network
 binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
-
-binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
-class ConditionalLayer(Layer):
-    def __init__(self, **kwargs):
-        super(ConditionalLayer, self).__init__(**kwargs)
-    def call(self, inputs, *args, **kwargs):
-        # Check if any input value is greater than 1
-        condition = tf.reduce_any(tf.greater(inputs, 1))
-        # Apply the dense layer conditionally
-        output = tf.cond(condition,
-                         lambda: inputs *2,  # Apply if condition is True
-                         lambda: inputs)              # Pass through if condition is False
-        return output
-
-binput0 = ConditionalLayer()(binput0)
-
 binput1 = Input(shape=(private_bits,))  # private key
 
 binput = concatenate([binput0, binput1], axis=1)
@@ -112,7 +96,27 @@ bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                 padding=pad, activation='hard_sigmoid')(bconv3)
 
 # Output corresponding to shape of p1 + p2
-boutput = Flatten()(bconv4)
+bflattened = Flatten()(bconv4)
+
+class ConditionalScalingLayer(Layer):
+    def __init__(self, **kwargs):
+        super(ConditionalScalingLayer, self).__init__(**kwargs)
+
+    def call(self, inputs):
+        binput0, bflattened = inputs
+
+        # Check if the maximum value in binput0 is greater than 1
+        condition = K.max(binput0) > 1
+
+        # Scale bflattened by 2 if condition is True, else leave it as is
+        bflattened_scaled = K.switch(condition, lambda: bflattened * 2, lambda: bflattened)
+
+        return bflattened_scaled
+
+    def compute_output_shape(self, input_shape):
+        return input_shape[1]
+
+boutput = ConditionalScalingLayer()([binput0, bflattened])
 
 # Scale the output from [0, 1] to [0, 2] by multiplying by 2
 # boutput = Lambda(lambda x: x * 2)(bflattened)
@@ -142,7 +146,26 @@ econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
 # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
 eflattened = Flatten()(econv4)
 
-eoutput = Lambda(lambda x: x * 2)(eflattened)
+# eoutput = Lambda(lambda x: x * 2)(eflattened)
+class ConditionalScalingLayer(Layer):
+    def __init__(self, **kwargs):
+        super(ConditionalScalingLayer, self).__init__(**kwargs)
+
+    def call(self, inputs):
+        einput0, eflattened = inputs
+
+        # Check if the maximum value in binput0 is greater than 1
+        condition = K.max(einput0) > 1
+
+        # Scale bflattened by 2 if condition is True, else leave it as is
+        eflattened_scaled = K.switch(condition, lambda: eflattened * 2, lambda: eflattened)
+
+        return eflattened_scaled
+
+    def compute_output_shape(self, input_shape):
+        return input_shape[1]
+
+eoutput = ConditionalScalingLayer()([einput0, eflattened])
 
 eve = Model([einput0, einput1], eoutput, name='eve')
 
