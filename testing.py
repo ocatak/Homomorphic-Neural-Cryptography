@@ -3,15 +3,15 @@ import numpy as np
 from EllipticCurve import generate_key_pair
 
 batch_size = 512
-HO_weights_path = 'weights/addition_weights.h5'
-alice_weights_path = 'weights/alice_weights.h5'
-bob_weights_path = 'weights/bob_weights.h5'
-eve_weights_path = 'weights/eve_weights.h5'
+HO_weights_path = 'weights-check-input-2/addition_weights.h5'
+# alice_weights_path = 'weights-check-input-2/alice_weights.h5'
+# bob_weights_path = 'weights-check-input-2/bob_weights.h5'
+# eve_weights_path = 'weights-check-input-2/eve_weights.h5'
 
 HO_model.load_weights(HO_weights_path)
-alice.load_weights(alice_weights_path)
-bob.load_weights(bob_weights_path)
-eve.load_weights(eve_weights_path)
+# alice.load_weights(alice_weights_path)
+# bob.load_weights(bob_weights_path)
+# eve.load_weights(eve_weights_path)
 
 p1_batch = np.random.randint(
     0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
@@ -29,7 +29,15 @@ print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
 cipher3 = HO_model.predict([cipher1, cipher2])
-print(f"Cipher3: {cipher3}")
+computed_cipher = cipher1 + cipher2
+tolerance = 1e-5
+correct_elements = np.sum(np.abs(computed_cipher - cipher3) <= tolerance)
+total_elements = np.prod(cipher3.shape)
+accuracy_percentage = (correct_elements / total_elements) * 100
+print(f"Correct Elements: {correct_elements}")
+print(f"Total Elements: {total_elements}")
+print(f"Accuracy Percentage: {accuracy_percentage:.2f}%")
+exit()
 
 # Bob attempt to decrypt
 decrypted = bob.predict([cipher3, private_arr])
