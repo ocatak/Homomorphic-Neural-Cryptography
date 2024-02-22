@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = "c1-c3-train-8"
+j = "c1-c3-dec-30e"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,7 +22,7 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 50 # number of training epochs
+n_epochs = 30 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
@@ -34,10 +34,10 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = 'weights-c1-c3-train-8/%s_weights.h5' % (task_name)
-alice_weights_path = 'weights-c1-c3-train-8/alice_weights.h5'
-bob_weights_path = 'weights-c1-c3-train-8/bob_weights.h5'
-eve_weights_path = 'weights-c1-c3-train-8/eve_weights.h5'
+HO_weights_path = 'weights-c1-c3-dec/%s_weights.h5' % (task_name)
+alice_weights_path = 'weights-c1-c3-dec/alice_weights.h5'
+bob_weights_path = 'weights-c1-c3-dec/bob_weights.h5'
+eve_weights_path = 'weights-c1-c3-dec/eve_weights.h5'
 
 HO_model.trainable = True
 
@@ -93,8 +93,14 @@ while epoch < n_epochs:
         # Evaluate Bob's ability to decrypt a message
         m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch])
         m3_enc = HO_model.predict([m1_enc, m2_enc])
-        m_dec = bob.predict([m3_enc, private_arr])
-        loss = np.mean(np.sum(np.abs(p1_batch + p2_batch - m_dec), axis=-1))
+        m3_dec = bob.predict([m3_enc, private_arr])
+        loss_m3 = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec), axis=-1))
+
+        m1_dec = bob.predict([m1_enc, private_arr])
+        loss_m1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
+
+        loss = loss_m3+loss_m1
+
         boblosses0.append(loss)
         boblosses.append(loss)
         bobavg = np.mean(boblosses0)

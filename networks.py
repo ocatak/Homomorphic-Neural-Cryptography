@@ -10,8 +10,8 @@ learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
-p1_bits = 8
-p2_bits = 8
+p1_bits = 16
+p2_bits = 16
 
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
