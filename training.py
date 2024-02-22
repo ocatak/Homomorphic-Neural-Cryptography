@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = "save-weights-high-batch"
+j = "c1-c3-train-8"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -23,7 +23,7 @@ boblosses = []
 abelosses = []
 
 n_epochs = 50 # number of training epochs
-batch_size = 1024  # number of training examples utilized in one iteration
+batch_size = 512  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -34,17 +34,16 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = 'weights-check-input-high-batch/%s_weights.h5' % (task_name)
-alice_weights_path = 'weights-check-input-high-batch/alice_weights.h5'
-bob_weights_path = 'weights-check-input-high-batch/bob_weights.h5'
-eve_weights_path = 'weights-check-input-high-batch/eve_weights.h5'
+HO_weights_path = 'weights-c1-c3-train-8/%s_weights.h5' % (task_name)
+alice_weights_path = 'weights-c1-c3-train-8/alice_weights.h5'
+bob_weights_path = 'weights-c1-c3-train-8/bob_weights.h5'
+eve_weights_path = 'weights-c1-c3-train-8/eve_weights.h5'
 
 HO_model.trainable = True
 
 # Train HO model to do addition
 X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size)
 X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size)
-private_arr, public_arr = generate_key_pair(batch_size)
 
 HO_model.fit([X1_train, X2_train], y_train, batch_size=128, epochs=512,
     verbose=2, validation_data=([X1_test, X2_test], y_test))
@@ -55,6 +54,7 @@ checkpoint = ModelCheckpoint(HO_weights_path, monitor='val_loss',
 
 callbacks = [checkpoint]
 
+private_arr, public_arr = generate_key_pair(batch_size)
 # Train HO model with Alice to do addition on encrypted data
 X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)
 X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)

@@ -10,8 +10,8 @@ learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
-p1_bits = 16
-p2_bits = 16
+p1_bits = 8
+p2_bits = 8
 
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
@@ -182,22 +182,25 @@ HOout = HO_model([aliceout1, aliceout2])
 bobout = bob([HOout, binput1]) 
 eveout = eve([HOout, ainput0])
 
+# Eve and Bob output from alice to decrypt p1/p2
+bobout_alice = bob([aliceout1, binput1])
+eveout_alice = eve([aliceout1, ainput0])
+
 abhemodel = Model([ainput0, ainput1, ainput2, binput1],
                  bobout, name='abhemodel')
 
 # Loss functions
-eveloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
-bobloss = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
-# bobloss = K.binary_crossentropy(ainput1 + ainput2, bobout)
-# eveloss = K.binary_crossentropy(ainput1 + ainput2, eveout)
+eveloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
+bobloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
 
+eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
+bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+
+eveloss = eveloss_ho + eveloss_alice
+bobloss = bobloss_ho + bobloss_alice
 
 # Build and compile the ABHE model, used for training Alice, Bob and HE networks
 abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
-# alpha = 1.0
-# beta = 1.0
-# desired_metric = 0.1
-# abheloss = alpha * bobloss + beta * (desired_metric - eveloss)
 abhemodel.add_loss(abheloss)
 
 # Set the Adam optimizer
