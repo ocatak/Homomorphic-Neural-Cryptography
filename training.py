@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = "check-input-test-6"
+j = "save-weights-high-batch"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,8 +22,8 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 35 # number of training epochs
-batch_size = 512  # number of training examples utilized in one iteration
+n_epochs = 50 # number of training epochs
+batch_size = 1024  # number of training examples utilized in one iteration
 #n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -34,10 +34,10 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = 'weights/%s_weights.h5' % (task_name)
-alice_weights_path = 'weights/alice_weights.h5'
-bob_weights_path = 'weights/bob_weights.h5'
-eve_weights_path = 'weights/eve_weights.h5'
+HO_weights_path = 'weights-check-input-high-batch/%s_weights.h5' % (task_name)
+alice_weights_path = 'weights-check-input-high-batch/alice_weights.h5'
+bob_weights_path = 'weights-check-input-high-batch/bob_weights.h5'
+eve_weights_path = 'weights-check-input-high-batch/eve_weights.h5'
 
 HO_model.trainable = True
 
@@ -119,9 +119,9 @@ while epoch < n_epochs:
 
     epoch += 1
 
-# alice.save_weights(alice_weights_path)
-# bob.save_weights(bob_weights_path)
-# eve.save_weights(eve_weights_path)
+alice.save_weights(alice_weights_path)
+bob.save_weights(bob_weights_path)
+eve.save_weights(eve_weights_path)
 
 print("Training complete.")
 steps = -1
