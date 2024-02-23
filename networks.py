@@ -26,7 +26,7 @@ c3_bits = (c1_bits+c2_bits)//2
 pad = 'same'
 
 # Size of the message space
-m_train = 2**(p1_bits+p2_bits) # mabye add p2_bits
+m_train = 2**((p1_bits+p2_bits)/2) # mabye add p2_bits
 
 # Alice network
 # Define Alice inputs
@@ -63,7 +63,6 @@ alice = Model(inputs=[ainput0, ainput1, ainput2],
 
 # Generate the HO_model network with an input layer and two NAC layers
 units = 2
-# ip = Input(shape=(c3_bits, 2,)) # Define 2 inputs of size c1_bits
 HOinput1 = Input(shape=(c1_bits))  # ciphertext 1
 HOinput2 = Input(shape=(c2_bits))  # ciphertext 2
 
@@ -98,26 +97,6 @@ bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
 # Output corresponding to shape of p1 + p2
 bflattened = Flatten()(bconv4)
 
-# class ConditionalScalingLayer(Layer):
-#     def __init__(self, **kwargs):
-#         super(ConditionalScalingLayer, self).__init__(**kwargs)
-
-#     def call(self, inputs):
-#         binput0, bflattened = inputs
-
-#         # Check if the maximum value in binput0 is greater than 1
-#         condition = K.max(binput0) > 1
-
-#         # Scale bflattened by 2 if condition is True, else leave it as is
-#         bflattened_scaled = K.switch(condition, lambda: bflattened * 2, lambda: bflattened)
-
-#         return bflattened_scaled
-
-#     def compute_output_shape(self, input_shape):
-#         return input_shape[1]
-
-# boutput = ConditionalScalingLayer()([binput0, bflattened])
-
 # Scale the output from [0, 1] to [0, 2] by multiplying by 2
 boutput = Lambda(lambda x: x * 2)(bflattened)
 
@@ -147,25 +126,6 @@ econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
 eflattened = Flatten()(econv4)
 
 eoutput = Lambda(lambda x: x * 2)(eflattened)
-# class ConditionalScalingLayer(Layer):
-#     def __init__(self, **kwargs):
-#         super(ConditionalScalingLayer, self).__init__(**kwargs)
-
-#     def call(self, inputs):
-#         einput0, eflattened = inputs
-
-#         # Check if the maximum value in binput0 is greater than 1
-#         condition = K.max(einput0) > 1
-
-#         # Scale bflattened by 2 if condition is True, else leave it as is
-#         eflattened_scaled = K.switch(condition, lambda: eflattened * 2, lambda: eflattened)
-
-#         return eflattened_scaled
-
-#     def compute_output_shape(self, input_shape):
-#         return input_shape[1]
-
-# eoutput = ConditionalScalingLayer()([einput0, eflattened])
 
 eve = Model([einput0, einput1], eoutput, name='eve')
 

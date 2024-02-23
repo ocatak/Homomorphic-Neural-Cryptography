@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-j = "remove-scaling-16loss"
+test_type = "remove-scaling-16loss"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -24,8 +24,7 @@ abelosses = []
 
 n_epochs = 30 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
-#n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
-n_batches = 128
+n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'addition'
@@ -34,10 +33,10 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = 'weights-remove-scaling-16loss/%s_weights.h5' % (task_name)
-alice_weights_path = 'weights-remove-scaling-16loss/alice_weights.h5'
-bob_weights_path = 'weights-remove-scaling-16loss/bob_weights.h5'
-eve_weights_path = 'weights-remove-scaling-16loss/eve_weights.h5'
+HO_weights_path = f'weights/{test_type}/{task_name}_weights.h5'
+alice_weights_path = f'weights/{test_type}/alice_weights.h5'
+bob_weights_path = f'weights/{test_type}/bob_weights.h5'
+eve_weights_path = f'weights/{test_type}/eve_weights.h5'
 
 HO_model.trainable = True
 
@@ -140,7 +139,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{j}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{test_type}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -153,10 +152,10 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{j}.png')
+    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{test_type}.png')
 
 # Save the results to a text file
-with open(f'results/results-{j}.txt', "a") as f:
+with open(f'results/results-{test_type}.txt', "a") as f:
     f.write("Training complete.\n")
     f.write(f"P_bits {p1_bits}\n")
     f.write(f"learning rate {learning_rate}\n")

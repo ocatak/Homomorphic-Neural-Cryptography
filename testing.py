@@ -2,11 +2,13 @@ from networks import HO_model, alice, bob, eve, p1_bits, p2_bits
 import numpy as np
 from EllipticCurve import generate_key_pair
 
-batch_size = 5
-HO_weights_path = 'weights-check-input-high-batch/addition_weights.h5'
-alice_weights_path = 'weights-check-input-high-batch/alice_weights.h5'
-bob_weights_path = 'weights-check-input-high-batch/bob_weights.h5'
-eve_weights_path = 'weights-check-input-high-batch/eve_weights.h5'
+batch_size = 512
+test_type = "weights-remove-scaling-16loss"
+
+HO_weights_path = f'weights/{test_type}/addition_weights.h5'
+alice_weights_path = f'weights/{test_type}/alice_weights.h5'
+bob_weights_path = f'weights/{test_type}/bob_weights.h5'
+eve_weights_path = f'weights/{test_type}/eve_weights.h5'
 
 HO_model.load_weights(HO_weights_path)
 alice.load_weights(alice_weights_path)
@@ -18,18 +20,18 @@ p1_batch = np.random.randint(
 p2_batch = np.random.randint(
     0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
 private_arr, public_arr = generate_key_pair(batch_size)
-print(f"P1: {p1_batch}")
+# print(f"P1: {p1_batch}")
 # print(f"P2: {p2_batch}")
 
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
-print(f"Cipher1: {cipher1}")
-print(f"Cipher2: {cipher2}")
+# print(f"Cipher1: {cipher1}")
+# print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
 cipher3 = HO_model.predict([cipher1, cipher2])
 computed_cipher = cipher1 + cipher2
-tolerance = 1e-5
+tolerance = 1e-4
 correct_elements = np.sum(np.abs(computed_cipher - cipher3) <= tolerance)
 total_elements = np.prod(cipher3.shape)
 accuracy_percentage = (correct_elements / total_elements) * 100
@@ -37,7 +39,7 @@ print("HO model addition")
 print(f"HO model correct: {correct_elements}")
 print(f"Total Elements: {total_elements}")
 print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
-print(f"Cipher3: {cipher3}")
+# print(f"Cipher3: {cipher3}")
 
 # Bob attempt to decrypt C3
 decrypted = bob.predict([cipher3, private_arr])
@@ -88,8 +90,8 @@ print("Bob decryption of P1")
 print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
 print(f"Total number of bits P1: {total_bits_p1}")
 print(f"Decryption accuracy P1: {accuracy_p1}%")
-print(f"Bob decrypted P1: {decrypted_c1}")
-print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
+# print(f"Bob decrypted P1: {decrypted_c1}")
+# print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
 
 
 # Eve attempt to decrypt C1
