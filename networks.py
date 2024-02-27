@@ -29,7 +29,7 @@ c3_bits = (c1_bits+c2_bits)//2
 pad = 'same'
 
 # Size of the message space
-m_train = 2**((p1_bits+p2_bits)/2) # mabye add p2_bits
+m_train = 2**((p1_bits+p2_bits)//2) # mabye add p2_bits
 
 # Alice network
 # Define Alice inputs
