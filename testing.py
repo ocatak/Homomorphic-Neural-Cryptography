@@ -1,9 +1,9 @@
-from networks import HO_model, alice, bob, eve, p1_bits, p2_bits
+from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits
 import numpy as np
 from EllipticCurve import generate_key_pair
 
 batch_size = 512
-test_type = "weights-remove-scaling-16loss"
+test_type = "weights"
 
 HO_weights_path = f'weights/{test_type}/addition_weights.h5'
 alice_weights_path = f'weights/{test_type}/alice_weights.h5'
@@ -15,17 +15,16 @@ alice.load_weights(alice_weights_path)
 bob.load_weights(bob_weights_path)
 eve.load_weights(eve_weights_path)
 
-p1_batch = np.random.randint(
-    0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
-p2_batch = np.random.randint(
-    0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
-private_arr, public_arr = generate_key_pair(batch_size)
-# print(f"P1: {p1_batch}")
-# print(f"P2: {p2_batch}")
+p1_batch = np.load("plaintext/p1_batch.npy")
+p2_batch = np.load("plaintext/p2_batch.npy")
+public_arr = np.load("key/public_key.npy")
+private_arr = np.load("key/private_key.npy")
+nonce = np.random.rand(batch_size, nonce_bits)
 
 # Alice encrypts the message
-cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
-# print(f"Cipher1: {cipher1}")
+cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
+print(f"Cipher1: {cipher1}")
+exit()
 # print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
