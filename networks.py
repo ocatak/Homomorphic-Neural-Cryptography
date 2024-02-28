@@ -44,7 +44,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
 
     adense1 = Dense(units=(p_bits + public_bits + nonce_bits), activation='tanh')(ainput)
 
-    dropout = Dropout(0.7)(adense1, training=True)
+    dropout = Dropout(0.6)(adense1, training=True)
 
     areshape = Reshape((p_bits + public_bits + nonce_bits, 1,))(dropout)
 
