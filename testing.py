@@ -25,7 +25,7 @@ nonce = np.random.rand(batch_size, nonce_bits)
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
 exit()
-# print(f"Cipher2: {cipher2}")
+print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
 cipher3 = HO_model.predict([cipher1, cipher2])
@@ -41,7 +41,7 @@ print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
 # print(f"Cipher3: {cipher3}")
 
 # Bob attempt to decrypt C3
-decrypted = bob.predict([cipher3, private_arr])
+decrypted = bob.predict([cipher3, private_arr, nonce])
 decrypted_bits = np.round(decrypted).astype(int)
 
 # Calculate Bob's decryption accuracy
@@ -58,7 +58,7 @@ print(f"Decryption accuracy Bob: {accuracy}%")
 # print(f"Bob decrypted bits: {decrypted_bits}")
 
 # Eve attempt to decrypt C3
-eve_decrypted = eve.predict([cipher3, public_arr])
+eve_decrypted = eve.predict([cipher3, public_arr, nonce])
 eve_decrypted_bits = np.round(eve_decrypted).astype(int)
 
 # Calculate Eve's decryption accuracy
@@ -76,7 +76,7 @@ print(f"Decryption accuracy by Eve: {accuracy_eve}%")
 
 
 # Bob attempt to decrypt C1
-decrypted_c1 = bob.predict([cipher1, private_arr])
+decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
 decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
 
 # Calculate Bob's decryption accuracy
@@ -94,7 +94,7 @@ print(f"Decryption accuracy P1: {accuracy_p1}%")
 
 
 # Eve attempt to decrypt C1
-decrypted_c1_eve = eve.predict([cipher1, public_arr])
+decrypted_c1_eve = eve.predict([cipher1, public_arr, nonce])
 decrypted_bits_c1_eve = np.round(decrypted_c1_eve).astype(int)
 
 # Calculate Bob's decryption accuracy
@@ -112,7 +112,7 @@ print(f"Decryption accuracy P1: {accuracy_p1_eve}%")
 
 
 # Bob attempt to decrypt C2
-decrypted_c2 = bob.predict([cipher2, private_arr])
+decrypted_c2 = bob.predict([cipher2, private_arr, nonce])
 decrypted_bits_c2 = np.round(decrypted_c2).astype(int)
 
 # Calculate Bob's decryption accuracy
@@ -129,7 +129,7 @@ print(f"Decryption accuracy P2: {accuracy_p2}%")
 # print(f"Bob decrypted bits P2: {decrypted_bits_c2}")
 
 # Eve attempt to decrypt C2
-decrypted_c2_eve = eve.predict([cipher2, public_arr])
+decrypted_c2_eve = eve.predict([cipher2, public_arr, nonce])
 decrypted_bits_c2_eve = np.round(decrypted_c2_eve).astype(int)
 
 # Calculate Bob's decryption accuracy
