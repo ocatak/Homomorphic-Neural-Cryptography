@@ -21,8 +21,8 @@ private_bits = get_key_shape()[0]
 nonce_bits = 64
 
 # Ciphertext 1 and 2
-c1_bits = (p1_bits+public_bits+nonce_bits)//2 
-c2_bits = (p2_bits+public_bits+nonce_bits)//2 
+c1_bits = (p1_bits+public_bits)//2 
+c2_bits = (p2_bits+public_bits)//2 
 
 c3_bits = (c1_bits+c2_bits)//2
 
@@ -42,11 +42,11 @@ anonce_input = Input(shape=(nonce_bits))  # nonce
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits):
     ainput = concatenate([ainput0, ainput1, anonce_input], axis=1)
 
-    adense1 = Dense(units=(p_bits + public_bits + nonce_bits), activation='tanh')(ainput)
+    adense1 = Dense(units=(p_bits + public_bits), activation='tanh')(ainput)
 
     dropout = Dropout(0.7)(adense1, training=True)
 
-    areshape = Reshape((p_bits + public_bits + nonce_bits, 1,))(dropout)
+    areshape = Reshape((p_bits + public_bits, 1,))(dropout)
 
     aconv1 = Conv1D(filters=2, kernel_size=4, strides=1,
                     padding=pad, activation='tanh')(areshape)
