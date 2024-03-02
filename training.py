@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -14,7 +14,7 @@ from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-test_type = "nonce-dropout-07dense-bob-eve"
+test_type = "nonce-dropout-07dense-768b-75e-new"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,8 +22,8 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 50 # number of training epochs
-batch_size = 512  # number of training examples utilized in one iteration
+n_epochs = 75 # number of training epochs
+batch_size = 768  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
