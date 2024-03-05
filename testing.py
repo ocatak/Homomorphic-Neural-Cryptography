@@ -3,7 +3,7 @@ import numpy as np
 from EllipticCurve import generate_key_pair
 
 batch_size = 512
-test_type = "weights-remove-scaling-16loss"
+test_type = "weights-remove-scaling-8loss"
 
 HO_weights_path = f'weights/{test_type}/addition_weights.h5'
 alice_weights_path = f'weights/{test_type}/alice_weights.h5'

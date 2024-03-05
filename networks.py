@@ -156,8 +156,8 @@ bobloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
 eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
 bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
 
-eveloss = (eveloss_ho + eveloss_alice)
-bobloss = (bobloss_ho + bobloss_alice)
+eveloss = (eveloss_ho + eveloss_alice)/2
+bobloss = (bobloss_ho + bobloss_alice)/2
 
 # Build and compile the ABHE model, used for training Alice, Bob and HE networks
 abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
