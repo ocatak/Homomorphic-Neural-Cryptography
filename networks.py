@@ -2,7 +2,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
-from EllipticCurve import get_key_shape
+from key.EllipticCurve import get_key_shape
 from nac import NAC
 import numpy as np
 

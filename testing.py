@@ -1,6 +1,6 @@
 from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits
 import numpy as np
-from EllipticCurve import generate_key_pair
+from key.EllipticCurve import generate_key_pair
 
 batch_size = 512
 test_type = "weights-nonce-dropout-07dense-75e"
