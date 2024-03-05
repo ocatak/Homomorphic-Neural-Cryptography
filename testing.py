@@ -3,7 +3,7 @@ import numpy as np
 from EllipticCurve import generate_key_pair
 
 batch_size = 512
-test_type = "weights-nonce-dropout-07dense-50-new"
+test_type = "weights-nonce-dropout-07dense-75e"
 
 HO_weights_path = f'weights/{test_type}/addition_weights.h5'
 alice_weights_path = f'weights/{test_type}/alice_weights.h5'
@@ -24,7 +24,6 @@ nonce = np.random.rand(batch_size, nonce_bits)
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
-exit()
 print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
