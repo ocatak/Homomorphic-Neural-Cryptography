@@ -8,13 +8,13 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits
+from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits, nonce_bits
 from EllipticCurve import generate_key_pair
 from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-test_type = "remove-scaling-16loss"
+test_type = "nonce-dropout-07dense-75e"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,7 +22,7 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 30 # number of training epochs
+n_epochs = 75 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -33,16 +33,16 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = f'weights/{test_type}/{task_name}_weights.h5'
-alice_weights_path = f'weights/{test_type}/alice_weights.h5'
-bob_weights_path = f'weights/{test_type}/bob_weights.h5'
-eve_weights_path = f'weights/{test_type}/eve_weights.h5'
+HO_weights_path = f'weights/weights-{test_type}/{task_name}_weights.h5'
+alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
+bob_weights_path = f'weights/weights-{test_type}/bob_weights.h5'
+eve_weights_path = f'weights/weights-{test_type}/eve_weights.h5'
 
 HO_model.trainable = True
 
 # Train HO model to do addition
-X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size)
-X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size)
+X1_train, X2_train, y_train = generate_static_dataset(task_fn, num_samples, batch_size, nonce_bits)
+X1_test, X2_test, y_test = generate_static_dataset(task_fn, num_samples, batch_size, nonce_bits)
 
 HO_model.fit([X1_train, X2_train], y_train, batch_size=128, epochs=512,
     verbose=2, validation_data=([X1_test, X2_test], y_test))
@@ -55,8 +55,8 @@ callbacks = [checkpoint]
 
 private_arr, public_arr = generate_key_pair(batch_size)
 # Train HO model with Alice to do addition on encrypted data
-X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)
-X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn)
+X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn, nonce_bits)
+X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn, nonce_bits)
 
 HO_model.fit([X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=128, epochs=512,
     verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test, X2_cipher_test], y_cipher_test))
@@ -81,8 +81,10 @@ while epoch < n_epochs:
 
             private_arr, public_arr = generate_key_pair(batch_size)
 
+            nonce = np.random.rand(batch_size, nonce_bits)
+
             loss = abhemodel.train_on_batch(
-                [public_arr, p1_batch, p2_batch, private_arr], None)  # calculate the loss
+                [public_arr, p1_batch, p2_batch, nonce, private_arr], None)  # calculate the loss
 
         # How well Alice's encryption and Bob's decryption work together
         abelosses0.append(loss)
@@ -90,15 +92,15 @@ while epoch < n_epochs:
         abeavg = np.mean(abelosses0)
 
         # Evaluate Bob's ability to decrypt a message
-        m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch])
+        m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch, nonce])
         m3_enc = HO_model.predict([m1_enc, m2_enc])
-        m3_dec = bob.predict([m3_enc, private_arr])
+        m3_dec = bob.predict([m3_enc, private_arr, nonce])
         loss_m3 = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec), axis=-1))
 
-        m1_dec = bob.predict([m1_enc, private_arr])
+        m1_dec = bob.predict([m1_enc, private_arr, nonce])
         loss_m1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
 
-        loss = (loss_m3+loss_m1)
+        loss = (loss_m3+loss_m1)/2
 
         boblosses0.append(loss)
         boblosses.append(loss)
@@ -112,7 +114,9 @@ while epoch < n_epochs:
             p2_batch = np.random.randint(
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
             _, public_arr = generate_key_pair(batch_size)
-            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch], None)
+            nonce = np.random.rand(batch_size, nonce_bits)
+
+            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce], None)
         evelosses0.append(loss)
         evelosses.append(loss)
         eveavg = np.mean(evelosses0)
@@ -174,11 +178,13 @@ with open(f'results/results-{test_type}.txt', "a") as f:
         0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
     private_arr, public_arr = generate_key_pair(batch_size)
 
+    nonce = np.random.rand(batch_size, nonce_bits)
+
     print(f"P1: {p1_batch}")
     print(f"P2: {p2_batch}")
 
     # Alice encrypts the message
-    cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch])
+    cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
     print(f"Cipher1: {cipher1}")
     print(f"Cipher2: {cipher2}")
 
@@ -187,7 +193,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     print(f"Cipher3: {cipher3}")
 
     # Bob attempt to decrypt
-    decrypted = bob.predict([cipher3, private_arr])
+    decrypted = bob.predict([cipher3, private_arr, nonce])
     decrypted_bits = np.round(decrypted).astype(int)
 
     print(f"Bob decrypted: {decrypted}")
@@ -203,7 +209,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     print(f"Decryption accuracy: {accuracy}%")
 
     # Eve attempt to decrypt
-    eve_decrypted = eve.predict([cipher3, public_arr])
+    eve_decrypted = eve.predict([cipher3, public_arr, nonce])
     eve_decrypted_bits = np.round(eve_decrypted).astype(int)
 
     print(f"Eve decrypted: {eve_decrypted}")
@@ -226,7 +232,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     f.write("\n")
 
     # Bob attempt to decrypt cipher1
-    decrypted_c1 = bob.predict([cipher1, private_arr])
+    decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
     decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
 
     print(f"Bob decrypted P1: {decrypted_c1}")

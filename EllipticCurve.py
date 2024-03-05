@@ -49,6 +49,6 @@ def convert_key_to_bit(pem):
     return arr
 
 if __name__ == "__main__":
-    # keys = generate_key_pair(1)
-    # print(keys[0].shape, keys[1].shape)
-    print(get_key_shape())
+    private_key, public_key = generate_key_pair(512)
+    np.save("key/private_key.npy", private_key)
+    np.save("key/public_key.npy", public_key)
