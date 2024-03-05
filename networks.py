@@ -4,8 +4,8 @@ from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, conc
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape
 from nac import NAC
-import numpy as np
 
+dropout_rate = 0.7
 learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
@@ -44,7 +44,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
 
     adense1 = Dense(units=(p_bits + public_bits + nonce_bits), activation='tanh')(ainput)
 
-    dropout = Dropout(0.7)(adense1, training=True)
+    dropout = Dropout(dropout_rate)(adense1, training=True)
 
     areshape = Reshape((p_bits + public_bits + nonce_bits, 1,))(dropout)
 

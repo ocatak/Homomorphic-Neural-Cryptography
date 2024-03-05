@@ -8,13 +8,13 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits, nonce_bits
-from key.EllipticCurve import generate_key_pair
+from networks import alice, bob, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, HO_model, learning_rate, c3_bits, nonce_bits, dropout_rate
+from key.EllipticCurve import generate_key_pair, curve
 from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # used to save the results to a different file
-test_type = "nonce-dropout-07dense-75e"
+test_type = f"rate-{dropout_rate}-curve-{curve.name}"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -22,7 +22,7 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 75 # number of training epochs
+n_epochs = 50 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
@@ -33,10 +33,16 @@ num_samples = c3_bits
 
 epoch = 0
 
-HO_weights_path = f'weights/weights-{test_type}/{task_name}_weights.h5'
-alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
-bob_weights_path = f'weights/weights-{test_type}/bob_weights.h5'
-eve_weights_path = f'weights/weights-{test_type}/eve_weights.h5'
+path = f'weights/weights-{test_type}'
+
+HO_weights_path = f'{path}/{task_name}_weights.h5'
+alice_weights_path = f'{path}/alice_weights.h5'
+bob_weights_path = f'{path}/bob_weights.h5'
+eve_weights_path = f'{path}/eve_weights.h5'
+
+isExist = os.path.exists(path)
+if not isExist:
+   os.makedirs(path)
 
 HO_model.trainable = True
 
@@ -143,7 +149,7 @@ Biodata = {'ABloss': abelosses[:steps],
 
 df = pd.DataFrame(Biodata)
 
-df.to_csv(f'dataset/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{test_type}.csv', mode='a', index=False)
+df.to_csv(f'dataset/{test_type}.csv', mode='a', index=False)
 
 
 plt.figure(figsize=(7, 4))
@@ -156,7 +162,7 @@ plt.legend(fontsize=13)
 
 # save the figure for the loss
 plt.savefig(
-    f'figures/{optimizer}-{learning_rate}-{activation}-{n_epochs}e-{batch_size}b-{p1_bits}pbits-{test_type}.png')
+    f'figures/{test_type}.png')
 
 # Save the results to a text file
 with open(f'results/results-{test_type}.txt', "a") as f:
@@ -165,6 +171,8 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     f.write(f"learning rate {learning_rate}\n")
     f.write(f"Optimizer: {optimizer}\n")
     f.write(f"Activation: {activation}\n")
+    f.write(f"Curve: {curve.name}")
+    f.write(f"Dropout rate: {dropout_rate}")
     f.write("Epochs: {}\n".format(n_epochs))
     f.write("Batch size: {}\n".format(batch_size))
     f.write("Iterations per epoch: {}\n".format(n_batches))
