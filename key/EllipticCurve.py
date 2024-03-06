@@ -54,5 +54,5 @@ def convert_key_to_bit(pem):
 
 if __name__ == "__main__":
     private_key, public_key = generate_key_pair(512)
-    np.save("key/private_key.npy", private_key)
-    np.save("key/public_key.npy", public_key)
+    np.save(f"key/private_key-{curve.name}.npy", private_key)
+    np.save(f"key/public_key-{curve.name}.npy", public_key)

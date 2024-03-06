@@ -1,6 +1,6 @@
 from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits
 import numpy as np
-from key.EllipticCurve import generate_key_pair
+from key.EllipticCurve import generate_key_pair, curve
 
 batch_size = 512
 test_type = "weights-nonce-dropout-07dense-75e"
@@ -17,8 +17,8 @@ eve.load_weights(eve_weights_path)
 
 p1_batch = np.load("plaintext/p1_batch.npy")
 p2_batch = np.load("plaintext/p2_batch.npy")
-public_arr = np.load("key/public_key.npy")
-private_arr = np.load("key/private_key.npy")
+public_arr = np.load(f"key/public_key-{curve.name}.npy")
+private_arr = np.load(f"key/private_key-{curve.name}.npy")
 nonce = np.random.rand(batch_size, nonce_bits)
 
 # Alice encrypts the message
