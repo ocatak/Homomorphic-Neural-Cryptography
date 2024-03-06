@@ -5,7 +5,7 @@ from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape
 from nac import NAC
 
-dropout_rate = 0.1
+dropout_rate = 0.5
 learning_rate = 0.0001
 
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
