@@ -1,14 +1,15 @@
-from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits
+from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits, dropout_rate
 import numpy as np
 from key.EllipticCurve import generate_key_pair, curve
 
 batch_size = 512
-test_type = "weights-nonce-dropout-07dense-75e"
+test_type = f"rate-{dropout_rate}-curve-{curve.name}"
+print(f"Testing with {test_type}...")
 
-HO_weights_path = f'weights/{test_type}/addition_weights.h5'
-alice_weights_path = f'weights/{test_type}/alice_weights.h5'
-bob_weights_path = f'weights/{test_type}/bob_weights.h5'
-eve_weights_path = f'weights/{test_type}/eve_weights.h5'
+HO_weights_path = f'weights/weights-{test_type}/addition_weights.h5'
+alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
+bob_weights_path = f'weights/weights-{test_type}/bob_weights.h5'
+eve_weights_path = f'weights/weights-{test_type}/eve_weights.h5'
 
 HO_model.load_weights(HO_weights_path)
 alice.load_weights(alice_weights_path)
@@ -24,6 +25,8 @@ nonce = np.random.rand(batch_size, nonce_bits)
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
+np.save(f"ciphertext/{test_type}-2.npy", cipher1)
+exit()
 print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
