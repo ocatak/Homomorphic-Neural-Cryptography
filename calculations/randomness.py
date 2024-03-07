@@ -17,6 +17,7 @@ def randomness(rate, curve):
     return std_dev
 
 if __name__ == "__main__":
-    rate = 0.2
-    curve = "secp224r1"
+    rate = 0.6
+    curve = "secp521r1"
+    randomness(rate, curve)
 

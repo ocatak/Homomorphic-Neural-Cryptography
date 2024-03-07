@@ -25,8 +25,8 @@ nonce = np.random.rand(batch_size, nonce_bits)
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
-# np.save(f"ciphertext/{test_type}-1.npy", cipher1)
-# exit()
+np.save(f"ciphertext/{test_type}-1.npy", cipher1)
+exit()
 print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
