@@ -15,12 +15,12 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 public_bits = get_key_shape()[1]  
 private_bits = get_key_shape()[0]
-dropout_rate = 0.6
+dropout_rate = 0.5
 
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"rate-{dropout_rate}-curve-{curve.name}-blabla"
+test_type = f"rate-{dropout_rate}-curve-{curve.name}"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -28,10 +28,9 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 5 # number of training epochs
-batch_size = 5  # number of training examples utilized in one iteration
+n_epochs = 50 # number of training epochs
+batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
-n_batches = 10
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'addition'
