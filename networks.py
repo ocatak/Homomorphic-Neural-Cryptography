@@ -8,6 +8,11 @@ from nac import NAC
 dropout_rate = 0.6
 learning_rate = 0.0001
 
+def set_dropout_rate(rate):
+    global dropout_rate
+    dropout_rate = rate
+print(dropout_rate)
+
 # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
 # Plaintext 1 and 2
 p1_bits = 16
@@ -16,6 +21,13 @@ p2_bits = 16
 # Public and private key, changed to fit the key generated in EllipticCurve.py
 public_bits = get_key_shape()[1]  
 private_bits = get_key_shape()[0] 
+
+def set_key_bits(public, private):
+    global public_bits, private_bits
+    public_bits = public
+    private_bits = private
+
+print(public_bits, private_bits)
 
 # nonce bits
 nonce_bits = 64
