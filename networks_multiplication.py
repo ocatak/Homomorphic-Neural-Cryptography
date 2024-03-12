@@ -153,8 +153,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
                     bobout, name='abhemodel')
 
     # Loss functions
-    eveloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
-    bobloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
+    eveloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - eveout), axis=-1))
+    bobloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - bobout), axis=-1))
 
     eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
     bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
