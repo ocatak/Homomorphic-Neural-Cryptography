@@ -67,4 +67,11 @@ def generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, tas
     return cipher1, cipher2, cipher3
 
 if __name__ == "__main__":
-    generate_static_dataset(lambda x, y: x + y, 2)
+    x1, x2, y = generate_static_dataset(lambda x, y: x + y, 2)
+    print(x1)
+    print(x2)
+    print(y)
+    x1, x2, y = generate_static_dataset(lambda x, y: x * y, 2)
+    print(x1)
+    print(x2)
+    print(y)

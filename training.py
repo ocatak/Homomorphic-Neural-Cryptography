@@ -8,7 +8,7 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks_functions import create_networks
+from networks_multiplication import create_networks
 from key.EllipticCurve import generate_key_pair, curve, get_key_shape
 from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -20,7 +20,7 @@ dropout_rate = 0.4
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"rate-{dropout_rate}-curve-{curve.name}"
+test_type = f"multiplication-rate-{dropout_rate}-curve-{curve.name}"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -33,8 +33,8 @@ batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
-task_name = 'addition'
-task_fn = lambda x, y: x + y
+task_name = 'multiplication'
+task_fn = lambda x, y: x * y
 num_samples = c3_bits
 
 epoch = 0
