@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -107,7 +107,7 @@ while epoch < n_epochs:
         m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch, nonce])
         m3_enc = HO_model.predict([m1_enc, m2_enc])
         m3_dec = bob.predict([m3_enc, private_arr, nonce])
-        loss_m3 = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec), axis=-1))
+        loss_m3 = np.mean(np.sum(np.abs(p1_batch * p2_batch - m3_dec), axis=-1))
 
         m1_dec = bob.predict([m1_enc, private_arr, nonce])
         loss_m1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
@@ -213,7 +213,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     print(f"Bob decrypted bits: {decrypted_bits}")
 
     # Calculate Bob's decryption accuracy
-    correct_bits = np.sum(decrypted_bits == (p1_batch+p2_batch))
+    correct_bits = np.sum(decrypted_bits == (p1_batch*p2_batch))
     total_bits = np.prod(decrypted_bits.shape)
     accuracy = correct_bits / total_bits * 100
 
@@ -229,7 +229,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     print(f"Eve decrypted bits: {eve_decrypted_bits}")
     
     # Calculate Eve's decryption accuracy
-    correct_bits_eve = np.sum(eve_decrypted_bits == (p1_batch+p2_batch))
+    correct_bits_eve = np.sum(eve_decrypted_bits == (p1_batch*p2_batch))
     total_bits = np.prod(eve_decrypted_bits.shape)
     accuracy_eve = correct_bits_eve / total_bits * 100
 
