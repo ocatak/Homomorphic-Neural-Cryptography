@@ -1,7 +1,6 @@
 import os
 import numpy as np
 from networks_functions import create_networks
-from calculations.aggregate_statistics import pairwise_distances
 from calculations.randomness import plot_evaluation_scores, randomness
 
 batch_size = 512
@@ -44,7 +43,6 @@ for curve in curves:
         results[curve][rate]['p1'] = decryption_accurancy(cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(cipher2, private_arr, nonce, p2_batch)
         results[curve][rate]['std'] = randomness(rate, curve)
-        # results[curve][rate]['mean'], results[curve][rate]['meidan'], results[curve][rate]['std'], results[curve][rate]['min'], results[curve][rate]['max'] = pairwise_distances(rate, curve)
         results[curve]['std'].append(results[curve][rate]['std'])
 
 plot_evaluation_scores(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
