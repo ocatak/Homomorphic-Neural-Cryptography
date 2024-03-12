@@ -1,7 +1,8 @@
 import os
 import numpy as np
 from networks_functions import create_networks
-from calculations.randomness import randomness, plot_evaluation_scores
+from calculations.aggregate_statistics import pairwise_distances
+from calculations.randomness import plot_evaluation_scores, randomness
 
 batch_size = 512
 nonce_bits = 64
@@ -38,19 +39,15 @@ for curve in curves:
         bob.load_weights(f'{weights_path}/bob_weights.h5')
         eve.load_weights(f'{weights_path}/eve_weights.h5')
         cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
-        if not os.path.exists(f"ciphertext/{path_name}-1.npy"):
-            np.save(f"ciphertext/{path_name}-1.npy", cipher1)
-            continue
-        if not os.path.exists(f"ciphertext/{path_name}-2.npy"):
-            np.save(f"ciphertext/{path_name}-2.npy", cipher2)
         cipher3 = HO_model.predict([cipher1, cipher2])
         results[curve][rate]['p1+p2'] = decryption_accurancy(cipher3, private_arr, nonce, p1_batch+p2_batch)
         results[curve][rate]['p1'] = decryption_accurancy(cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(cipher2, private_arr, nonce, p2_batch)
-        results[curve][rate]['var'], results[curve][rate]['std'] = randomness(rate, curve)
-        results[curve]['std'].append([results[curve][rate]['std']])
+        results[curve][rate]['std'] = randomness(rate, curve)
+        # results[curve][rate]['mean'], results[curve][rate]['meidan'], results[curve][rate]['std'], results[curve][rate]['min'], results[curve][rate]['max'] = pairwise_distances(rate, curve)
+        results[curve]['std'].append(results[curve][rate]['std'])
 
-# plot_evaluation_scores(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
+plot_evaluation_scores(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
 
 for curve in results:
     print(curve)
