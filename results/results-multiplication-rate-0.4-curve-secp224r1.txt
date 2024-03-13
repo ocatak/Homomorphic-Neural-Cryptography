@@ -1,0 +1,32 @@
+Training complete.
+P_bits 16
+learning rate 0.0001
+Optimizer: Adam
+Activation: tanh-hard-sigmoid-lambda
+Curve: secp224r1Dropout rate: 0.4Epochs: 50
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Total number of bits: 8192
+Number of correctly decrypted bits by Bob: 7551
+Decryption accuracy by Bob: 92.17529296875%
+Number of correctly decrypted bits by Eve: 4062
+Decryption accuracy by Eve: 49.5849609375%
+
+Training complete.
+P_bits 16
+learning rate 0.0001
+Optimizer: Adam
+Activation: tanh-hard-sigmoid-lambda
+Curve: secp224r1Dropout rate: 0.4Epochs: 50
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Total number of bits: 8192
+Number of correctly decrypted bits by Bob: 6241
+Decryption accuracy by Bob: 76.18408203125%
+Number of correctly decrypted bits by Eve: 2007
+Decryption accuracy by Eve: 24.49951171875%
+
