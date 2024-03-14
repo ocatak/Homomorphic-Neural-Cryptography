@@ -155,8 +155,11 @@ def create_networks(public_bits, private_bits, dropout_rate):
     eveout = eve([HOout, ainput0, anonce_input])
 
     # Eve and Bob output from alice to decrypt p1/p2
-    bobout_alice = bob([aliceout1, binput1, anonce_input])
-    eveout_alice = eve([aliceout1, ainput0, anonce_input])
+    bobout_alice1 = bob([aliceout1, binput1, anonce_input])
+    eveout_alice1 = eve([aliceout1, ainput0, anonce_input])
+
+    bobout_alice2 = bob([aliceout1, binput1, anonce_input])
+    eveout_alice2 = eve([aliceout1, ainput0, anonce_input])
 
     abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1],
                     bobout, name='abhemodel')
@@ -165,14 +168,25 @@ def create_networks(public_bits, private_bits, dropout_rate):
     eveloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 + ainput1 - eveout), axis=-1))
     bobloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 + ainput1 - bobout), axis=-1))
 
-    eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
-    bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+    eveloss_alice1 = K.mean(K.sum(K.abs(ainput1 - eveout_alice1), axis=-1))
+    bobloss_alice1 = K.mean(K.sum(K.abs(ainput1 - bobout_alice1), axis=-1))
+
+    eveloss_alice2 = K.mean(K.sum(K.abs(ainput2 - eveout_alice2), axis=-1))
+    bobloss_alice2 = K.mean(K.sum(K.abs(ainput2 - bobout_alice2), axis=-1))
+
+    eveloss_alice = (eveloss_alice1+eveloss_alice2)/2
+    bobloss_alice = (bobloss_alice1+bobloss_alice2)/2
+
+    eveloss = (eveloss_ho + eveloss_alice)/2
+    bobloss = (bobloss_ho + bobloss_alice)/2
 
     eveloss = (eveloss_ho + eveloss_alice)/2
     bobloss = (bobloss_ho + bobloss_alice)/2
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
-    abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+    # abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+    K = 8
+    abheloss = bobloss + (K-eveloss) * ((256 - 32 * eveloss + eveloss ** 2) / 256)
     abhemodel.add_loss(abheloss)
 
     # Set the Adam optimizer
