@@ -20,7 +20,7 @@ dropout_rate = 0
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-rate-{dropout_rate}"
+test_type = f"multiplication-addition-rate-{dropout_rate}-HO"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -57,7 +57,7 @@ HO_model.trainable = True
 X1_train, X2_train, y_train = generate_static_dataset(task_m, task_a, num_samples, batch_size, nonce_bits)
 X1_test, X2_test, y_test = generate_static_dataset(task_m, task_a, num_samples, batch_size, nonce_bits)
 
-HO_model.fit([X1_train, X2_train], y_train, batch_size=128, epochs=512,
+HO_model.fit([X1_train, X2_train], y_train, batch_size=256, epochs=1024,
     verbose=2, validation_data=([X1_test, X2_test], y_test))
 
 checkpoint = ModelCheckpoint(HO_weights_path, monitor='val_loss',
@@ -70,7 +70,7 @@ private_arr, public_arr = generate_key_pair(batch_size)
 X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, nonce_bits, task_m, task_a)
 X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, nonce_bits, task_m, task_a)
 
-HO_model.fit([X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=128, epochs=512,
+HO_model.fit([X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=256, epochs=1024,
     verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test, X2_cipher_test], y_cipher_test))
 
 # Save weights
