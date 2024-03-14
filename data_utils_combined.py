@@ -1,4 +1,5 @@
 import numpy as np
+from key.EllipticCurve import generate_key_pair, curve
 
 # Make index selection deterministic as well
 np.random.seed(0)
