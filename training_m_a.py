@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -15,18 +15,22 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 public_bits = get_key_shape()[1]  
 private_bits = get_key_shape()[0]
-dropout_rate = 0
+dropout_rate = 0.02
 
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-rate-{dropout_rate}-HO-new-loss"
+test_type = f"multiplication-addition-rate-{dropout_rate}-curve-{curve}"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
 evelosses = []
 boblosses = []
 abelosses = []
+
+best_abeloss = float('inf')
+best_epoch = 0
+patience_epochs = 5
 
 n_epochs = 50 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
@@ -143,6 +147,15 @@ while epoch < n_epochs:
                 epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg), end="")
             sys.stdout.flush()
 
+    epoch_abeloss = np.mean(abelosses0)
+    if epoch_abeloss < best_abeloss:
+        best_abeloss = epoch_abeloss
+        best_epoch = epoch
+        print(f"New best ABE loss {best_abeloss} at epoch {epoch}")
+    
+    if epoch - best_epoch > patience_epochs:
+        print(f"Early stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best ABE loss: {best_abeloss}")
+        break
     epoch += 1
 
 alice.save_weights(alice_weights_path)
