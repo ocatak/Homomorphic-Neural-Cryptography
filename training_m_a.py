@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -20,7 +20,7 @@ dropout_rate = 0
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-rate-{dropout_rate}-HO-loss-e2"
+test_type = f"multiplication-addition-rate-{dropout_rate}-HO-new-loss"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -32,7 +32,7 @@ n_epochs = 50 # number of training epochs
 batch_size = 512  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
-evecycles = 2  # number of times Eve network train per iteration, use 1 or 2.
+evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'multiplication-addition'
 task_m = lambda x, y: x * y
 task_a = lambda x, y: x + y

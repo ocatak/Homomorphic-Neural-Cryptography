@@ -158,8 +158,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bobout_alice1 = bob([aliceout1, binput1, anonce_input])
     eveout_alice1 = eve([aliceout1, ainput0, anonce_input])
 
-    bobout_alice2 = bob([aliceout1, binput1, anonce_input])
-    eveout_alice2 = eve([aliceout1, ainput0, anonce_input])
+    bobout_alice2 = bob([aliceout2, binput1, anonce_input])
+    eveout_alice2 = eve([aliceout2, ainput0, anonce_input])
 
     abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1],
                     bobout, name='abhemodel')
@@ -184,9 +184,9 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bobloss = (bobloss_ho + bobloss_alice)/2
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
-    # abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
-    K = 8
-    abheloss = bobloss + (K-eveloss) * ((256 - 32 * eveloss + eveloss ** 2) / 256)
+    abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+    # K = 8
+    # abheloss = bobloss + (K-eveloss) * ((256 - 32 * eveloss + eveloss ** 2) / 256)
     abhemodel.add_loss(abheloss)
 
     # Set the Adam optimizer
