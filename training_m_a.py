@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -15,12 +15,12 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 public_bits = get_key_shape()[1]  
 private_bits = get_key_shape()[0]
-dropout_rate = 0.02
+dropout_rate = 0.7
 
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-rate-{dropout_rate}-curve-{curve}"
+test_type = f"multiplication-addition-rate-{dropout_rate}-curve-{curve.name}-earlystopping"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
