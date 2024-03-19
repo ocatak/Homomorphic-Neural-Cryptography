@@ -4,7 +4,8 @@ from key.EllipticCurve import generate_key_pair, curve
 from data_utils_combined import generate_static_dataset, generate_cipher_dataset
 
 batch_size = 512
-test_type = f"multiplication-addition-rate-0"
+rate = 0.5
+test_type = f"multiplication-addition-rate-{rate}-curve-{curve.name}"
 print(f"Testing with {test_type}...")
 
 p1_batch = np.load("plaintext/p1_batch.npy")
@@ -12,7 +13,7 @@ p2_batch = np.load("plaintext/p2_batch.npy")
 public_arr = np.load(f"key/public_key-{curve.name}.npy")
 private_arr = np.load(f"key/private_key-{curve.name}.npy")
 
-alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], 0)
+alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
 
 HO_weights_path = f'weights/weights-{test_type}/multiplication-addition_weights.h5'
 alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
@@ -29,8 +30,6 @@ nonce = np.random.rand(batch_size, nonce_bits)
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
-np.save(f"ciphertext/{test_type}-1.npy", cipher1)
-
 print(f"Cipher2: {cipher2}")
 
 # HO adds the messages
