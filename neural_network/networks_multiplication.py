@@ -3,7 +3,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
-from nac import NAC
+from neural_network.nalu import NALU
 
 # Process plaintexts
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
@@ -75,8 +75,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     HO_reshape2 = Reshape((c2_bits, 1))(HOinput2)
 
     HOinput =  concatenate([HO_reshape1, HO_reshape2], axis=-1)
-    x = NAC(units)(HOinput)
-    x = NAC(1)(x)
+    x = NALU(units)(HOinput)
+    x = NALU(1)(x)
     x = Reshape((c3_bits,))(x)
 
     HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
@@ -103,11 +103,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
 
-    # Scale the output from [0, 1] to [0, 2] by multiplying by 2
-    boutput = Lambda(lambda x: x * 2)(bflattened)
-
     bob = Model(inputs=[binput0, binput1, bnonce_input],
-                outputs=boutput, name='bob')
+                outputs=bflattened, name='bob')
 
 
     # Eve network
@@ -134,9 +131,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
 
-    eoutput = Lambda(lambda x: x * 2)(eflattened)
-
-    eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
+    eve = Model([einput0, einput1, enonce_input], eflattened, name='eve')
 
     # Loss and optimizer
 
@@ -158,8 +153,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
                     bobout, name='abhemodel')
 
     # Loss functions
-    eveloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
-    bobloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
+    eveloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - eveout), axis=-1))
+    bobloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - bobout), axis=-1))
 
     eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
     bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))

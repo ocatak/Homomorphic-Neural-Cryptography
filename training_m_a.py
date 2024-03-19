@@ -7,9 +7,9 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from networks_combined import create_networks
+from neural_network.networks_combined import create_networks
 from key.EllipticCurve import generate_key_pair, get_key_shape, set_curve
-from data_utils_combined import generate_static_dataset, generate_cipher_dataset
+from data_utils.dataset_generator_combined import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
 from argparse import ArgumentParser
 

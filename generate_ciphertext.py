@@ -1,5 +1,5 @@
 import numpy as np
-from networks_functions import create_networks
+from neural_network.networks_functions import create_networks
 
 i = 5
 batch_size = 512

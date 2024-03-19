@@ -2,12 +2,12 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
-from nalu import NALU
-from nac import NAC
-from data_utils_combined import generate_static_dataset, generate_cipher_dataset
+from neural_network.nalu import NALU
+from neural_network.nac import NAC
+from data_utils.dataset_generator_combined import generate_static_dataset, generate_cipher_dataset
 import numpy as np
 from key.EllipticCurve import set_curve
-from networks_combined import create_networks
+from neural_network.networks_combined import create_networks
 
 curve = set_curve("secp256r1")
 

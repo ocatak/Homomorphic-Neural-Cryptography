@@ -1,4 +1,4 @@
-from networks_combined import create_networks
+from neural_network.networks_combined import create_networks
 import numpy as np
 from key.EllipticCurve import curve
 

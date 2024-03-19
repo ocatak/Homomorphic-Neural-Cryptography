@@ -1,6 +1,4 @@
 import numpy as np
-from key.EllipticCurve import set_curve
-from networks_combined import create_networks
 
 # Make index selection deterministic as well
 np.random.seed(0)
@@ -103,10 +101,3 @@ if __name__ == "__main__":
     print(x1)
     print(x2)
     print(y)
-
-    rate = 0.1
-    curve = set_curve("secp256k1")
-    public_arr = np.load(f"key/public_key-{curve.name}.npy")
-    private_arr = np.load(f"key/private_key-{curve.name}.npy")
-    alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
-    x1, x2, y = generate_cipher_dataset(16, 16, 512, public_arr, alice, nonce_bits, lambda x, y: x * y, lambda x, y: x + y)

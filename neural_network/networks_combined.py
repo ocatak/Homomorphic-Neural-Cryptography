@@ -3,7 +3,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
-from nalu import NALU
+from neural_network.nalu import NALU
+from neural_network.nac import NAC
 
 # Process plaintexts
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
@@ -75,11 +76,14 @@ def create_networks(public_bits, private_bits, dropout_rate):
     HO_reshape2 = Reshape((c2_bits, 1))(HOinput2)
 
     HOinput =  concatenate([HO_reshape1, HO_reshape2], axis=-1)
-    x = NALU(units)(HOinput)
-    x = NALU(1)(x)
-    x = Reshape((c3_bits,))(x)
+    nalu1 = NALU(units)(HOinput)
+    nalu2 = NALU(1)(nalu1)
+    nalu_combined = concatenate([nalu2, HO_reshape1])
+    nac1 = NAC(units)(nalu_combined)
+    nac2 = NAC(1)(nac1)
+    nac_reshaped = Reshape((c3_bits,))(nac2)
 
-    HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
+    HO_model = Model(inputs=[HOinput1, HOinput2], outputs=nac_reshaped)
 
     # Bob network
     binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
@@ -103,8 +107,11 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
 
+    # Scale the output from [0, 1] to [0, 2] by multiplying by 2
+    boutput = Lambda(lambda x: x * 2)(bflattened)
+
     bob = Model(inputs=[binput0, binput1, bnonce_input],
-                outputs=bflattened, name='bob')
+                outputs=boutput, name='bob')
 
 
     # Eve network
@@ -131,7 +138,9 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
 
-    eve = Model([einput0, einput1, enonce_input], eflattened, name='eve')
+    eoutput = Lambda(lambda x: x * 2)(eflattened)
+
+    eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
 
     # Loss and optimizer
 
@@ -146,24 +155,38 @@ def create_networks(public_bits, private_bits, dropout_rate):
     eveout = eve([HOout, ainput0, anonce_input])
 
     # Eve and Bob output from alice to decrypt p1/p2
-    bobout_alice = bob([aliceout1, binput1, anonce_input])
-    eveout_alice = eve([aliceout1, ainput0, anonce_input])
+    bobout_alice1 = bob([aliceout1, binput1, anonce_input])
+    eveout_alice1 = eve([aliceout1, ainput0, anonce_input])
+
+    bobout_alice2 = bob([aliceout2, binput1, anonce_input])
+    eveout_alice2 = eve([aliceout2, ainput0, anonce_input])
 
     abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1],
                     bobout, name='abhemodel')
 
     # Loss functions
-    eveloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - eveout), axis=-1))
-    bobloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 - bobout), axis=-1))
+    eveloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 + ainput1 - eveout), axis=-1))
+    bobloss_ho = K.mean(K.sum(K.abs(ainput1 * ainput2 + ainput1 - bobout), axis=-1))
 
-    eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
-    bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+    eveloss_alice1 = K.mean(K.sum(K.abs(ainput1 - eveout_alice1), axis=-1))
+    bobloss_alice1 = K.mean(K.sum(K.abs(ainput1 - bobout_alice1), axis=-1))
+
+    eveloss_alice2 = K.mean(K.sum(K.abs(ainput2 - eveout_alice2), axis=-1))
+    bobloss_alice2 = K.mean(K.sum(K.abs(ainput2 - bobout_alice2), axis=-1))
+
+    eveloss_alice = (eveloss_alice1+eveloss_alice2)/2
+    bobloss_alice = (bobloss_alice1+bobloss_alice2)/2
+
+    eveloss = (eveloss_ho + eveloss_alice)/2
+    bobloss = (bobloss_ho + bobloss_alice)/2
 
     eveloss = (eveloss_ho + eveloss_alice)/2
     bobloss = (bobloss_ho + bobloss_alice)/2
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
+    # K = 8
+    # abheloss = bobloss + (K-eveloss) * ((256 - 32 * eveloss + eveloss ** 2) / 256)
     abhemodel.add_loss(abheloss)
 
     # Set the Adam optimizer

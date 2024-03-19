@@ -1,7 +1,7 @@
 import os
 import numpy as np
-from networks_functions import create_networks
-from calculations.randomness import plot_evaluation_scores, randomness
+from neural_network.networks_functions import create_networks
+from data_utils.analyse_cipher import plot_std, probabilistic_encryption_analysis
 
 batch_size = 512
 nonce_bits = 64
@@ -42,10 +42,10 @@ for curve in curves:
         results[curve][rate]['p1+p2'] = decryption_accurancy(cipher3, private_arr, nonce, p1_batch+p2_batch)
         results[curve][rate]['p1'] = decryption_accurancy(cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(cipher2, private_arr, nonce, p2_batch)
-        results[curve][rate]['std'] = randomness(rate, curve)
+        results[curve][rate]['std'] = probabilistic_encryption_analysis(rate, curve)
         results[curve]['std'].append(results[curve][rate]['std'])
 
-plot_evaluation_scores(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
+plot_std(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
 
 for curve in results:
     print(curve)
