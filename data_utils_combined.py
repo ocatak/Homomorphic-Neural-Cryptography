@@ -1,5 +1,6 @@
 import numpy as np
-from key.EllipticCurve import generate_key_pair, curve
+from key.EllipticCurve import curve
+from networks_combined import create_networks
 
 # Make index selection deterministic as well
 np.random.seed(0)
@@ -10,28 +11,29 @@ static_index = np.arange(0, 2, dtype=np.int64)
 np.random.shuffle(static_index)
 
 # Generates a static dataset based on an operation function 
-def generate_static_dataset(op_m, op_a, num_samples=572, batch_size=5,seed=0):
+def generate_static_dataset(op1, op2, num_samples=572, batch_size=5, seed=0):
     """
     Generates a dataset given an operation.
     Used to generate the synthetic static dataset.
 
     # Arguments:
-        op_fn: A function which accepts 2 numpy arrays as arguments
+        op1: A function which accepts 2 numpy arrays as arguments
+            and returns a single numpy array as the result.
+        op2: A function which accepts 2 numpy arrays as arguments
             and returns a single numpy array as the result.
         num_samples: Number of samples for the dataset.
-        batch_size:
-        seed: random seed
+        batch_size: Number of samples in the dataset.
+        seed: Random seed for reproducibility.
 
-    Returns:
+    Returns: Dataset x1, x2, y, where y is the result of op1 and op2 on x1 and x2
 
     """
-    assert callable(op_m)
-    assert callable(op_a)
+    assert callable(op1)
+    assert callable(op2)
 
 
     np.random.seed(seed)  # make deterministic
 
-    print("Generating dataset")
 
     X1_dataset = []
     X2_dataset = []
@@ -44,9 +46,9 @@ def generate_static_dataset(op_m, op_a, num_samples=572, batch_size=5,seed=0):
 
         a=X[0]
         b=X[1]
-        
-        c = op_m(a, b)
-        Y = op_a(a, c)
+
+        c = op1(a, b)
+        Y = op2(a, c)
 
         X1_dataset.append(a)
         X2_dataset.append(b)
@@ -55,25 +57,55 @@ def generate_static_dataset(op_m, op_a, num_samples=572, batch_size=5,seed=0):
     return  np.array(X1_dataset), np.array(X2_dataset), np.array(y_dataset)
 
 
-def generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, nonce_bits, task_m, task_a):
+def generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, nonce_bits, op1, op2):
+    """
+    Generates two datasets given two operations.
+    Used to generate datasets in ciphertext.
+
+    # Arguments:
+        p1_bits: Number of bits in plaintext 1.
+        p2_bits: Number of bits in plaintext 2.
+        batch_size: Number of samples in the dataset.
+        public_arr: Public key array.
+        alice: Alice model.
+        nonce_bits: Number of bits in nonce.
+        op1: A function which accepts 2 numpy arrays as arguments and returns a single numpy array as the result.
+                First operation performed on the ciphertext.
+        op2: A function which accepts 2 numpy arrays as arguments and returns a single numpy array as the result.
+                Second operation performed on the ciphertext.
+       
+    Returns: Dataset x1, x2, y, where y is the result of op1 and op2 on x1 and x2
+
+    """
     nonce = np.random.rand(batch_size, nonce_bits)
     p1_batch = np.random.randint(0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
     p2_batch = np.random.randint(0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
     cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 
+    # Alice weights are at initialization, so dropout layer will give 0.5
+    # Replace 0.5 with 0 to make HO model train on accurate data
+    cipher1[cipher1 == 0.5] = 0
+    cipher2[cipher2 == 0.5] = 0
+
     cipher3 = []
-    assert callable(task_m)
-    assert callable(task_a)
+    assert callable(op1)
+    assert callable(op2)
     for i in range(len(cipher1)):
-        cipher_m = task_m(cipher1[i], cipher2[i])
-        Y = task_a(cipher1[i], cipher_m)
+        cipher_m = op1(cipher1[i], cipher2[i])
+        Y = op2(cipher1[i], cipher_m)
         cipher3.append(Y)
 
     cipher3 = np.array(cipher3)
     return cipher1, cipher2, cipher3
 
 if __name__ == "__main__":
-    x1, x2, y = generate_static_dataset(lambda x, y: x * y, lambda x, y: x + y, 2)
+    x1, x2, y = generate_static_dataset(lambda x, y: x * y, lambda x, y: x + y, 512, 512)
     print(x1)
     print(x2)
     print(y)
+
+    rate = 0.1
+    public_arr = np.load(f"key/public_key-{curve.name}.npy")
+    private_arr = np.load(f"key/private_key-{curve.name}.npy")
+    alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
+    x1, x2, y = generate_cipher_dataset(16, 16, 512, public_arr, alice, nonce_bits, lambda x, y: x * y, lambda x, y: x + y)
