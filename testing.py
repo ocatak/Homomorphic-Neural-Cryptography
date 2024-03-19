@@ -1,6 +1,6 @@
-from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits, dropout_rate
+from networks import HO_model, alice, bob, eve, nonce_bits, dropout_rate
 import numpy as np
-from key.EllipticCurve import generate_key_pair, curve
+from key.EllipticCurve import curve
 
 batch_size = 512
 test_type = f"rate-{dropout_rate}-curve-{curve.name}"

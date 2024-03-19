@@ -2,7 +2,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
-from key.EllipticCurve import get_key_shape
+from key.EllipticCurve import get_key_shape, set_curve
 from nac import NAC
 
 # Process plaintexts
@@ -188,7 +188,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
 
 if __name__ == "__main__":
     # Public and private key, changed to fit the key generated in EllipticCurve.py
-    public_bits = get_key_shape()[1]  
-    private_bits = get_key_shape()[0]
+    curve = set_curve("secp256r1")
+    public_bits = get_key_shape(curve)[1]  
+    private_bits = get_key_shape(curve)[0]
     dropout_rate = 0.6
     create_networks(public_bits, private_bits, dropout_rate) 

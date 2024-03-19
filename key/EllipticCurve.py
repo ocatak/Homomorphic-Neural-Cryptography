@@ -4,14 +4,28 @@ from cryptography.hazmat.primitives.asymmetric import ec
 import numpy as np
 
 # Set the elliptic curve
-curve = ec.SECP224R1() #secp224r1
+# curve = ec.SECP224R1() #secp224r1
 # curve = ec.SECP256K1() # secp256k1
 # curve = ec.SECP256R1() #secp256r1
 # curve = ec.SECP384R1() #secp384r1
 # curve = ec.SECP521R1() #secp521r1
 
+def set_curve(curve_name):
+    if curve_name == "secp224r1":
+        return ec.SECP224R1()
+    elif curve_name == "secp256k1":
+        return ec.SECP256K1()
+    elif curve_name == "secp256r1":
+        return ec.SECP256R1()
+    elif curve_name == "secp384r1":
+        return ec.SECP384R1()
+    elif curve_name == "secp521r1":
+        return ec.SECP521R1()
+    else:
+        raise ValueError("Invalid curve name")
+
 # Get the public key and private key shape in bits
-def get_key_shape():
+def get_key_shape(curve):
     private_key = ec.generate_private_key(
             curve, default_backend())
     public_key = private_key.public_key()
@@ -19,8 +33,8 @@ def get_key_shape():
     return len(pr),len(pu)
 
 
-def generate_key_pair(batch_size):
-    size = get_key_shape()
+def generate_key_pair(batch_size, curve):
+    size = get_key_shape(curve)
     pr_arr = np.empty((batch_size, size[0]))
     pu_arr = np.empty((batch_size, size[1]))
     for i in range(batch_size):
@@ -53,6 +67,7 @@ def convert_key_to_bit(pem):
     return arr
 
 if __name__ == "__main__":
-    private_key, public_key = generate_key_pair(512)
+    curve = set_curve("secp256k1")
+    private_key, public_key = generate_key_pair(512, curve)
     np.save(f"key/private_key-{curve.name}.npy", private_key)
     np.save(f"key/public_key-{curve.name}.npy", public_key)

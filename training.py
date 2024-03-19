@@ -9,13 +9,23 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from networks_multiplication import create_networks
-from key.EllipticCurve import generate_key_pair, curve, get_key_shape
+from key.EllipticCurve import generate_key_pair, set_curve, get_key_shape
 from data_utils import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
+from argparse import ArgumentParser
 
-public_bits = get_key_shape()[1]  
-private_bits = get_key_shape()[0]
-dropout_rate = 0
+parser = ArgumentParser()
+parser.add_argument('-rate', type=float, default=0, help='Dropout rate')
+parser.add_argument('-epoch', type=int, default=50, help='Number of epochs')
+parser.add_argument('-batch', type=int, default=512, help='Batch size')
+parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
+args = parser.parse_args()
+
+curve = set_curve(args.curve)
+
+public_bits = get_key_shape(curve)[1]  
+private_bits = get_key_shape(curve)[0]
+dropout_rate = args.rate
 
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
@@ -28,8 +38,8 @@ evelosses = []
 boblosses = []
 abelosses = []
 
-n_epochs = 50 # number of training epochs
-batch_size = 512  # number of training examples utilized in one iteration
+n_epochs = args.epoch # number of training epochs
+batch_size = args.batch  # number of training examples utilized in one iteration
 n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
@@ -65,7 +75,7 @@ checkpoint = ModelCheckpoint(HO_weights_path, monitor='val_loss',
 
 callbacks = [checkpoint]
 
-private_arr, public_arr = generate_key_pair(batch_size)
+private_arr, public_arr = generate_key_pair(batch_size, curve)
 # Train HO model with Alice to do addition on encrypted data
 X1_cipher_train, X2_cipher_train, y_cipher_train = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn, nonce_bits)
 X1_cipher_test, X2_cipher_test, y_cipher_test = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_fn, nonce_bits)
@@ -91,7 +101,7 @@ while epoch < n_epochs:
             p2_batch = np.random.randint(
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
 
-            private_arr, public_arr = generate_key_pair(batch_size)
+            private_arr, public_arr = generate_key_pair(batch_size, curve)
 
             nonce = np.random.rand(batch_size, nonce_bits)
 
@@ -125,7 +135,7 @@ while epoch < n_epochs:
                 0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
             p2_batch = np.random.randint(
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
-            _, public_arr = generate_key_pair(batch_size)
+            _, public_arr = generate_key_pair(batch_size, curve)
             nonce = np.random.rand(batch_size, nonce_bits)
 
             loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce], None)
@@ -189,7 +199,7 @@ with open(f'results/results-{test_type}.txt', "a") as f:
         0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
     p2_batch = np.random.randint(
         0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
-    private_arr, public_arr = generate_key_pair(batch_size)
+    private_arr, public_arr = generate_key_pair(batch_size, curve)
 
     nonce = np.random.rand(batch_size, nonce_bits)
 

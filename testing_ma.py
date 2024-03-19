@@ -1,7 +1,6 @@
 from networks_combined import create_networks
 import numpy as np
-from key.EllipticCurve import generate_key_pair, curve
-from data_utils_combined import generate_static_dataset, generate_cipher_dataset
+from key.EllipticCurve import curve
 
 batch_size = 512
 rate = 0.5
@@ -150,17 +149,3 @@ print(f"Total number of bits P2: {total_bits_p2_eve}")
 print(f"Decryption accuracy P2: {accuracy_p2_eve}%")
 # print(f"Eve decrypted P1: {decrypted_c2_eve}")
 # print(f"Eve decrypted bits P1: {decrypted_bits_c2_eve}")
-
-x1, x2, y = generate_cipher_dataset(p1_batch.shape[1], p2_batch.shape[1], batch_size, public_arr, alice, nonce_bits, lambda x, y: x * y, lambda x, y: x + y)
-print("y")
-print(y)
-cipher3 = HO_model.predict([x1, x2])
-tolerance = 1e-4
-correct_elements = np.sum(np.abs(y - cipher3) <= tolerance)
-total_elements = np.prod(cipher3.shape)
-accuracy_percentage = (correct_elements / total_elements) * 100
-print("HO model addition")
-print(f"HO model correct: {correct_elements}")
-print(f"Total Elements: {total_elements}")
-print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
-print(f"Cipher3: {cipher3}")
