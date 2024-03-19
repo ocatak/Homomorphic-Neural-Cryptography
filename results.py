@@ -22,7 +22,8 @@ def decryption_accurancy(cipher, private_arr, nonce, p_batch):
 results = {}
 for curve in curves:
     results[curve] = {}
-    results[curve]['std'] = []
+    results[curve]['std_std'] = []
+    results[curve]['mean_std'] = []
     public_arr = np.load(f"key/public_key-{curve}.npy")
     private_arr = np.load(f"key/private_key-{curve}.npy")
     nonce = np.random.rand(batch_size, nonce_bits)
@@ -42,10 +43,11 @@ for curve in curves:
         results[curve][rate]['p1+p2'] = decryption_accurancy(cipher3, private_arr, nonce, p1_batch+p2_batch)
         results[curve][rate]['p1'] = decryption_accurancy(cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(cipher2, private_arr, nonce, p2_batch)
-        results[curve][rate]['std'] = probabilistic_encryption_analysis(rate, curve)
-        results[curve]['std'].append(results[curve][rate]['std'])
-
-plot_std(dropout_rates, results['secp224r1']['std'], results['secp256k1']['std'], results['secp256r1']['std'], results['secp384r1']['std'], results['secp521r1']['std'])
+        results[curve][rate]['mean_std'], results[curve][rate]['std_std'] = probabilistic_encryption_analysis(rate, curve)
+        results[curve]['std_std'].append(results[curve][rate]['std_std'])
+        results[curve]['mean_std'].append(results[curve][rate]['mean_std'])
+    
+plot_std(dropout_rates, results['secp224r1'], results['secp256k1'], results['secp256r1'], results['secp384r1'], results['secp521r1'])
 
 for curve in results:
     print(curve)
