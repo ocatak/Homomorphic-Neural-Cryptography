@@ -1,8 +1,16 @@
 from neural_network.networks_functions import create_networks
 import numpy as np
-from key.EllipticCurve import curve
+from key.EllipticCurve import set_curve
+from argparse import ArgumentParser
 
-dropout_rate = 0.5
+parser = ArgumentParser()
+parser.add_argument('-rate', type=float, default=0.5, help='Dropout rate')
+parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
+args = parser.parse_args()
+
+curve = set_curve(args.curve)
+
+dropout_rate = args.rate
 
 p1_batch = np.load("plaintext/p1_batch.npy")
 p2_batch = np.load("plaintext/p2_batch.npy")
@@ -30,6 +38,7 @@ nonce = np.random.rand(batch_size, nonce_bits)
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
+exit()
 np.save(f"ciphertext/{test_type}-1.npy", cipher1)
 
 print(f"Cipher2: {cipher2}")

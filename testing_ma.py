@@ -1,9 +1,18 @@
 from neural_network.networks_combined import create_networks
 import numpy as np
-from key.EllipticCurve import curve
+from key.EllipticCurve import set_curve
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-rate', type=float, default=0.5, help='Dropout rate')
+parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
+args = parser.parse_args()
+
+curve = set_curve(args.curve)
+
+rate = args.rate
 
 batch_size = 512
-rate = 0.5
 test_type = f"multiplication-addition-rate-{rate}-curve-{curve.name}"
 print(f"Testing with {test_type}...")
 
