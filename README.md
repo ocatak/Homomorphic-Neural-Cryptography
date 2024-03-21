@@ -8,13 +8,21 @@ The system consist of four neural network, Alice, Bob, Eve and a Homomorphic Ope
 ## Folder structure
 
     .
-    |–– ciphertext                    
-    |–– data_utils                  
+    |–– ciphertext
+        |–– generate_ciphertext.py
+    |–– data_utils
+        |–– analyse_cipher.py
+        |–– average_loss.py
+        |–– dataset_generator.py
+        |–– plot_between.py
     |–– dataset
     |–– figures
     |–– key
     |–– neural_network
+        |–– nalu.py
+        |–– networks.py
     |–– plaintext
+        |–– generate_plaintext.py
     |–– weights
     |–– requirements.txt
     |–– results.py
