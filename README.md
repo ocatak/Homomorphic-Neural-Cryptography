@@ -2,6 +2,14 @@
 
 This project builds an asymmetric neural network system with homomorphic operations. It is build on the project [Neural Cryptography](https://github.com/minawoien/Neural-Cryptography) and [Keras Neural Arithmatic and Logical Unit (NALU)](https://github.com/titu1994/keras-neural-alu/tree/master). 
 
+## Table of Contents
+  - [Table of Contents](#table-of-contents)
+  - [System](#system)
+  - [Folder structure](#folder-structure)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Usage](#usage)
+
 ## System
 The system consist of four neural network, Alice, Bob, Eve and a Homomorphic Operation (HO) network. An elliptic curve key pair is generated and Alice will use the public key to decrypt two plaintexts. The HO network will do either addition or multiplication on the two ciphertexts. Bob will decrypt the ciphertext produced by the HO network using the private key, while Eve will attempt to decrypt the ciphertext without the private key. In addition Bob will be able to decrypt ciphertexts directly from Alice, while Eve is not.
 
@@ -34,11 +42,17 @@ The system consist of four neural network, Alice, Bob, Eve and a Homomorphic Ope
 Require `python` and `pip`
 
 ## Installation
-```
-pip install -r requirements.txt
+1. Clone the repository:
+```bash
+    git clone https://github.com/minawoien/master-thesis.git
 ```
 
-## Run the program
+2. Install dependencies:
+```bash
+    pip install -r requirements.txt
+ ```
+
+## Usage
 Train the neural network and select preferable parameters using optional arguments:
   ```
   -h, --help    show this help message and exit
@@ -48,6 +62,6 @@ Train the neural network and select preferable parameters using optional argumen
   -curve CURVE  Elliptic curve name
   ```
 
-```
-python training.py
+```bash
+    python training.py
 ```
