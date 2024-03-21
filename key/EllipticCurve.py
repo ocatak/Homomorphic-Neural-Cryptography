@@ -67,7 +67,7 @@ def convert_key_to_bit(pem):
     return arr
 
 if __name__ == "__main__":
-    curve = set_curve("secp256k1")
-    private_key, public_key = generate_key_pair(512, curve)
-    np.save(f"key/private_key-{curve.name}.npy", private_key)
-    np.save(f"key/public_key-{curve.name}.npy", public_key)
+    curve = set_curve("secp224r1")
+    private_key, public_key = generate_key_pair(1, curve)
+    np.save(f"key/private_key-{curve.name}-one.npy", private_key)
+    np.save(f"key/public_key-{curve.name}-one.npy", public_key)
