@@ -2,6 +2,8 @@ import os
 import numpy as np
 from neural_network.networks_functions import create_networks
 from data_utils.analyse_cipher import plot_std, probabilistic_encryption_analysis
+from tensorflow.keras.models import Model
+
 
 batch_size = 512
 nonce_bits = 64
@@ -11,7 +13,19 @@ curves = ["secp224r1", "secp256k1", "secp256r1", "secp384r1", "secp521r1"]
 p1_batch = np.load("plaintext/p1_batch.npy")
 p2_batch = np.load("plaintext/p2_batch.npy")
 
-def decryption_accurancy(cipher, private_arr, nonce, p_batch):
+def decryption_accurancy(bob: Model, cipher: np.ndarray, private_arr: np.ndarray, nonce: int, p_batch: np.ndarray) -> float:
+    """Calculates the decryption accuracy of Bob.
+    
+    Args:
+        bob: Bob model.
+        cipher: Ciphertext.
+        private_arr: Private key array.
+        nonce: Nonce.
+        p_batch: Plaintext batch.
+
+    Returns:
+        The decryption accuracy of Bob.
+    """
     # Calculate Bob's decryption accuracy
     decrypted = bob.predict([cipher, private_arr, nonce])
     decrypted_bits = np.round(decrypted).astype(int)
@@ -40,14 +54,15 @@ for curve in curves:
         eve.load_weights(f'{weights_path}/eve_weights.h5')
         cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
         cipher3 = HO_model.predict([cipher1, cipher2])
-        results[curve][rate]['p1+p2'] = decryption_accurancy(cipher3, private_arr, nonce, p1_batch+p2_batch)
-        results[curve][rate]['p1'] = decryption_accurancy(cipher1, private_arr, nonce, p1_batch)
-        results[curve][rate]['p2'] = decryption_accurancy(cipher2, private_arr, nonce, p2_batch)
+        results[curve][rate]['p1+p2'] = decryption_accurancy(bob, cipher3, private_arr, nonce, p1_batch+p2_batch)
+        results[curve][rate]['p1'] = decryption_accurancy(bob, cipher1, private_arr, nonce, p1_batch)
+        results[curve][rate]['p2'] = decryption_accurancy(bob, cipher2, private_arr, nonce, p2_batch)
         results[curve][rate]['mean_std'], results[curve][rate]['std_std'] = probabilistic_encryption_analysis(rate, curve)
         results[curve]['std_std'].append(results[curve][rate]['std_std'])
         results[curve]['mean_std'].append(results[curve][rate]['mean_std'])
-    
-plot_std(dropout_rates, results['secp224r1'], results['secp256k1'], results['secp256r1'], results['secp384r1'], results['secp521r1'])
+
+plot_std(dropout_rates, (results['secp224r1']['std_std'], results['secp224r1']['mean_std']), (results['secp256k1']['std_std'], results['secp256k1']['mean_std']), (results['secp256r1']['std_std'], results['secp256r1']['mean_std']), (results['secp384r1']['std_std'], results['secp384r1']['mean_std']), (results['secp521r1']['std_std'], results['secp521r1']['mean_std']))
+
 
 for curve in results:
     print(curve)
