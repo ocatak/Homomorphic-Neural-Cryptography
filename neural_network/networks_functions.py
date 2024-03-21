@@ -3,7 +3,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
-from neural_network.nac import NAC
+from neural_network.nalu import NALU
 
 # Process plaintexts
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
@@ -68,18 +68,20 @@ def create_networks(public_bits, private_bits, dropout_rate):
 
     # Generate the HO_model network with an input layer and two NAC layers
     units = 2
+    HOinput0 = Input(shape=(c3_bits))  # multiplication or addition
     HOinput1 = Input(shape=(c1_bits))  # ciphertext 1
     HOinput2 = Input(shape=(c2_bits))  # ciphertext 2
 
+    HO_reshape0 = Reshape((c3_bits, 1))(HOinput0)
     HO_reshape1 = Reshape((c1_bits, 1))(HOinput1)
     HO_reshape2 = Reshape((c2_bits, 1))(HOinput2)
 
-    HOinput =  concatenate([HO_reshape1, HO_reshape2], axis=-1)
-    x = NAC(units)(HOinput)
-    x = NAC(1)(x)
+    HOinput =  concatenate([HO_reshape0, HO_reshape1, HO_reshape2], axis=-1)
+    x = NALU(units, use_gating=True)(HOinput)
+    x = NALU(1, use_gating=True)(x)
     x = Reshape((c3_bits,))(x)
 
-    HO_model = Model(inputs=[HOinput1, HOinput2], outputs=x)
+    HO_model = Model(inputs=[HOinput0, HOinput1, HOinput2], outputs=x)
 
     # Bob network
     binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
@@ -144,28 +146,31 @@ def create_networks(public_bits, private_bits, dropout_rate):
     aliceout1, aliceout2 = alice([ainput0, ainput1, ainput2, anonce_input])
 
     # HO_model get one output from Alice's two output
-    HOout = HO_model([aliceout1, aliceout2])
+    HOout = HO_model([HOinput0, aliceout1, aliceout2])
 
     # Eve and bob get one output from HO_model output with the size of p1+p2
     bobout = bob([HOout, binput1, anonce_input]) 
     eveout = eve([HOout, ainput0, anonce_input])
 
     # Eve and Bob output from alice to decrypt p1/p2
-    bobout_alice = bob([aliceout1, binput1, anonce_input])
-    eveout_alice = eve([aliceout1, ainput0, anonce_input])
+    # bobout_alice = bob([aliceout1, binput1, anonce_input])
+    # eveout_alice = eve([aliceout1, ainput0, anonce_input])
 
-    abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1],
+    abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1, HOinput0],
                     bobout, name='abhemodel')
 
     # Loss functions
-    eveloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
-    bobloss_ho = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
+    eveloss_addition = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout), axis=-1))
+    bobloss_addition = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout), axis=-1))
 
-    eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
-    bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+    eveloss_multiplication = K.mean(K.sum(K.abs(ainput1 * ainput2 - eveout), axis=-1))
+    bobloss_multiplication = K.mean(K.sum(K.abs(ainput1 * ainput2 - bobout), axis=-1))
 
-    eveloss = (eveloss_ho + eveloss_alice)/2
-    bobloss = (bobloss_ho + bobloss_alice)/2
+    # eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
+    # bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+
+    eveloss = (eveloss_addition + eveloss_multiplication)/2
+    bobloss = (bobloss_addition + bobloss_multiplication)/2
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
@@ -174,13 +179,13 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Set the Adam optimizer
     beoptim = Adam(learning_rate=learning_rate)
     eveoptim = Adam(learning_rate=learning_rate)
-    optimizer = RMSprop(0.1)
+    optimizer = Adam(0.1)
     HO_model.compile(optimizer, 'mse')
     abhemodel.compile(optimizer=beoptim)
 
     # Build and compile the Eve model, used for training Eve net (with Alice frozen)
     alice.trainable = False
-    evemodel = Model([ainput0, ainput1, ainput2, anonce_input], eveout, name='evemodel')
+    evemodel = Model([ainput0, ainput1, ainput2, anonce_input, HOinput0], eveout, name='evemodel')
     evemodel.add_loss(eveloss)
     evemodel.compile(optimizer=eveoptim)
 

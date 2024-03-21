@@ -9,7 +9,7 @@ static_index = np.arange(0, 2, dtype=np.int64)
 np.random.shuffle(static_index)
 
 # Generates a static dataset based on an operation function 
-def generate_static_dataset(op_fn, num_samples=572, batch_size=5,seed=0):
+def generate_static_dataset(op_fn, num_samples=572, batch_size=5, seed=0):
     """
     Generates a dataset given an operation.
     Used to generate the synthetic static dataset.
@@ -67,11 +67,6 @@ def generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, tas
     return cipher1, cipher2, cipher3
 
 if __name__ == "__main__":
-    x1, x2, y = generate_static_dataset(lambda x, y: x + y, 2)
-    print(x1)
-    print(x2)
-    print(y)
-    x1, x2, y = generate_static_dataset(lambda x, y: x * y, 2)
-    print(x1)
-    print(x2)
-    print(y)
+    x1, x2, y = generate_static_dataset(lambda x, y: x + y, 16, 512)
+    print(x1.shape)
+    print(x1.shape[1])
