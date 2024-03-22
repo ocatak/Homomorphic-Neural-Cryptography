@@ -4,9 +4,26 @@ from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, conc
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
 from neural_network.nalu import NALU
+from tensorflow.keras.models import Model
+from typing import Tuple
 
-# Process plaintexts
+
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
+    """Alice network to process plaintexts.
+
+    Args:
+        ainput0: Public key input.
+        ainput1: Plaintext input.
+        anonce_input: Nonce input.
+        p_bits: Number of bits in the plaintext.
+        public_bits: Number of bits in the public key.
+        nonce_bits: Number of bits in the nonce.
+        dropout_rate: Dropout rate.
+        pad: Padding type.
+    
+    Returns:
+        The output of the Alice network.
+    """
     ainput = concatenate([ainput0, ainput1, anonce_input], axis=1)
 
     adense1 = Dense(units=(p_bits + public_bits + nonce_bits), activation='tanh')(ainput)
@@ -29,34 +46,37 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
 
     return Flatten()(aconv4)
 
-# Alice network
-def create_networks(public_bits, private_bits, dropout_rate):
-    learning_rate = 0.0001
 
-    # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
-    # Plaintext 1 and 2
+def create_networks(public_bits: int, private_bits: int, dropout_rate: float
+) -> Tuple[Model, Model, Model, Model, Model, int, int, Model, int, float, int, int]:
+    """Creates the Alice, Bob, HO and Eve networks.
+    
+    Args:
+        public_bits: Number of bits in the public key.
+        private_bits: Number of bits in the private key.
+        dropout_rate: Dropout rate.
+    """
+    learning_rate = 0.0001
+    
+    nonce_bits = 64
+
     p1_bits = 16
     p2_bits = 16
 
-    # nonce bits
-    nonce_bits = 64
-
-    # Ciphertext 1 and 2
     c1_bits = (p1_bits+public_bits+nonce_bits)//2 
     c2_bits = (p2_bits+public_bits+nonce_bits)//2 
-
     c3_bits = (c1_bits+c2_bits)//2
 
     pad = 'same'
 
     # Size of the message space
-    m_train = 2**((p1_bits+p2_bits)//2) # mabye add p2_bits
+    m_train = 2**((p1_bits+p2_bits)//2)
 
     # Define Alice inputs
-    ainput0 = Input(shape=(public_bits,))  # public key
-    ainput1 = Input(shape=(p1_bits))  # plaintext 1
-    ainput2 = Input(shape=(p2_bits))  # plaintext 2
-    anonce_input = Input(shape=(nonce_bits))  # nonce
+    ainput0 = Input(shape=(public_bits,))       # public key
+    ainput1 = Input(shape=(p1_bits))            # plaintext 1
+    ainput2 = Input(shape=(p2_bits))            # plaintext 2
+    anonce_input = Input(shape=(nonce_bits))    # nonce
 
     aoutput_first = process_plaintext(ainput0, ainput1, anonce_input, p1_bits, public_bits, nonce_bits, dropout_rate, pad)
     aoutput_second = process_plaintext(ainput0, ainput2, anonce_input, p2_bits, public_bits, nonce_bits, dropout_rate, pad)
@@ -65,8 +85,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
                 outputs=[aoutput_first, aoutput_second], name='alice')
 
 
-
-    # Generate the HO_model network with an input layer and two NAC layers
+    # Generate the HO_model network
     units = 2
     HOinput0 = Input(shape=(c3_bits))  # multiplication or addition
     HOinput1 = Input(shape=(c1_bits))  # ciphertext 1
@@ -83,10 +102,11 @@ def create_networks(public_bits, private_bits, dropout_rate):
 
     HO_model = Model(inputs=[HOinput0, HOinput1, HOinput2], outputs=x)
 
+
     # Bob network
-    binput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
-    binput1 = Input(shape=(private_bits,))  # private key
-    bnonce_input = Input(shape=(nonce_bits))  # nonce
+    binput0 = Input(shape=(c3_bits,))           # ciphertext
+    binput1 = Input(shape=(private_bits,))      # private key
+    bnonce_input = Input(shape=(nonce_bits))    # nonce
 
     binput = concatenate([binput0, binput1, bnonce_input], axis=1)
 
@@ -102,7 +122,6 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                     padding=pad, activation='hard_sigmoid')(bconv3)
 
-    # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
 
     # Scale the output from [0, 1] to [0, 2] by multiplying by 2
@@ -113,10 +132,9 @@ def create_networks(public_bits, private_bits, dropout_rate):
 
 
     # Eve network
-    einput0 = Input(shape=(c3_bits,))  # Input will be of shape c3
-    einput1 = Input(shape=(public_bits, )) # public key
-    enonce_input = Input(shape=(nonce_bits))  # nonce
-
+    einput0 = Input(shape=(c3_bits,))           # ciphertext
+    einput1 = Input(shape=(public_bits, ))      # public key
+    enonce_input = Input(shape=(nonce_bits))    # nonce
 
     einput = concatenate([einput0, einput1, enonce_input], axis=1)
 
@@ -133,20 +151,18 @@ def create_networks(public_bits, private_bits, dropout_rate):
     econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
                     padding=pad, activation='hard_sigmoid')(econv3)
 
-    # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
 
     eoutput = Lambda(lambda x: x * 2)(eflattened)
 
     eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
 
+
     # Loss and optimizer
 
-    # Alice gets two outputs from 3 inputs
-    aliceout1, aliceout2 = alice([ainput0, ainput1, ainput2, anonce_input])
+    aliceout1, aliceout2 = alice([ainput0, ainput1, ainput2, anonce_input]) # Alice gets two outputs from 3 inputs
 
-    # HO_model get one output from Alice's two output
-    HOout = HO_model([HOinput0, aliceout1, aliceout2])
+    HOout = HO_model([HOinput0, aliceout1, aliceout2])  # HO_model get one output from Alice's two output
 
     # Eve and bob get one output from HO_model output with the size of p1+p2
     bobout = bob([HOout, binput1, anonce_input]) 
@@ -180,16 +196,17 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
 
 
+
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
     abhemodel.add_loss(abheloss)
 
-    # Set the Adam optimizer
     beoptim = Adam(learning_rate=learning_rate)
     eveoptim = Adam(learning_rate=learning_rate)
     optimizer = Adam(0.1)
     HO_model.compile(optimizer, 'mse')
     abhemodel.compile(optimizer=beoptim)
+
 
     # Build and compile the Eve model, used for training Eve net (with Alice frozen)
     alice.trainable = False
@@ -200,7 +217,6 @@ def create_networks(public_bits, private_bits, dropout_rate):
     return alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits
 
 if __name__ == "__main__":
-    # Public and private key, changed to fit the key generated in EllipticCurve.py
     curve = set_curve("secp256r1")
     public_bits = get_key_shape(curve)[1]  
     private_bits = get_key_shape(curve)[0]
