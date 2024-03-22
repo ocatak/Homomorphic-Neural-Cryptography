@@ -169,8 +169,16 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
     # bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
 
-    eveloss = (eveloss_addition + eveloss_multiplication)/2
-    bobloss = (bobloss_addition + bobloss_multiplication)/2
+    # eveloss = (eveloss_addition + eveloss_multiplication)/2
+    # bobloss = (bobloss_addition + bobloss_multiplication)/2
+
+    # Initial weights based on assumption that multiplication is harder
+    weight_addition = 1.2
+    weight_multiplication = 0.8
+
+    eveloss = (weight_addition * eveloss_addition + weight_multiplication * eveloss_multiplication) / (weight_addition + weight_multiplication)
+    bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
+
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)

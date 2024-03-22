@@ -31,9 +31,13 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-1"
+test_type = f"multiplication-addition-test-7-12a-08m"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
+
+best_abeloss = float('inf')
+best_epoch = 0
+patience_epochs = 5
 
 evelosses = []
 boblosses = []
@@ -82,7 +86,7 @@ y_test = np.concatenate((y_test_a, y_test_m))
 operation = np.concatenate((op_a, op_m))
 
 
-HO_model.fit([operation, X1_train, X2_train], y_train, batch_size=128, epochs=1024,
+HO_model.fit([operation, X1_train, X2_train], y_train, batch_size=256, epochs=1024,
     verbose=2, validation_data=([operation, X1_test, X2_test], y_test))
 
 
@@ -116,6 +120,9 @@ HO_model.fit([cipher_operation, X1_cipher_train, X2_cipher_train], y_cipher_trai
 # Save weights
 HO_model.trainable = False
 
+weight_addition = 1.0
+weight_multiplication = 1.0
+
 while epoch < n_epochs:
     evelosses0 = []
     boblosses0 = []
@@ -136,11 +143,19 @@ while epoch < n_epochs:
             nonce = np.random.rand(batch_size, nonce_bits)
 
             # Choose randomly addition or multiplication
-            choice = random.choice([0, 1])
-            operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
+            # choice = random.choice([0, 1])
+            # operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
+            operation_a = np.zeros((batch_size, c3_bits))
+            operation_m = np.ones((batch_size, c3_bits))
 
-            loss = abhemodel.train_on_batch(
-                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation], None)  # calculate the loss
+            loss_a = abhemodel.train_on_batch(
+                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation_a], None)  # calculate the loss
+            
+            loss_m = abhemodel.train_on_batch(
+                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation_m], None)  # calculate the loss
+            
+            # loss = (loss_a + loss_m)/2
+            loss = (weight_addition * loss_a + weight_multiplication * loss_m) / (weight_addition + weight_multiplication)
 
         # How well Alice's encryption and Bob's decryption work together
         abelosses0.append(loss)
@@ -149,16 +164,20 @@ while epoch < n_epochs:
 
         # Evaluate Bob's ability to decrypt a message
         m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch, nonce])
-        m3_enc = HO_model.predict([operation, m1_enc, m2_enc])
-        m3_dec = bob.predict([m3_enc, private_arr, nonce])
+        m3_enc_a = HO_model.predict([operation_a, m1_enc, m2_enc])
+        m3_dec_a = bob.predict([m3_enc_a, private_arr, nonce])
+        loss_addition = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec_a), axis=-1))
 
-        loss_addition = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec), axis=-1))
-        loss_multiplication = np.mean(np.sum(np.abs(p1_batch * p2_batch - m3_dec), axis=-1))
+        m3_enc_m = HO_model.predict([operation_m, m1_enc, m2_enc])
+        m3_dec_m = bob.predict([m3_enc_m, private_arr, nonce])
+        loss_multiplication = np.mean(np.sum(np.abs(p1_batch * p2_batch - m3_dec_m), axis=-1))
 
         # m1_dec = bob.predict([m1_enc, private_arr, nonce])
         # loss_m1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
 
-        loss = (loss_addition+loss_multiplication)/2
+        # loss = (loss_addition+loss_multiplication)/2
+        loss = (weight_addition * loss_addition + weight_multiplication * loss_multiplication) / (weight_addition + weight_multiplication)
+
 
         boblosses0.append(loss)
         boblosses.append(loss)
@@ -175,10 +194,17 @@ while epoch < n_epochs:
             nonce = np.random.rand(batch_size, nonce_bits)
 
             # Choose randomly addition or multiplication
-            choice = random.choice([0, 1])
-            operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
+            # choice = random.choice([0, 1])
+            # operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
+            operation_a = np.zeros((batch_size, c3_bits))
+            operation_m = np.ones((batch_size, c3_bits))
 
-            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation], None)
+            loss_a = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation_a], None)
+            loss_m = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation_m], None)
+
+            # loss = (loss_a+loss_m)/2
+            loss = (weight_addition * loss_a + weight_multiplication * loss_m) / (weight_addition + weight_multiplication)
+
         evelosses0.append(loss)
         evelosses.append(loss)
         eveavg = np.mean(evelosses0)
@@ -187,6 +213,22 @@ while epoch < n_epochs:
             print("\rEpoch {:3}: {:3}% | abe: {:2.3f} | eve: {:2.3f} | bob: {:2.3f}".format(
                 epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg), end="")
             sys.stdout.flush()
+    
+    loss_ratio = loss_addition / loss_multiplication
+    weight_addition = loss_ratio / (1 + loss_ratio)
+    weight_multiplication = 1 - weight_addition
+    print(f"\nWeight multiplication: {weight_multiplication}")
+    print(f"\nWeight addition: {weight_addition}")
+
+    epoch_abeloss = np.mean(abelosses0)
+    if epoch_abeloss < best_abeloss:
+        best_abeloss = epoch_abeloss
+        best_epoch = epoch
+        print(f"\nNew best ABE loss {best_abeloss} at epoch {epoch}")
+    
+    if epoch - best_epoch > patience_epochs:
+        print(f"\nEarly stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best ABE loss: {best_abeloss}")
+        break
 
     epoch += 1
 
