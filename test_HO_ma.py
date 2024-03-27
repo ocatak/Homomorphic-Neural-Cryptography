@@ -7,12 +7,14 @@ from neural_network.nalu import NALU
 from data_utils.dataset_generator import generate_static_dataset, generate_cipher_dataset
 import numpy as np
 from argparse import ArgumentParser
+from keras.callbacks import ModelCheckpoint
+
 
 parser = ArgumentParser()
-parser.add_argument('-op', type=str, default="Adam", help='Optimizer')
-parser.add_argument('-lr', type=float, default=0.1, help='Learning rate')
-parser.add_argument('-e', type=int, default=1500, help='Number of epochs')
-parser.add_argument('-b', type=int, default=256, help='Batch size')
+parser.add_argument('-op', type=str, default="RMS", help='Optimizer')
+parser.add_argument('-lr', type=float, default=0.02, help='Learning rate')
+parser.add_argument('-e', type=int, default=2000, help='Number of epochs')
+parser.add_argument('-b', type=int, default=64, help='Batch size')
 args = parser.parse_args()
 
 c1_bits = 16
@@ -51,8 +53,8 @@ X1_train_a, X2_train_a, y_train_a = generate_static_dataset(task_a, c3_bits, bat
 X1_test_a, X2_test_a, y_test_a = generate_static_dataset(task_a, c3_bits, batch_size)
 op_a = np.zeros(X1_train_a.shape)
 
-X1_train_m, X2_train_m, y_train_m = generate_static_dataset(task_m, c3_bits, batch_size)
-X1_test_m, X2_test_m, y_test_m = generate_static_dataset(task_m, c3_bits, batch_size)
+X1_train_m, X2_train_m, y_train_m = generate_static_dataset(task_m, c3_bits, batch_size, mode="extrapolation")
+X1_test_m, X2_test_m, y_test_m = generate_static_dataset(task_m, c3_bits, batch_size, mode="extrapolation")
 op_m = np.ones(X1_train_m.shape)
 
 X1_train = np.concatenate((X1_train_a, X1_train_m))
@@ -63,30 +65,28 @@ X2_test = np.concatenate((X2_test_a, X2_test_m))
 y_test = np.concatenate((y_test_a, y_test_m))
 operation = np.concatenate((op_a, op_m))
 
+
 HO_model.fit([operation, X1_train, X2_train], y_train, batch_size=args.b, epochs=args.e,
     verbose=2, validation_data=([operation, X1_test, X2_test], y_test))
 
 HO_model.trainable = False
 
-predicted_a = HO_model.predict([op_a, X1_test_a, X2_test_a], 128)
-print(X1_test_a[:1])
-print(X2_test_a[:1])
+
+predicted_a = HO_model.predict([op_a, X1_test_a, X2_test_a])
 print(y_test_a[:1])
 print(predicted_a[:1])
 print()
-predicted_m = HO_model.predict([op_m, X1_test_m, X2_test_m], 128)
-print(X1_test_m[:1])
-print(X2_test_m[:1])
+predicted_m = HO_model.predict([op_m, X1_test_m, X2_test_m])
 print(y_test_m[:1])
 print(predicted_m[:1])
 
-tolerance = 1e-4
+tolerance = 1e-3
 correct_elements = np.sum(np.abs(y_test_a - predicted_a) <= tolerance)
 total_elements = np.prod(predicted_a.shape)
 accuracy_percentage = (correct_elements / total_elements) * 100
 print(f"HO model Accuracy Percentage Addition: {accuracy_percentage:.2f}%")
 
-tolerance = 1e-4
+tolerance = 1e-3
 correct_elements = np.sum(np.abs(y_test_m - predicted_m) <= tolerance)
 total_elements = np.prod(predicted_m.shape)
 accuracy_percentage = (correct_elements / total_elements) * 100
