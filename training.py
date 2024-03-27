@@ -16,7 +16,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument('-rate', type=float, default=0, help='Dropout rate')
+parser.add_argument('-rate', type=float, default=0.1, help='Dropout rate')
 parser.add_argument('-epoch', type=int, default=50, help='Number of epochs')
 parser.add_argument('-batch', type=int, default=512, help='Batch size')
 parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-7-12a-08m"
+test_type = f"multiplication-addition-test-28-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -69,12 +69,12 @@ if not isExist:
 HO_model.trainable = True
 
 # Train HO model to do addition
-X1_train_a, X2_train_a, y_train_a = generate_static_dataset(task_a, c3_bits, batch_size)
-X1_test_a, X2_test_a, y_test_a = generate_static_dataset(task_a, c3_bits, batch_size)
+X1_train_a, X2_train_a, y_train_a = generate_static_dataset(task_a, c3_bits, batch_size, seed=0)
+X1_test_a, X2_test_a, y_test_a = generate_static_dataset(task_a, c3_bits, batch_size, mode="extrapolation", seed=0)
 op_a = np.zeros(X1_train_a.shape)
 
-X1_train_m, X2_train_m, y_train_m = generate_static_dataset(task_m, c3_bits, batch_size)
-X1_test_m, X2_test_m, y_test_m = generate_static_dataset(task_m, c3_bits, batch_size)
+X1_train_m, X2_train_m, y_train_m = generate_static_dataset(task_m, c3_bits, batch_size, seed=1)
+X1_test_m, X2_test_m, y_test_m = generate_static_dataset(task_m, c3_bits, batch_size, mode="extrapolation", seed=1)
 op_m = np.ones(X1_train_m.shape)
 
 X1_train = np.concatenate((X1_train_a, X1_train_m))
@@ -86,7 +86,7 @@ y_test = np.concatenate((y_test_a, y_test_m))
 operation = np.concatenate((op_a, op_m))
 
 
-HO_model.fit([operation, X1_train, X2_train], y_train, batch_size=256, epochs=1024,
+HO_model.fit([operation, X1_train, X2_train], y_train, batch_size=64, epochs=2000,
     verbose=2, validation_data=([operation, X1_test, X2_test], y_test))
 
 
@@ -97,12 +97,12 @@ callbacks = [checkpoint]
 
 private_arr, public_arr = generate_key_pair(batch_size, curve)
 # Train HO model with Alice to do addition on encrypted data
-X1_cipher_train_a, X2_cipher_train_a, y_cipher_train_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits)
-X1_cipher_test_a, X2_cipher_test_a, y_cipher_test_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits)
+X1_cipher_train_a, X2_cipher_train_a, y_cipher_train_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits, 0)
+X1_cipher_test_a, X2_cipher_test_a, y_cipher_test_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits, 1)
 cipher_operation_a = np.zeros(X1_cipher_train_a.shape)
 
-X1_cipher_train_m, X2_cipher_train_m, y_cipher_train_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits)
-X1_cipher_test_m, X2_cipher_test_m, y_cipher_test_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits)
+X1_cipher_train_m, X2_cipher_train_m, y_cipher_train_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits, 2)
+X1_cipher_test_m, X2_cipher_test_m, y_cipher_test_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits, 3)
 cipher_operation_m = np.ones(X1_cipher_train_m.shape)
 
 X1_cipher_train = np.concatenate((X1_cipher_train_a, X1_cipher_train_m))
@@ -114,14 +114,14 @@ y_cipher_test = np.concatenate((y_cipher_test_a, y_cipher_test_m))
 cipher_operation = np.concatenate((cipher_operation_a, cipher_operation_m))
 
 
-HO_model.fit([cipher_operation, X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=128, epochs=512,
+HO_model.fit([cipher_operation, X1_cipher_train, X2_cipher_train], y_cipher_train, batch_size=64, epochs=1000,
     verbose=2, callbacks=callbacks, validation_data=([cipher_operation, X1_cipher_test, X2_cipher_test], y_cipher_test))
 
 # Save weights
 HO_model.trainable = False
 
-weight_addition = 1.0
-weight_multiplication = 1.0
+weight_addition = 1
+weight_multiplication = 1
 
 while epoch < n_epochs:
     evelosses0 = []
@@ -133,51 +133,59 @@ while epoch < n_epochs:
         alice.trainable = True
         for cycle in range(abecycles):
             # Select two random batches of plaintexts
-            p1_batch = np.random.randint(
+            p1_add = np.random.randint(
                 0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
-            p2_batch = np.random.randint(
+            p2_add = np.random.randint(
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+            p1_mu = np.random.randint(
+                0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
+            p2_mu = np.random.randint(
+                0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+            p1_batch = np.concatenate((p1_add, p1_mu))
+            p2_batch = np.concatenate((p2_add, p2_mu))
+            
+            private_arr_add, public_arr_add = generate_key_pair(batch_size, curve)
+            private_arr_mu, public_arr_mu = generate_key_pair(batch_size, curve)
+            public_arr = np.concatenate((public_arr_add, public_arr_mu))
+            private_arr = np.concatenate((private_arr_add, private_arr_mu))
 
-            private_arr, public_arr = generate_key_pair(batch_size, curve)
+            nonce_add = np.random.rand(batch_size, nonce_bits)
+            nonce_mu = np.random.rand(batch_size, nonce_bits)
+            nonce = np.concatenate((nonce_add, nonce_mu))
 
-            nonce = np.random.rand(batch_size, nonce_bits)
-
-            # Choose randomly addition or multiplication
-            # choice = random.choice([0, 1])
-            # operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
             operation_a = np.zeros((batch_size, c3_bits))
             operation_m = np.ones((batch_size, c3_bits))
+            operation = np.concatenate((operation_a, operation_m))
 
-            loss_a = abhemodel.train_on_batch(
-                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation_a], None)  # calculate the loss
+            loss = abhemodel.train_on_batch(
+                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation], None)  # calculate the loss
             
-            loss_m = abhemodel.train_on_batch(
-                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation_m], None)  # calculate the loss
-            
-            # loss = (loss_a + loss_m)/2
-            loss = (weight_addition * loss_a + weight_multiplication * loss_m) / (weight_addition + weight_multiplication)
-
         # How well Alice's encryption and Bob's decryption work together
         abelosses0.append(loss)
         abelosses.append(loss)
         abeavg = np.mean(abelosses0)
 
         # Evaluate Bob's ability to decrypt a message
-        m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch, nonce])
-        m3_enc_a = HO_model.predict([operation_a, m1_enc, m2_enc])
-        m3_dec_a = bob.predict([m3_enc_a, private_arr, nonce])
+        m1_add, m2_add = alice.predict([private_arr_add, p1_add, p1_add, nonce_add])
+        m3_enc_a = HO_model.predict([operation_a, m1_add, m2_add])
+        m3_dec_a = bob.predict([m3_enc_a, private_arr_add, nonce_add])
         loss_addition = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec_a), axis=-1))
 
-        m3_enc_m = HO_model.predict([operation_m, m1_enc, m2_enc])
-        m3_dec_m = bob.predict([m3_enc_m, private_arr, nonce])
+        m1_mu, m2_mu = alice.predict([private_arr_mu, p1_mu, p1_mu, nonce_mu])
+        m3_enc_m = HO_model.predict([operation_m, m1_mu, m2_mu])
+        m3_dec_m = bob.predict([m3_enc_m, private_arr_mu, nonce_mu])
         loss_multiplication = np.mean(np.sum(np.abs(p1_batch * p2_batch - m3_dec_m), axis=-1))
 
-        # m1_dec = bob.predict([m1_enc, private_arr, nonce])
-        # loss_m1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
-
-        # loss = (loss_addition+loss_multiplication)/2
         loss = (weight_addition * loss_addition + weight_multiplication * loss_multiplication) / (weight_addition + weight_multiplication)
 
+        m1_dec = bob.predict([m1_add, private_arr_add, nonce_add])
+        loss1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
+        m2_dec = bob.predict([m2_add, private_arr_add, nonce_add])
+        loss2 = np.mean(np.sum(np.abs(p2_batch - m2_dec), axis=-1))
+
+        loss_alice = (loss1+loss2)/2
+
+        loss = (loss_alice+loss)/2
 
         boblosses0.append(loss)
         boblosses.append(loss)
@@ -186,24 +194,30 @@ while epoch < n_epochs:
         # Train the EVE network
         alice.trainable = False
         for cycle in range(evecycles):
-            p1_batch = np.random.randint(
+            p1_add = np.random.randint(
                 0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
-            p2_batch = np.random.randint(
+            p2_add = np.random.randint(
                 0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
-            _, public_arr = generate_key_pair(batch_size, curve)
-            nonce = np.random.rand(batch_size, nonce_bits)
+            p1_mu = np.random.randint(
+                0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
+            p2_mu = np.random.randint(
+                0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+            p1_batch = np.concatenate((p1_add, p1_mu))
+            p2_batch = np.concatenate((p2_add, p2_mu))
+            
+            _, public_arr_add = generate_key_pair(batch_size, curve)
+            _, public_arr_mu = generate_key_pair(batch_size, curve)
+            public_arr = np.concatenate((public_arr_add, public_arr_mu))
 
-            # Choose randomly addition or multiplication
-            # choice = random.choice([0, 1])
-            # operation = np.zeros((batch_size, c3_bits)) if choice == 0 else np.ones((batch_size, c3_bits))
+            nonce_add = np.random.rand(batch_size, nonce_bits)
+            nonce_mu = np.random.rand(batch_size, nonce_bits)
+            nonce = np.concatenate((nonce_add, nonce_mu))
+
             operation_a = np.zeros((batch_size, c3_bits))
             operation_m = np.ones((batch_size, c3_bits))
+            operation = np.concatenate((operation_a, operation_m))
 
-            loss_a = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation_a], None)
-            loss_m = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation_m], None)
-
-            # loss = (loss_a+loss_m)/2
-            loss = (weight_addition * loss_a + weight_multiplication * loss_m) / (weight_addition + weight_multiplication)
+            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation], None)
 
         evelosses0.append(loss)
         evelosses.append(loss)
@@ -213,12 +227,6 @@ while epoch < n_epochs:
             print("\rEpoch {:3}: {:3}% | abe: {:2.3f} | eve: {:2.3f} | bob: {:2.3f}".format(
                 epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg), end="")
             sys.stdout.flush()
-    
-    loss_ratio = loss_addition / loss_multiplication
-    weight_addition = loss_ratio / (1 + loss_ratio)
-    weight_multiplication = 1 - weight_addition
-    print(f"\nWeight multiplication: {weight_multiplication}")
-    print(f"\nWeight addition: {weight_addition}")
 
     epoch_abeloss = np.mean(abelosses0)
     if epoch_abeloss < best_abeloss:
@@ -290,19 +298,23 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     operation = np.ones(cipher1.shape)
     cipher_mu = HO_model.predict([operation, cipher1, cipher2])
 
+    print("cipher1 + cipher2")
     print(cipher1+cipher2)
+    print("HO addition:")
     print(cipher_add)
+    print("cipher1 * cipher2")
     print(cipher1*cipher2)
+    print("HO multiplication")
     print(cipher_mu)
 
-    tolerance = 1e-4
+    tolerance = 1e-3
     correct_elements = np.sum(np.abs(cipher1+cipher2 - cipher_add) <= tolerance)
     total_elements = np.prod(cipher_add.shape)
     accuracy_percentage = (correct_elements / total_elements) * 100
     print(f"HO model Accuracy Percentage Addition: {accuracy_percentage:.2f}%")
     f.write(f"Decryption accuracy by HO addition: {accuracy_percentage:.2f}%\n")
 
-    tolerance = 1e-4
+    tolerance = 1e-3
     correct_elements = np.sum(np.abs(cipher1*cipher2 - cipher_mu) <= tolerance)
     total_elements = np.prod(cipher_mu.shape)
     accuracy_percentage = (correct_elements / total_elements) * 100
@@ -382,25 +394,34 @@ with open(f'results/results-{test_type}.txt', "a") as f:
     f.write(f"Decryption accuracy by Eve Multiplication: {accuracy_eve}%\n")
 
 
-    # f.write(f"Total number of bits: {total_bits}\n")
-    # f.write(f"Number of correctly decrypted bits by Bob: {correct_bits}\n")
-    # f.write(f"Decryption accuracy by Bob: {accuracy}%\n")
-    # f.write(f"Number of correctly decrypted bits by Eve: {correct_bits_eve}\n")
-    # f.write(f"Decryption accuracy by Eve: {accuracy_eve}%\n")
-    # f.write("\n")
+    # Bob attempt to decrypt cipher1
+    decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
+    decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
 
-    # # Bob attempt to decrypt cipher1
-    # decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
-    # decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
+    print(f"Bob decrypted P1: {decrypted_c1}")
+    print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
 
-    # print(f"Bob decrypted P1: {decrypted_c1}")
-    # print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
+    # Calculate Bob's decryption accuracy
+    correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
+    total_bits_p1 = np.prod(decrypted_bits_c1.shape)
+    accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
 
-    # # Calculate Bob's decryption accuracy
-    # correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
-    # total_bits_p1 = np.prod(decrypted_bits_c1.shape)
-    # accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
+    print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
+    print(f"Total number of bits P1: {total_bits_p1}")
+    print(f"Decryption accuracy P1: {accuracy_p1}%")
 
-    # print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
-    # print(f"Total number of bits P1: {total_bits_p1}")
-    # print(f"Decryption accuracy P1: {accuracy_p1}%")
+    # Bob attempt to decrypt cipher2
+    decrypted_c2 = bob.predict([cipher2, private_arr, nonce])
+    decrypted_bits_c2 = np.round(decrypted_c2).astype(int)
+
+    print(f"Bob decrypted P2: {decrypted_c2}")
+    print(f"Bob decrypted bits P2: {decrypted_bits_c2}")
+
+    # Calculate Bob's decryption accuracy
+    correct_bits_p2 = np.sum(decrypted_bits_c2 == (p2_batch))
+    total_bits_p2 = np.prod(decrypted_bits_c1.shape)
+    accuracy_p2 = correct_bits_p2 / total_bits_p2 * 100
+
+    print(f"Number of correctly decrypted bits P2: {correct_bits_p2}")
+    print(f"Total number of bits P2: {total_bits_p2}")
+    print(f"Decryption accuracy P2: {accuracy_p2}%")
