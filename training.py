@@ -166,22 +166,22 @@ while epoch < n_epochs:
         abeavg = np.mean(abelosses0)
 
         # Evaluate Bob's ability to decrypt a message
-        m1_add, m2_add = alice.predict([private_arr_add, p1_add, p1_add, nonce_add])
+        m1_add, m2_add = alice.predict([public_arr_add, p1_add, p2_add, nonce_add])
         m3_enc_a = HO_model.predict([operation_a, m1_add, m2_add])
         m3_dec_a = bob.predict([m3_enc_a, private_arr_add, nonce_add])
-        loss_addition = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec_a), axis=-1))
+        loss_addition = np.mean(np.sum(np.abs(p1_add + p2_add - m3_dec_a), axis=-1))
 
-        m1_mu, m2_mu = alice.predict([private_arr_mu, p1_mu, p1_mu, nonce_mu])
+        m1_mu, m2_mu = alice.predict([public_arr_mu, p1_mu, p2_mu, nonce_mu])
         m3_enc_m = HO_model.predict([operation_m, m1_mu, m2_mu])
         m3_dec_m = bob.predict([m3_enc_m, private_arr_mu, nonce_mu])
-        loss_multiplication = np.mean(np.sum(np.abs(p1_batch * p2_batch - m3_dec_m), axis=-1))
+        loss_multiplication = np.mean(np.sum(np.abs(p1_mu * p2_mu - m3_dec_m), axis=-1))
 
         loss = (weight_addition * loss_addition + weight_multiplication * loss_multiplication) / (weight_addition + weight_multiplication)
 
         m1_dec = bob.predict([m1_add, private_arr_add, nonce_add])
-        loss1 = np.mean(np.sum(np.abs(p1_batch - m1_dec), axis=-1))
+        loss1 = np.mean(np.sum(np.abs(p1_add - m1_dec), axis=-1))
         m2_dec = bob.predict([m2_add, private_arr_add, nonce_add])
-        loss2 = np.mean(np.sum(np.abs(p2_batch - m2_dec), axis=-1))
+        loss2 = np.mean(np.sum(np.abs(p2_add - m2_dec), axis=-1))
 
         loss_alice = (loss1+loss2)/2
 
