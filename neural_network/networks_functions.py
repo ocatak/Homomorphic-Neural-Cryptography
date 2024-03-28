@@ -55,6 +55,9 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
         public_bits: Number of bits in the public key.
         private_bits: Number of bits in the private key.
         dropout_rate: Dropout rate.
+    
+    Returns: 
+        alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits and nonce_bits, used for training
     """
     learning_rate = 0.0001
     

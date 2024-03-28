@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-28-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con"
+test_type = f"multiplication-addition-test-29-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
