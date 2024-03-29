@@ -1,6 +1,6 @@
 from neural_network.networks_functions import create_networks
 import numpy as np
-from key.EllipticCurve import set_curve
+from key.EllipticCurve import set_curve, generate_key_pair
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -13,15 +13,21 @@ curve = set_curve(args.curve)
 rate = args.rate
 
 batch_size = 512
-test_type = f"multiplication-addition-test-6-15a-05m"
+test_type = f"multiplication-addition-test-28-512b-0.1dr-a-loss-new-dataset-con"
 print(f"Testing with {test_type}...")
 
-p1_batch = np.load("plaintext/p1_batch.npy")
-p2_batch = np.load("plaintext/p2_batch.npy")
-public_arr = np.load(f"key/public_key-{curve.name}.npy")
-private_arr = np.load(f"key/private_key-{curve.name}.npy")
+# p1_batch = np.load("plaintext/p1_batch.npy")
+# p2_batch = np.load("plaintext/p2_batch.npy")
+# public_arr = np.load(f"key/public_key-{curve.name}.npy")
+# private_arr = np.load(f"key/private_key-{curve.name}.npy")
+private_arr, public_arr = generate_key_pair(batch_size, curve)
 
-alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
+alice, bob, HO_model, eve, _, _, p1_bits, _, p2_bits, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
+
+p1_batch = np.random.randint(
+    0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
+p2_batch = np.random.randint(
+    0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
 
 HO_weights_path = f'weights/weights-{test_type}/multiplication_weights.h5'
 alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
@@ -67,15 +73,17 @@ tolerance = 1e-4
 correct_elements = np.sum(np.abs(computed_cipher - cipher3_m) <= tolerance)
 total_elements = np.prod(cipher3_m.shape)
 accuracy_percentage = (correct_elements / total_elements) * 100
-print("HO model addition")
+print("HO model multiplication")
 print(f"HO model correct: {correct_elements}")
 print(f"Total Elements: {total_elements}")
 print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
 print(f"Cipher3: {cipher3_m}")
 
 # Bob attempt to decrypt C3
-decrypted = bob.predict([cipher3_a, private_arr, nonce])
-decrypted_bits = np.round(decrypted).astype(int)
+decrypted_a = bob.predict([cipher3_a, private_arr, nonce])
+decrypted_bits = np.round(decrypted_a).astype(int)
+print(decrypted_bits)
+print(p1_batch+p2_batch)
 
 # Calculate Bob's decryption accuracy
 correct_bits = np.sum(decrypted_bits == (p1_batch+p2_batch))
@@ -89,8 +97,8 @@ print(f"Total number of bits: {total_bits}")
 print(f"Decryption accuracy Bob: {accuracy}%")
 
 # Bob attempt to decrypt C3
-decrypted = bob.predict([cipher3_m, private_arr, nonce])
-decrypted_bits = np.round(decrypted).astype(int)
+decrypted_m = bob.predict([cipher3_m, private_arr, nonce])
+decrypted_bits = np.round(decrypted_m).astype(int)
 
 # Calculate Bob's decryption accuracy
 correct_bits = np.sum(decrypted_bits == (p1_batch*p2_batch))
@@ -104,6 +112,9 @@ print(f"Total number of bits: {total_bits}")
 print(f"Decryption accuracy Bob: {accuracy}%")
 print(decrypted_bits)
 print(p1_batch*p2_batch)
+print()
+print(decrypted_a)
+print(decrypted_m)
 # print(f"Bob decrypted bits: {decrypted_bits}")
 
 # # Eve attempt to decrypt C3
