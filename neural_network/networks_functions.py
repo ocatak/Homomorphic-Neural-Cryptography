@@ -59,7 +59,7 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     Returns: 
         alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits and nonce_bits, used for training
     """
-    learning_rate = 0.0001
+    learning_rate = 0.001
     
     nonce_bits = 64
 
@@ -199,8 +199,8 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     # bobloss = (bobloss_addition + bobloss_multiplication)/2
 
     # Initial weights based on assumption that multiplication is harder
-    weight_addition = 1.0
-    weight_multiplication = 1.0
+    weight_addition = 1
+    weight_multiplication = 1
 
     eveloss = (weight_addition * eveloss_addition + weight_multiplication * eveloss_multiplication) / (weight_addition + weight_multiplication)
     bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
@@ -208,8 +208,8 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     eveloss_a = (eveloss_alice + eveloss_alice2)/2
     bobloss_a = (bobloss_alice + bobloss_alice2)/2
 
-    eveloss = (eveloss_a + eveloss)/2
-    bobloss = (bobloss_a + bobloss)/2
+    eveloss = (0.8*eveloss_a + 1.2*eveloss)/2
+    bobloss = (0.8*bobloss_a + 1.2*bobloss)/2
 
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)

@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-31-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con-it"
+test_type = f"multiplication-addition-test-33-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con-12-08alice-lr001"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -45,7 +45,7 @@ abelosses = []
 
 n_epochs = args.epoch # number of training epochs
 batch_size = args.batch  # number of training examples utilized in one iteration
-n_batches = m_train // 512 # iterations per epoch, training examples divided by batch size
+n_batches = m_train // args.batch # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'multiplication'
@@ -185,7 +185,7 @@ while epoch < n_epochs:
 
         loss_alice = (loss1+loss2)/2
 
-        loss = (loss_alice+loss)/2
+        loss = (0.8*loss_alice+1.2*loss)/2
 
         boblosses0.append(loss)
         boblosses.append(loss)
