@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-29-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con"
+test_type = f"multiplication-addition-test-31-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con-it"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -45,7 +45,7 @@ abelosses = []
 
 n_epochs = args.epoch # number of training epochs
 batch_size = args.batch  # number of training examples utilized in one iteration
-n_batches = m_train // batch_size # iterations per epoch, training examples divided by batch size
+n_batches = m_train // 512 # iterations per epoch, training examples divided by batch size
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'multiplication'
@@ -228,14 +228,14 @@ while epoch < n_epochs:
                 epoch, 100 * iteration // n_batches, abeavg, eveavg, bobavg), end="")
             sys.stdout.flush()
 
-    epoch_abeloss = np.mean(abelosses0)
+    epoch_abeloss = np.mean(boblosses0)
     if epoch_abeloss < best_abeloss:
         best_abeloss = epoch_abeloss
         best_epoch = epoch
-        print(f"\nNew best ABE loss {best_abeloss} at epoch {epoch}")
+        print(f"\nNew best Bob loss {best_abeloss} at epoch {epoch}")
     
     if epoch - best_epoch > patience_epochs:
-        print(f"\nEarly stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best ABE loss: {best_abeloss}")
+        print(f"\nEarly stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best Bob loss: {best_abeloss}")
         break
 
     epoch += 1
