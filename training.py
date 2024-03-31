@@ -31,13 +31,13 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-38-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con-12a-08m"
+test_type = f"multiplication-addition-test-40-{args.batch}b-{args.rate}dr-a-loss-new-dataset-con-sigmoid-80e"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
 best_abeloss = float('inf')
 best_epoch = 0
-patience_epochs = 8
+patience_epochs = 5
 
 evelosses = []
 boblosses = []
@@ -120,8 +120,8 @@ HO_model.fit([cipher_operation, X1_cipher_train, X2_cipher_train], y_cipher_trai
 # Save weights
 HO_model.trainable = False
 
-weight_addition = 1.2
-weight_multiplication = 0.8
+weight_addition = 1
+weight_multiplication = 1
 
 while epoch < n_epochs:
     evelosses0 = []

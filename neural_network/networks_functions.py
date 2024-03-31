@@ -42,7 +42,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(aconv3)
+                    padding=pad, activation='sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -123,7 +123,7 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(bconv2)
     bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(bconv3)
+                    padding=pad, activation='sigmoid')(bconv3)
 
     bflattened = Flatten()(bconv4)
 
@@ -152,7 +152,7 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(econv2)
     econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(econv3)
+                    padding=pad, activation='sigmoid')(econv3)
 
     eflattened = Flatten()(econv4)
 
@@ -199,8 +199,8 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     # bobloss = (bobloss_addition + bobloss_multiplication)/2
 
     # Initial weights based on assumption that multiplication is harder
-    weight_addition = 1.2
-    weight_multiplication = 0.8
+    weight_addition = 1
+    weight_multiplication = 1
 
     eveloss = (weight_addition * eveloss_addition + weight_multiplication * eveloss_multiplication) / (weight_addition + weight_multiplication)
     bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
