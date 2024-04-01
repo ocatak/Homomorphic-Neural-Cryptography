@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-42-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid"
+test_type = f"multiplication-addition-test-44-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -176,12 +176,14 @@ while epoch < n_epochs:
         m3_dec_m = bob.predict([m3_enc_m, private_arr_mu, nonce_mu])
         loss_multiplication = np.mean(np.sum(np.abs(p1_mu * p2_mu - m3_dec_m), axis=-1))
 
-        loss = (weight_addition * loss_addition + weight_multiplication * loss_multiplication) / (weight_addition + weight_multiplication)
+        # loss = (weight_addition * loss_addition + weight_multiplication * loss_multiplication) / (weight_addition + weight_multiplication)
 
-        # m1_dec = bob.predict([m1_add, private_arr_add, nonce_add])
-        # loss1 = np.mean(np.sum(np.abs(p1_add - m1_dec), axis=-1))
-        # m2_dec = bob.predict([m2_add, private_arr_add, nonce_add])
-        # loss2 = np.mean(np.sum(np.abs(p2_add - m2_dec), axis=-1))
+        m1_dec = bob.predict([m1_add, private_arr_add, nonce_add])
+        loss1 = np.mean(np.sum(np.abs(p1_add - m1_dec), axis=-1))
+        m2_dec = bob.predict([m2_add, private_arr_add, nonce_add])
+        loss2 = np.mean(np.sum(np.abs(p2_add - m2_dec), axis=-1))
+
+        loss = (loss_addition + loss_multiplication + loss1 + loss2)/4
 
         # loss_alice = (loss1+loss2)/2
 

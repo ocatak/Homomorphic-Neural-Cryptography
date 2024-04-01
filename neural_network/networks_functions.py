@@ -172,11 +172,11 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     eveout = eve([HOout, ainput0, anonce_input])
 
     # Eve and Bob output from alice to decrypt p1/p2
-    # bobout_alice = bob([aliceout1, binput1, anonce_input])
-    # eveout_alice = eve([aliceout1, ainput0, anonce_input])
+    bobout_alice = bob([aliceout1, binput1, anonce_input])
+    eveout_alice = eve([aliceout1, ainput0, anonce_input])
 
-    # bobout_alice2 = bob([aliceout2, binput1, anonce_input])
-    # eveout_alice2 = eve([aliceout2, ainput0, anonce_input])
+    bobout_alice2 = bob([aliceout2, binput1, anonce_input])
+    eveout_alice2 = eve([aliceout2, ainput0, anonce_input])
 
 
     abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1, HOinput0],
@@ -189,21 +189,24 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     eveloss_multiplication = K.mean(K.sum(K.abs(ainput1 * ainput2 - eveout), axis=-1))
     bobloss_multiplication = K.mean(K.sum(K.abs(ainput1 * ainput2 - bobout), axis=-1))
 
-    # eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
-    # bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
+    eveloss_alice = K.mean(K.sum(K.abs(ainput1 - eveout_alice), axis=-1))
+    bobloss_alice = K.mean(K.sum(K.abs(ainput1 - bobout_alice), axis=-1))
 
-    # eveloss_alice2 = K.mean(K.sum(K.abs(ainput2 - eveout_alice2), axis=-1))
-    # bobloss_alice2 = K.mean(K.sum(K.abs(ainput2 - bobout_alice2), axis=-1))
+    eveloss_alice2 = K.mean(K.sum(K.abs(ainput2 - eveout_alice2), axis=-1))
+    bobloss_alice2 = K.mean(K.sum(K.abs(ainput2 - bobout_alice2), axis=-1))
+
+    eveloss = (eveloss_addition+eveloss_multiplication+eveloss_alice+eveloss_alice2)/4
+    bobloss = (bobloss_addition+bobloss_multiplication+bobloss_alice+bobloss_alice2)/4
 
     # eveloss = (eveloss_addition + eveloss_multiplication)/2
     # bobloss = (bobloss_addition + bobloss_multiplication)/2
 
     # Initial weights based on assumption that multiplication is harder
-    weight_addition = 1
-    weight_multiplication = 1
+    # weight_addition = 1
+    # weight_multiplication = 1
 
-    eveloss = (weight_addition * eveloss_addition + weight_multiplication * eveloss_multiplication) / (weight_addition + weight_multiplication)
-    bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
+    # eveloss = (weight_addition * eveloss_addition + weight_multiplication * eveloss_multiplication) / (weight_addition + weight_multiplication)
+    # bobloss = (weight_addition * bobloss_addition + weight_multiplication * bobloss_multiplication) / (weight_addition + weight_multiplication)
 
     # eveloss_a = (eveloss_alice + eveloss_alice2)/2
     # bobloss_a = (bobloss_alice + bobloss_alice2)/2
