@@ -218,8 +218,8 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
     abhemodel.add_loss(abheloss)
 
-    beoptim = Adam(learning_rate=learning_rate)
-    eveoptim = Adam(learning_rate=learning_rate)
+    beoptim = RMSprop(learning_rate=learning_rate)
+    eveoptim = RMSprop(learning_rate=learning_rate)
     optimizer = Adam(0.1)
     HO_model.compile(optimizer, 'mse')
     abhemodel.compile(optimizer=beoptim)

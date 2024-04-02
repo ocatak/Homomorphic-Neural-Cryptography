@@ -1,0 +1,529 @@
+WARNING:tensorflow:From /home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/ops/resource_variable_ops.py:1630: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+2024-04-02 19:14:48.178459: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2024-04-02 19:14:48.283173: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1618] Found device 0 with properties: 
+name: Tesla V100-PCIE-32GB major: 7 minor: 0 memoryClockRate(GHz): 1.38
+pciBusID: 0000:89:00.0
+2024-04-02 19:14:48.284123: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2024-04-02 19:14:48.287534: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2024-04-02 19:14:48.290356: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2024-04-02 19:14:48.291298: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2024-04-02 19:14:48.295287: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2024-04-02 19:14:48.297422: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2024-04-02 19:14:48.303981: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2024-04-02 19:14:48.318002: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1746] Adding visible gpu devices: 0
+2024-04-02 19:14:48.318605: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2024-04-02 19:14:48.336985: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2199835000 Hz
+2024-04-02 19:14:48.340180: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x4893c80 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2024-04-02 19:14:48.340210: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2024-04-02 19:14:48.739223: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x2316090 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2024-04-02 19:14:48.739308: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla V100-PCIE-32GB, Compute Capability 7.0
+2024-04-02 19:14:48.744811: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1618] Found device 0 with properties: 
+name: Tesla V100-PCIE-32GB major: 7 minor: 0 memoryClockRate(GHz): 1.38
+pciBusID: 0000:89:00.0
+2024-04-02 19:14:48.744924: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2024-04-02 19:14:48.744964: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2024-04-02 19:14:48.744999: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2024-04-02 19:14:48.745032: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2024-04-02 19:14:48.745065: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2024-04-02 19:14:48.745098: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2024-04-02 19:14:48.745144: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2024-04-02 19:14:48.761533: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1746] Adding visible gpu devices: 0
+2024-04-02 19:14:48.761620: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2024-04-02 19:14:48.765605: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1159] Device interconnect StreamExecutor with strength 1 edge matrix:
+2024-04-02 19:14:48.765635: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1165]      0 
+2024-04-02 19:14:48.765646: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1178] 0:   N 
+2024-04-02 19:14:48.775940: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1304] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 30593 MB memory) -> physical GPU (device: 0, name: Tesla V100-PCIE-32GB, pci bus id: 0000:89:00.0, compute capability: 7.0)
+WARNING:tensorflow:Output bob missing from loss dictionary. We assume this was done on purpose. The fit and evaluate APIs will not be expecting any data to be passed to bob.
+WARNING:tensorflow:Output eve missing from loss dictionary. We assume this was done on purpose. The fit and evaluate APIs will not be expecting any data to be passed to eve.
+2024-04-02 19:14:52.399107: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+Train on 1024 samples, validate on 1024 samples
+Epoch 1/2000
+1024/1024 - 1s - loss: 1.3060 - val_loss: 0.3035
+Epoch 2/2000
+1024/1024 - 0s - loss: 0.2748 - val_loss: 0.2882
+Epoch 3/2000
+1024/1024 - 0s - loss: 0.2269 - val_loss: 0.2075
+Epoch 4/2000
+1024/1024 - 0s - loss: 0.1722 - val_loss: 0.2450
+Epoch 5/2000
+1024/1024 - 0s - loss: 0.1110 - val_loss: 0.2731
+Epoch 6/2000
+1024/1024 - 0s - loss: 0.0938 - val_loss: 0.2359
+Epoch 7/2000
+1024/1024 - 0s - loss: 0.0854 - val_loss: 0.2096
+Epoch 8/2000
+1024/1024 - 0s - loss: 0.0793 - val_loss: 0.1940
+Epoch 9/2000
+1024/1024 - 0s - loss: 0.0741 - val_loss: 0.1824
+Epoch 10/2000
+1024/1024 - 0s - loss: 0.0693 - val_loss: 0.1698
+Epoch 11/2000
+1024/1024 - 0s - loss: 0.0646 - val_loss: 0.1559
+Epoch 12/2000
+1024/1024 - 0s - loss: 0.0601 - val_loss: 0.1412
+Epoch 13/2000
+1024/1024 - 0s - loss: 0.0557 - val_loss: 0.1274
+Epoch 14/2000
+1024/1024 - 0s - loss: 0.0514 - val_loss: 0.1140
+Epoch 15/2000
+1024/1024 - 0s - loss: 0.0473 - val_loss: 0.1015
+Epoch 16/2000
+1024/1024 - 0s - loss: 0.0434 - val_loss: 0.0902
+Epoch 17/2000
+1024/1024 - 0s - loss: 0.0397 - val_loss: 0.0796
+Epoch 18/2000
+1024/1024 - 0s - loss: 0.0363 - val_loss: 0.0701
+Epoch 19/2000
+1024/1024 - 0s - loss: 0.0332 - val_loss: 0.0619
+Epoch 20/2000
+1024/1024 - 0s - loss: 0.0305 - val_loss: 0.0546
+Epoch 21/2000
+1024/1024 - 0s - loss: 0.0281 - val_loss: 0.0484
+Epoch 22/2000
+1024/1024 - 0s - loss: 0.0260 - val_loss: 0.0431
+Epoch 23/2000
+1024/1024 - 0s - loss: 0.0242 - val_loss: 0.0388
+Epoch 24/2000
+1024/1024 - 0s - loss: 0.0227 - val_loss: 0.0351
+Epoch 25/2000
+1024/1024 - 0s - loss: 0.0214 - val_loss: 0.0320
+Epoch 26/2000
+1024/1024 - 0s - loss: 0.0202 - val_loss: 0.0293
+Epoch 27/2000
+1024/1024 - 0s - loss: 0.0192 - val_loss: 0.0271
+Epoch 28/2000
+1024/1024 - 0s - loss: 0.0183 - val_loss: 0.0251
+Epoch 29/2000
+1024/1024 - 0s - loss: 0.0176 - val_loss: 0.0234
+Epoch 30/2000
+1024/1024 - 0s - loss: 0.0169 - val_loss: 0.0219
+Epoch 31/2000
+1024/1024 - 0s - loss: 0.0163 - val_loss: 0.0206
+Epoch 32/2000
+1024/1024 - 0s - loss: 0.0158 - val_loss: 0.0194
+Epoch 33/2000
+1024/1024 - 0s - loss: 0.0153 - val_loss: 0.0183
+Epoch 34/2000
+1024/1024 - 0s - loss: 0.0149 - val_loss: 0.0174
+Epoch 35/2000
+1024/1024 - 0s - loss: 0.0145 - val_loss: 0.0165
+Epoch 36/2000
+1024/1024 - 0s - loss: 0.0141 - val_loss: 0.0157
+Epoch 37/2000
+1024/1024 - 0s - loss: 0.0138 - val_loss: 0.0151
+Epoch 38/2000
+1024/1024 - 0s - loss: 0.0135 - val_loss: 0.0144
+Epoch 39/2000
+1024/1024 - 0s - loss: 0.0133 - val_loss: 0.0139
+Epoch 40/2000
+1024/1024 - 0s - loss: 0.0130 - val_loss: 0.0134
+Epoch 41/2000
+1024/1024 - 0s - loss: 0.0128 - val_loss: 0.0130
+Epoch 42/2000
+1024/1024 - 0s - loss: 0.0126 - val_loss: 0.0126
+Epoch 43/2000
+1024/1024 - 0s - loss: 0.0124 - val_loss: 0.0123
+Epoch 44/2000
+1024/1024 - 0s - loss: 0.0122 - val_loss: 0.0119
+Epoch 45/2000
+1024/1024 - 0s - loss: 0.0120 - val_loss: 0.0117
+Epoch 46/2000
+1024/1024 - 0s - loss: 0.0119 - val_loss: 0.0115
+Epoch 47/2000
+1024/1024 - 0s - loss: 0.0117 - val_loss: 0.0112
+Epoch 48/2000
+1024/1024 - 0s - loss: 0.0116 - val_loss: 0.0111
+Epoch 49/2000
+1024/1024 - 0s - loss: 0.0115 - val_loss: 0.0109
+Epoch 50/2000
+1024/1024 - 0s - loss: 0.0114 - val_loss: 0.0108
+Epoch 51/2000
+1024/1024 - 0s - loss: 0.0113 - val_loss: 0.0106
+Epoch 52/2000
+1024/1024 - 0s - loss: 0.0112 - val_loss: 0.0105
+Epoch 53/2000
+1024/1024 - 0s - loss: 0.0111 - val_loss: 0.0104
+Epoch 54/2000
+1024/1024 - 0s - loss: 0.0110 - val_loss: 0.0103
+Epoch 55/2000
+1024/1024 - 0s - loss: 0.0109 - val_loss: 0.0102
+Epoch 56/2000
+1024/1024 - 0s - loss: 0.0108 - val_loss: 0.0101
+Epoch 57/2000
+1024/1024 - 0s - loss: 0.0107 - val_loss: 0.0100
+Epoch 58/2000
+1024/1024 - 0s - loss: 0.0106 - val_loss: 0.0099
+Epoch 59/2000
+1024/1024 - 0s - loss: 0.0105 - val_loss: 0.0099
+Epoch 60/2000
+1024/1024 - 0s - loss: 0.0104 - val_loss: 0.0098
+Epoch 61/2000
+1024/1024 - 0s - loss: 0.0104 - val_loss: 0.0098
+Epoch 62/2000
+1024/1024 - 0s - loss: 0.0103 - val_loss: 0.0097
+Epoch 63/2000
+1024/1024 - 0s - loss: 0.0102 - val_loss: 0.0097
+Epoch 64/2000
+1024/1024 - 0s - loss: 0.0101 - val_loss: 0.0096
+Epoch 65/2000
+1024/1024 - 0s - loss: 0.0100 - val_loss: 0.0096
+Epoch 66/2000
+1024/1024 - 0s - loss: 0.0100 - val_loss: 0.0095
+Epoch 67/2000
+1024/1024 - 0s - loss: 0.0099 - val_loss: 0.0095
+Epoch 68/2000
+1024/1024 - 0s - loss: 0.0098 - val_loss: 0.0095
+Epoch 69/2000
+1024/1024 - 0s - loss: 0.0098 - val_loss: 0.0095
+Epoch 70/2000
+1024/1024 - 0s - loss: 0.0097 - val_loss: 0.0095
+Epoch 71/2000
+1024/1024 - 0s - loss: 0.0096 - val_loss: 0.0095
+Epoch 72/2000
+1024/1024 - 0s - loss: 0.0096 - val_loss: 0.0095
+Epoch 73/2000
+1024/1024 - 0s - loss: 0.0095 - val_loss: 0.0095
+Epoch 74/2000
+1024/1024 - 0s - loss: 0.0094 - val_loss: 0.0095
+Epoch 75/2000
+1024/1024 - 0s - loss: 0.0094 - val_loss: 0.0095
+Epoch 76/2000
+1024/1024 - 0s - loss: 0.0093 - val_loss: 0.0095
+Epoch 77/2000
+1024/1024 - 0s - loss: 0.0093 - val_loss: 0.0095
+Epoch 78/2000
+1024/1024 - 0s - loss: 0.0092 - val_loss: 0.0095
+Epoch 79/2000
+1024/1024 - 0s - loss: 0.0092 - val_loss: 0.0095
+Epoch 80/2000
+1024/1024 - 0s - loss: 0.0091 - val_loss: 0.0096
+Epoch 81/2000
+1024/1024 - 0s - loss: 0.0091 - val_loss: 0.0096
+Epoch 82/2000
+1024/1024 - 0s - loss: 0.0090 - val_loss: 0.0096
+Epoch 83/2000
+1024/1024 - 0s - loss: 0.0090 - val_loss: 0.0096
+Epoch 84/2000
+1024/1024 - 0s - loss: 0.0089 - val_loss: 0.0096
+Epoch 85/2000
+1024/1024 - 0s - loss: 0.0089 - val_loss: 0.0096
+Epoch 86/2000
+1024/1024 - 0s - loss: 0.0088 - val_loss: 0.0096
+Epoch 87/2000
+1024/1024 - 0s - loss: 0.0088 - val_loss: 0.0097
+Epoch 88/2000
+1024/1024 - 0s - loss: 0.0087 - val_loss: 0.0097
+Epoch 89/2000
+1024/1024 - 0s - loss: 0.0087 - val_loss: 0.0097
+Epoch 90/2000
+1024/1024 - 0s - loss: 0.0086 - val_loss: 0.0097
+Epoch 91/2000
+1024/1024 - 0s - loss: 0.0086 - val_loss: 0.0097
+Epoch 92/2000
+1024/1024 - 0s - loss: 0.0085 - val_loss: 0.0098
+Epoch 93/2000
+1024/1024 - 0s - loss: 0.0085 - val_loss: 0.0098
+Epoch 94/2000
+1024/1024 - 0s - loss: 0.0084 - val_loss: 0.0098
+Epoch 95/2000
+1024/1024 - 0s - loss: 0.0084 - val_loss: 0.0098
+Epoch 96/2000
+1024/1024 - 0s - loss: 0.0083 - val_loss: 0.0099
+Epoch 97/2000
+1024/1024 - 0s - loss: 0.0083 - val_loss: 0.0099
+Epoch 98/2000
+1024/1024 - 0s - loss: 0.0082 - val_loss: 0.0099
+Epoch 99/2000
+1024/1024 - 0s - loss: 0.0081 - val_loss: 0.0100
+Epoch 100/2000
+1024/1024 - 0s - loss: 0.0081 - val_loss: 0.0100
+Epoch 101/2000
+1024/1024 - 0s - loss: 0.0080 - val_loss: 0.0100
+Epoch 102/2000
+1024/1024 - 0s - loss: 0.0080 - val_loss: 0.0100
+Epoch 103/2000
+1024/1024 - 0s - loss: 0.0079 - val_loss: 0.0101
+Epoch 104/2000
+1024/1024 - 0s - loss: 0.0079 - val_loss: 0.0101
+Epoch 105/2000
+1024/1024 - 0s - loss: 0.0078 - val_loss: 0.0102
+Epoch 106/2000
+1024/1024 - 0s - loss: 0.0078 - val_loss: 0.0102
+Epoch 107/2000
+1024/1024 - 0s - loss: 0.0077 - val_loss: 0.0102
+Epoch 108/2000
+1024/1024 - 0s - loss: 0.0076 - val_loss: 0.0103
+Epoch 109/2000
+1024/1024 - 0s - loss: 0.0076 - val_loss: 0.0102
+Epoch 110/2000
+1024/1024 - 0s - loss: 0.0075 - val_loss: 0.0103
+Epoch 111/2000
+1024/1024 - 0s - loss: 0.0075 - val_loss: 0.0103
+Epoch 112/2000
+1024/1024 - 0s - loss: 0.0074 - val_loss: 0.0103
+Epoch 113/2000
+1024/1024 - 0s - loss: 0.0073 - val_loss: 0.0103
+Epoch 114/2000
+1024/1024 - 0s - loss: 0.0073 - val_loss: 0.0104
+Epoch 115/2000
+1024/1024 - 0s - loss: 0.0072 - val_loss: 0.0104
+Epoch 116/2000
+1024/1024 - 0s - loss: 0.0072 - val_loss: 0.0104
+Epoch 117/2000
+1024/1024 - 0s - loss: 0.0071 - val_loss: 0.0104
+Epoch 118/2000
+1024/1024 - 0s - loss: 0.0070 - val_loss: 0.0104
+Epoch 119/2000
+1024/1024 - 0s - loss: 0.0070 - val_loss: 0.0104
+Epoch 120/2000
+1024/1024 - 0s - loss: 0.0069 - val_loss: 0.0104
+Epoch 121/2000
+1024/1024 - 0s - loss: 0.0068 - val_loss: 0.0103
+Epoch 122/2000
+1024/1024 - 0s - loss: 0.0068 - val_loss: 0.0103
+Epoch 123/2000
+1024/1024 - 0s - loss: 0.0067 - val_loss: 0.0103
+Epoch 124/2000
+1024/1024 - 0s - loss: 0.0066 - val_loss: 0.0103
+Epoch 125/2000
+1024/1024 - 0s - loss: 0.0066 - val_loss: 0.0103
+Epoch 126/2000
+1024/1024 - 0s - loss: 0.0065 - val_loss: 0.0102
+Epoch 127/2000
+1024/1024 - 0s - loss: 0.0064 - val_loss: 0.0102
+Epoch 128/2000
+1024/1024 - 0s - loss: 0.0063 - val_loss: 0.0102
+Epoch 129/2000
+1024/1024 - 0s - loss: 0.0063 - val_loss: 0.0101
+Epoch 130/2000
+1024/1024 - 0s - loss: 0.0062 - val_loss: 0.0101
+Epoch 131/2000
+1024/1024 - 0s - loss: 0.0061 - val_loss: 0.0100
+Epoch 132/2000
+1024/1024 - 0s - loss: 0.0060 - val_loss: 0.0100
+Epoch 133/2000
+1024/1024 - 0s - loss: 0.0059 - val_loss: 0.0100
+Epoch 134/2000
+1024/1024 - 0s - loss: 0.0059 - val_loss: 0.0100
+Epoch 135/2000
+1024/1024 - 0s - loss: 0.0058 - val_loss: 0.0099
+Epoch 136/2000
+1024/1024 - 0s - loss: 0.0057 - val_loss: 0.0098
+Epoch 137/2000
+1024/1024 - 0s - loss: 0.0056 - val_loss: 0.0098
+Epoch 138/2000
+1024/1024 - 0s - loss: 0.0055 - val_loss: 0.0097
+Epoch 139/2000
+1024/1024 - 0s - loss: 0.0054 - val_loss: 0.0097
+Epoch 140/2000
+1024/1024 - 0s - loss: 0.0054 - val_loss: 0.0096
+Epoch 141/2000
+1024/1024 - 0s - loss: 0.0053 - val_loss: 0.0096
+Epoch 142/2000
+1024/1024 - 0s - loss: 0.0052 - val_loss: 0.0096
+Epoch 143/2000
+1024/1024 - 0s - loss: 0.0051 - val_loss: 0.0096
+Epoch 144/2000
+1024/1024 - 0s - loss: 0.0050 - val_loss: 0.0095
+Epoch 145/2000
+1024/1024 - 0s - loss: 0.0049 - val_loss: 0.0095
+Epoch 146/2000
+1024/1024 - 0s - loss: 0.0048 - val_loss: 0.0094
+Epoch 147/2000
+1024/1024 - 0s - loss: 0.0047 - val_loss: 0.0094
+Epoch 148/2000
+1024/1024 - 0s - loss: 0.0046 - val_loss: 0.0094
+Epoch 149/2000
+1024/1024 - 0s - loss: 0.0045 - val_loss: 0.0093
+Epoch 150/2000
+1024/1024 - 0s - loss: 0.0045 - val_loss: 0.0093
+Epoch 151/2000
+1024/1024 - 0s - loss: 0.0044 - val_loss: 0.0093
+Epoch 152/2000
+1024/1024 - 0s - loss: 0.0043 - val_loss: 0.0093
+Epoch 153/2000
+1024/1024 - 0s - loss: 0.0042 - val_loss: 0.0092
+Epoch 154/2000
+1024/1024 - 0s - loss: 0.0041 - val_loss: 0.0093
+Epoch 155/2000
+1024/1024 - 0s - loss: 0.0040 - val_loss: 0.0092
+Epoch 156/2000
+1024/1024 - 0s - loss: 0.0039 - val_loss: 0.0092
+Epoch 157/2000
+1024/1024 - 0s - loss: 0.0038 - val_loss: 0.0092
+Epoch 158/2000
+1024/1024 - 0s - loss: 0.0038 - val_loss: 0.0092
+Epoch 159/2000
+1024/1024 - 0s - loss: 0.0037 - val_loss: 0.0092
+Epoch 160/2000
+1024/1024 - 0s - loss: 0.0036 - val_loss: 0.0092
+Epoch 161/2000
+1024/1024 - 0s - loss: 0.0035 - val_loss: 0.0092
+Epoch 162/2000
+1024/1024 - 0s - loss: 0.0035 - val_loss: 0.0092
+Epoch 163/2000
+1024/1024 - 0s - loss: 0.0034 - val_loss: 0.0092
+Epoch 164/2000
+1024/1024 - 0s - loss: 0.0033 - val_loss: 0.0092
+Epoch 165/2000
+1024/1024 - 0s - loss: 0.0032 - val_loss: 0.0093
+Epoch 166/2000
+1024/1024 - 0s - loss: 0.0032 - val_loss: 0.0093
+Epoch 167/2000
+1024/1024 - 0s - loss: 0.0031 - val_loss: 0.0093
+Epoch 168/2000
+1024/1024 - 0s - loss: 0.0030 - val_loss: 0.0093
+Epoch 169/2000
+1024/1024 - 0s - loss: 0.0030 - val_loss: 0.0093
+Epoch 170/2000
+1024/1024 - 0s - loss: 0.0029 - val_loss: 0.0093
+Epoch 171/2000
+1024/1024 - 0s - loss: 0.0029 - val_loss: 0.0094
+Epoch 172/2000
+1024/1024 - 0s - loss: 0.0028 - val_loss: 0.0094
+Epoch 173/2000
+1024/1024 - 0s - loss: 0.0028 - val_loss: 0.0094
+Epoch 174/2000
+1024/1024 - 0s - loss: 0.0027 - val_loss: 0.0094
+Epoch 175/2000
+1024/1024 - 0s - loss: 0.0027 - val_loss: 0.0095
+Epoch 176/2000
+1024/1024 - 0s - loss: 0.0026 - val_loss: 0.0095
+Epoch 177/2000
+1024/1024 - 0s - loss: 0.0026 - val_loss: 0.0095
+Epoch 178/2000
+1024/1024 - 0s - loss: 0.0025 - val_loss: 0.0095
+Epoch 179/2000
+1024/1024 - 0s - loss: 0.0025 - val_loss: 0.0096
+Epoch 180/2000
+1024/1024 - 0s - loss: 0.0025 - val_loss: 0.0096
+Epoch 181/2000
+1024/1024 - 0s - loss: 0.0024 - val_loss: 0.0096
+Epoch 182/2000
+1024/1024 - 0s - loss: 0.0024 - val_loss: 0.0096
+Epoch 183/2000
+1024/1024 - 0s - loss: 0.0024 - val_loss: 0.0097
+Epoch 184/2000
+1024/1024 - 0s - loss: 0.0023 - val_loss: 0.0097
+Epoch 185/2000
+1024/1024 - 0s - loss: 0.0023 - val_loss: 0.0097
+Epoch 186/2000
+1024/1024 - 0s - loss: 0.0023 - val_loss: 0.0098
+Epoch 187/2000
+1024/1024 - 0s - loss: 0.0022 - val_loss: 0.0098
+Epoch 188/2000
+1024/1024 - 0s - loss: 0.0022 - val_loss: 0.0098
+Epoch 189/2000
+1024/1024 - 0s - loss: 0.0022 - val_loss: 0.0098
+Epoch 190/2000
+1024/1024 - 0s - loss: 0.0022 - val_loss: 0.0098
+Epoch 191/2000
+1024/1024 - 0s - loss: 0.0021 - val_loss: 0.0099
+Epoch 192/2000
+1024/1024 - 0s - loss: 0.0021 - val_loss: 0.0099
+Epoch 193/2000
+1024/1024 - 0s - loss: 0.0021 - val_loss: 0.0099
+Epoch 194/2000
+1024/1024 - 0s - loss: 0.0021 - val_loss: 0.0099
+Epoch 195/2000
+1024/1024 - 0s - loss: 0.0020 - val_loss: 0.0099
+Epoch 196/2000
+1024/1024 - 0s - loss: 0.0020 - val_loss: 0.0099
+Epoch 197/2000
+1024/1024 - 0s - loss: 0.0020 - val_loss: 0.0099
+Epoch 198/2000
+1024/1024 - 0s - loss: 0.0020 - val_loss: 0.0100
+Epoch 199/2000
+1024/1024 - 0s - loss: 0.0020 - val_loss: 0.0100
+Epoch 200/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 201/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 202/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 203/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 204/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 205/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 206/2000
+1024/1024 - 0s - loss: 0.0019 - val_loss: 0.0100
+Epoch 207/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 208/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 209/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 210/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 211/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 212/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 213/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 214/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 215/2000
+1024/1024 - 0s - loss: 0.0018 - val_loss: 0.0100
+Epoch 216/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0100
+Epoch 217/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0100
+Epoch 218/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0100
+Epoch 219/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0100
+Epoch 220/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0100
+Epoch 221/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 222/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 223/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 224/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 225/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 226/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 227/2000
+1024/1024 - 0s - loss: 0.0017 - val_loss: 0.0099
+Epoch 228/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 229/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 230/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 231/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 232/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 233/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 234/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0099
+Epoch 235/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 236/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 237/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 238/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 239/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 240/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 241/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 242/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 243/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
+Epoch 244/2000
+1024/1024 - 0s - loss: 0.0016 - val_loss: 0.0098
