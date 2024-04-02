@@ -23,7 +23,8 @@ def probabilistic_encryption_analysis(rate: float, curve: str) -> Tuple[float, f
     std = np.std(stacked_arrays, axis=0)
     mean_std = np.mean(std)
     std_std = np.std(std)
-    return mean_std, std_std
+    return std
+
 def plot_std(dropout_rates: List[float], sec224r1: Tuple[List[float], List[float]], sec256k1: Tuple[List[float], List[float]], secp256r1: Tuple[List[float], List[float]], sec384r1: Tuple[List[float], List[float]], sec521r1: Tuple[List[float], List[float]]):
     """Plots the mean and standard deviation of five ciphertexts given a dropout rate and curve.
     
@@ -53,7 +54,45 @@ def plot_std(dropout_rates: List[float], sec224r1: Tuple[List[float], List[float
     plt.legend()
     plt.show()
 
+def plot_standard_deviation(curve: str):
+    """Plots the mean and standard deviation of the standard deviation of five ciphertexts for a given curve. 
+    It fills between the minimum and maximum standard deviation. Saves the plot as a pdf file.
+
+    Args:
+        curve: Elliptic curve.
+    """
+    plt.figure(figsize=(10, 6))
+    plt.rc('font', size=12)  # controls default text size
+    plt.rc('axes', titlesize=16)  # fontsize of the axes title
+    plt.rc('axes', labelsize=25)  # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=25)  # fontsize of the tick labels
+    plt.rc('ytick', labelsize=25)  # fontsize of the tick labels
+    plt.rc('legend', fontsize=18)  # fontsize of the legend
+    plt.ylim(0, 0.7)
+
+    dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+    min_std = []
+    max_std = []
+    average = []
+    std_std = []
+
+    for rate in dropout_rates:
+        std = probabilistic_encryption_analysis(rate, curve)[0]
+        min_std.append(min(std))
+        max_std.append(max(std))
+        average.append(np.mean(std))
+        std_std.append(np.std(std))
+
+    plt.fill_between(dropout_rates, min_std, max_std, color='skyblue', alpha=0.5)
+    plt.plot(dropout_rates, average, color='blue', linewidth=1, label='Mean Standard Deviation')
+    plt.plot(dropout_rates, std_std, 'bo--', label='Standard Deviation of Standard Deviation')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.xlabel('Dropout Rate') 
+    plt.ylabel('Standard Deviation')
+    plt.legend()
+    plt.savefig(f"pdf-figures/{curve}-std.pdf", bbox_inches='tight')
+
 if __name__ == "__main__":
     rate = 0.01
     curve = "secp224r1"
-    print(probabilistic_encryption_analysis(rate, curve))
+    print(probabilistic_encryption_analysis(rate, curve)[0].shape)
