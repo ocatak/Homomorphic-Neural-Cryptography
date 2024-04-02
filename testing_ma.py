@@ -4,7 +4,7 @@ from key.EllipticCurve import set_curve, generate_key_pair
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument('-rate', type=float, default=0, help='Dropout rate')
+parser.add_argument('-rate', type=float, default=0.1, help='Dropout rate')
 parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
 args = parser.parse_args()
 
@@ -13,7 +13,8 @@ curve = set_curve(args.curve)
 rate = args.rate
 
 batch_size = 512
-test_type = f"multiplication-addition-test-28-512b-0.1dr-a-loss-new-dataset-con"
+# test_type = f"multiplication-addition-test-44-384b-0.1dr-new-dataset-con-sigmoid-aloss"
+test_type = "multiplication-addition-test-39-512b-0.1dr-a-loss-new-dataset-con-sigmoid"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
@@ -47,54 +48,56 @@ print(f"Cipher1: {cipher1}")
 print(f"Cipher2: {cipher2}")
 print(cipher1.shape)
 
-op_a = np.zeros((cipher1.shape))
-
 # HO adds the messages
+op_a = np.zeros((cipher1.shape))
 cipher3_a = HO_model.predict([op_a, cipher1, cipher2])
 computed_cipher = cipher1 + cipher2
-print(computed_cipher)
-tolerance = 1e-4
+tolerance = 1e-3
 correct_elements = np.sum(np.abs(computed_cipher - cipher3_a) <= tolerance)
 total_elements = np.prod(cipher3_a.shape)
-accuracy_percentage = (correct_elements / total_elements) * 100
-print("HO model addition")
+accuracy_percentage_add = (correct_elements / total_elements) * 100
+print()
+print("---HO model addition---")
 print(f"HO model correct: {correct_elements}")
 print(f"Total Elements: {total_elements}")
-print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
+print(f"HO model Accuracy Percentage: {accuracy_percentage_add:.2f}%")
 print(f"Cipher3: {cipher3_a}")
+print(f"C1*C2: {computed_cipher}")
 
+# HO multiplies the messages
 op_m = np.ones((cipher1.shape))
-
-# HO adds the messages
 cipher3_m = HO_model.predict([op_m, cipher1, cipher2])
 computed_cipher = cipher1 * cipher2
-print(computed_cipher)
-tolerance = 1e-4
+tolerance = 1e-3
 correct_elements = np.sum(np.abs(computed_cipher - cipher3_m) <= tolerance)
 total_elements = np.prod(cipher3_m.shape)
 accuracy_percentage = (correct_elements / total_elements) * 100
-print("HO model multiplication")
+print()
+print("---HO model multiplication---")
 print(f"HO model correct: {correct_elements}")
 print(f"Total Elements: {total_elements}")
 print(f"HO model Accuracy Percentage: {accuracy_percentage:.2f}%")
 print(f"Cipher3: {cipher3_m}")
+print(f"C1+C2: {computed_cipher}")
+
 
 # Bob attempt to decrypt C3
 decrypted_a = bob.predict([cipher3_a, private_arr, nonce])
 decrypted_bits = np.round(decrypted_a).astype(int)
-print(decrypted_bits)
-print(p1_batch+p2_batch)
 
 # Calculate Bob's decryption accuracy
 correct_bits = np.sum(decrypted_bits == (p1_batch+p2_batch))
 total_bits = np.prod(decrypted_bits.shape)
-accuracy = correct_bits / total_bits * 100
+accuracy_a = correct_bits / total_bits * 100
 
 print()
-print("Bob decryption P1+P2")
+print("---Bob decryption P1+P2---")
 print(f"Number of correctly decrypted bits by Bob: {correct_bits}")
 print(f"Total number of bits: {total_bits}")
-print(f"Decryption accuracy Bob: {accuracy}%")
+print(f"Decryption accuracy Bob: {accuracy_a}%")
+print(np.any(decrypted_bits == 2))
+print(f"Bob decrypted: {decrypted_bits}")
+print(f"P1+P2: {p1_batch+p2_batch}")
 
 # Bob attempt to decrypt C3
 decrypted_m = bob.predict([cipher3_m, private_arr, nonce])
@@ -106,15 +109,22 @@ total_bits = np.prod(decrypted_bits.shape)
 accuracy = correct_bits / total_bits * 100
 
 print()
-print("Bob decryption P1*P2")
+print("---Bob decryption P1*P2---")
 print(f"Number of correctly decrypted bits by Bob: {correct_bits}")
 print(f"Total number of bits: {total_bits}")
 print(f"Decryption accuracy Bob: {accuracy}%")
-print(decrypted_bits)
-print(p1_batch*p2_batch)
+print(f"Bob decrypted: {decrypted_bits}")
+print(f"P1*P2: {p1_batch*p2_batch}")
 print()
 print(decrypted_a)
 print(decrypted_m)
+
+print(f"HO model Addition: {accuracy_percentage_add:.2f}%")
+print(f"HO model Multiplication: {accuracy_percentage:.2f}%")
+print(f"Decryption accuracy Bob Addition: {accuracy_a}%")
+print(f"Decryption accuracy Bob Multiplication: {accuracy}%")
+
+
 # print(f"Bob decrypted bits: {decrypted_bits}")
 
 # # Eve attempt to decrypt C3
@@ -136,19 +146,19 @@ print(decrypted_m)
 
 
 # # Bob attempt to decrypt C1
-# decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
-# decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
+decrypted_c1 = bob.predict([cipher1, private_arr, nonce])
+decrypted_bits_c1 = np.round(decrypted_c1).astype(int)
 
-# # Calculate Bob's decryption accuracy
-# correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
-# total_bits_p1 = np.prod(decrypted_bits_c1.shape)
-# accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
+# Calculate Bob's decryption accuracy
+correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
+total_bits_p1 = np.prod(decrypted_bits_c1.shape)
+accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
 
 # print()
 # print("Bob decryption of P1")
 # print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
 # print(f"Total number of bits P1: {total_bits_p1}")
-# print(f"Decryption accuracy P1: {accuracy_p1}%")
+print(f"Decryption accuracy P1: {accuracy_p1}%")
 # # print(f"Bob decrypted P1: {decrypted_c1}")
 # # print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
 
@@ -171,20 +181,20 @@ print(decrypted_m)
 # # print(f"Eve decrypted bits P1: {decrypted_bits_c1_eve}")
 
 
-# # Bob attempt to decrypt C2
-# decrypted_c2 = bob.predict([cipher2, private_arr, nonce])
-# decrypted_bits_c2 = np.round(decrypted_c2).astype(int)
+# Bob attempt to decrypt C2
+decrypted_c2 = bob.predict([cipher2, private_arr, nonce])
+decrypted_bits_c2 = np.round(decrypted_c2).astype(int)
 
-# # Calculate Bob's decryption accuracy
-# correct_bits_p2 = np.sum(decrypted_bits_c2 == (p2_batch))
-# total_bits_p2 = np.prod(decrypted_bits_c2.shape)
-# accuracy_p2 = correct_bits_p2 / total_bits_p2 * 100
+# Calculate Bob's decryption accuracy
+correct_bits_p2 = np.sum(decrypted_bits_c2 == (p2_batch))
+total_bits_p2 = np.prod(decrypted_bits_c2.shape)
+accuracy_p2 = correct_bits_p2 / total_bits_p2 * 100
 
 # print()
 # print("Bob decryption P2")
 # print(f"Number of correctly decrypted bits P2: {correct_bits_p2}")
 # print(f"Total number of bits P2: {total_bits_p2}")
-# print(f"Decryption accuracy P2: {accuracy_p2}%")
+print(f"Decryption accuracy P2: {accuracy_p2}%")
 # # print(f"Bob decrypted P2: {decrypted_c2}")
 # # print(f"Bob decrypted bits P2: {decrypted_bits_c2}")
 
