@@ -15,6 +15,7 @@ rate = args.rate
 batch_size = 512
 # test_type = f"multiplication-addition-test-44-384b-0.1dr-new-dataset-con-sigmoid-aloss"
 test_type = "multiplication-addition-test-39-512b-0.1dr-a-loss-new-dataset-con-sigmoid"
+# test_type = "multiplication-addition-test-47-512b-0.1dr-new-dataset-con-sigmoid-aloss-lr000005"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
@@ -96,6 +97,8 @@ print(f"Number of correctly decrypted bits by Bob: {correct_bits}")
 print(f"Total number of bits: {total_bits}")
 print(f"Decryption accuracy Bob: {accuracy_a}%")
 print(np.any(decrypted_bits == 2))
+two = np.where(decrypted_bits == 2)
+print("Antall 2ere: ", len(two[0]))
 print(f"Bob decrypted: {decrypted_bits}")
 print(f"P1+P2: {p1_batch+p2_batch}")
 
