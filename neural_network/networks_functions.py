@@ -59,7 +59,7 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     Returns: 
         alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits and nonce_bits, used for training
     """
-    learning_rate = 0.00005
+    learning_rate = 0.0001
     
     nonce_bits = 64
 

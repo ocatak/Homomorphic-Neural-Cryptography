@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-53-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-000005lr-100"
+test_type = f"multiplication-addition-test-55-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -132,29 +132,33 @@ while epoch < n_epochs:
         # Train the A-B+E network, train both Alice and Bob
         alice.trainable = True
         for cycle in range(abecycles):
+            
+            batch_size_add = batch_size*5//4
+            batch_size_mu = batch_size*3//4
+
             # Select two random batches of plaintexts
             p1_add = np.random.randint(
-                0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
+                0, 2, p1_bits * batch_size_add).reshape(batch_size_add, p1_bits)
             p2_add = np.random.randint(
-                0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+                0, 2, p2_bits * batch_size_add).reshape(batch_size_add, p2_bits)
             p1_mu = np.random.randint(
-                0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits)
+                0, 2, p1_bits * batch_size_mu).reshape(batch_size_mu, p1_bits)
             p2_mu = np.random.randint(
-                0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits)
+                0, 2, p2_bits * batch_size_mu).reshape(batch_size_mu, p2_bits)
             p1_batch = np.concatenate((p1_add, p1_mu))
             p2_batch = np.concatenate((p2_add, p2_mu))
             
-            private_arr_add, public_arr_add = generate_key_pair(batch_size, curve)
-            private_arr_mu, public_arr_mu = generate_key_pair(batch_size, curve)
+            private_arr_add, public_arr_add = generate_key_pair(batch_size_add, curve)
+            private_arr_mu, public_arr_mu = generate_key_pair(batch_size_mu, curve)
             public_arr = np.concatenate((public_arr_add, public_arr_mu))
             private_arr = np.concatenate((private_arr_add, private_arr_mu))
 
-            nonce_add = np.random.rand(batch_size, nonce_bits)
-            nonce_mu = np.random.rand(batch_size, nonce_bits)
+            nonce_add = np.random.rand(batch_size_add, nonce_bits)
+            nonce_mu = np.random.rand(batch_size_mu, nonce_bits)
             nonce = np.concatenate((nonce_add, nonce_mu))
 
-            operation_a = np.zeros((batch_size, c3_bits))
-            operation_m = np.ones((batch_size, c3_bits))
+            operation_a = np.zeros((batch_size_add, c3_bits))
+            operation_m = np.ones((batch_size_mu, c3_bits))
             operation = np.concatenate((operation_a, operation_m))
 
             loss = abhemodel.train_on_batch(
@@ -165,13 +169,12 @@ while epoch < n_epochs:
         abelosses.append(loss)
         abeavg = np.mean(abelosses0)
 
-        operation_a = np.zeros((batch_size, c3_bits))
-        operation_m = np.ones((batch_size, c3_bits))
+        operation_a = np.zeros((batch_size_add, c3_bits))
+        operation_m = np.ones((batch_size_mu, c3_bits))
 
         # Evaluate Bob's ability to decrypt a message
         m1_a, m2_a = alice.predict([public_arr_add, p1_add, p2_add, nonce_add])
         m1_m, m2_m = alice.predict([public_arr_mu, p1_mu, p2_mu, nonce_mu])
-
 
         m3_enc_a = HO_model.predict([operation_a, m1_a, m2_a])
         m3_enc_m = HO_model.predict([operation_m, m1_m, m2_m])
