@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-57-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
+test_type = f"multiplication-addition-test-58-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -133,8 +133,8 @@ while epoch < n_epochs:
         alice.trainable = True
         for cycle in range(abecycles):
             
-            batch_size_add = batch_size*5//4
-            batch_size_mu = batch_size
+            batch_size_add = batch_size*3//2
+            batch_size_mu = batch_size//2
 
             # Select two random batches of plaintexts
             p1_add = np.random.randint(
