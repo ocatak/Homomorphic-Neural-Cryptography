@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-55-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
+test_type = f"multiplication-addition-test-57-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -134,7 +134,7 @@ while epoch < n_epochs:
         for cycle in range(abecycles):
             
             batch_size_add = batch_size*5//4
-            batch_size_mu = batch_size*3//4
+            batch_size_mu = batch_size
 
             # Select two random batches of plaintexts
             p1_add = np.random.randint(
