@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -31,7 +31,7 @@ dropout_rate = args.rate
 alice, bob, HO_model, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-addition-test-58-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add"
+test_type = f"multiplication-addition-test-59-{args.batch}b-{args.rate}dr-new-dataset-con-sigmoid-aloss-more-add-balanse"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -120,8 +120,32 @@ HO_model.fit([cipher_operation, X1_cipher_train, X2_cipher_train], y_cipher_trai
 # Save weights
 HO_model.trainable = False
 
-weight_addition = 1
-weight_multiplication = 1
+def generate_balanced_addition_batch(batch_size, p1_bits, p2_bits):
+    # Initialize the plaintext arrays
+    p1_add = np.zeros((batch_size, p1_bits), dtype=int)
+    p2_add = np.zeros((batch_size, p2_bits), dtype=int)
+    
+    # Ensure that the batch has an equal number of '0', '1', and '2' outcomes
+    third_batch_size = batch_size // 3
+    for i in range(third_batch_size):
+        p1_add[i] = np.random.randint(0, 2, p1_bits)  # Random 0 or 1 for first third
+        p2_add[i] = 0  # This will guarantee a '0' or '1' sum
+        
+    for i in range(third_batch_size, 2*third_batch_size):
+        p1_add[i] = np.random.randint(0, 2, p1_bits)  # Random 0 or 1 for second third
+        p2_add[i] = 1 - p1_add[i]  # This will guarantee a sum of '1'
+        
+    for i in range(2*third_batch_size, batch_size):
+        p1_add[i] = 1  # Set all bits to 1 for last third
+        p2_add[i] = 1  # This will guarantee a sum of '2'
+        
+    # Shuffle the batches to prevent the network from learning the order
+    indices = np.arange(batch_size)
+    np.random.shuffle(indices)
+    p1_add = p1_add[indices]
+    p2_add = p2_add[indices]
+    
+    return p1_add, p2_add
 
 while epoch < n_epochs:
     evelosses0 = []
@@ -133,14 +157,11 @@ while epoch < n_epochs:
         alice.trainable = True
         for cycle in range(abecycles):
             
-            batch_size_add = batch_size*3//2
-            batch_size_mu = batch_size//2
+            batch_size_add = 600
+            batch_size_mu = batch_size
 
             # Select two random batches of plaintexts
-            p1_add = np.random.randint(
-                0, 2, p1_bits * batch_size_add).reshape(batch_size_add, p1_bits)
-            p2_add = np.random.randint(
-                0, 2, p2_bits * batch_size_add).reshape(batch_size_add, p2_bits)
+            p1_add, p2_add = generate_balanced_addition_batch(batch_size_add, p1_bits, p2_bits)
             p1_mu = np.random.randint(
                 0, 2, p1_bits * batch_size_mu).reshape(batch_size_mu, p1_bits)
             p2_mu = np.random.randint(
