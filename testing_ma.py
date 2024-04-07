@@ -14,8 +14,9 @@ rate = args.rate
 
 batch_size = 512
 # test_type = f"multiplication-addition-test-44-384b-0.1dr-new-dataset-con-sigmoid-aloss"
-test_type = "multiplication-addition-test-39-512b-0.1dr-a-loss-new-dataset-con-sigmoid"
+# test_type = "multiplication-addition-test-39-512b-0.1dr-a-loss-new-dataset-con-sigmoid"
 # test_type = "multiplication-addition-test-47-512b-0.1dr-new-dataset-con-sigmoid-aloss-lr000005"
+test_type = "multiplication-addition-test-43-512b-0.1dr-new-dataset-con-sigmoid-aloss"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
