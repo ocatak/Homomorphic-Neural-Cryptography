@@ -30,7 +30,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-and-addition-in-different-models"
+test_type = f"multiplication-and-addition-in-different-models-lr-00001-384b-7"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -132,10 +132,8 @@ while epoch < n_epochs:
 
             nonce = np.random.rand(batch_size, nonce_bits)
 
-            loss_a, loss_m = abhemodel.train_on_batch(
+            loss = abhemodel.train_on_batch(
                 [public_arr, p1_batch, p2_batch, nonce, private_arr], None)  # calculate the loss
-            
-            loss = (loss_a + loss_m) / 2
             
         # How well Alice's encryption and Bob's decryption work together
         abelosses0.append(loss)
@@ -178,9 +176,7 @@ while epoch < n_epochs:
 
             nonce = np.random.rand(batch_size, nonce_bits)
 
-            loss_a, loss_m = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce], None)
-
-            loss = (loss_a + loss_m) / 2
+            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce], None)
 
         evelosses0.append(loss)
         evelosses.append(loss)

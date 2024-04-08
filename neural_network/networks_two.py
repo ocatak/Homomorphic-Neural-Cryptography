@@ -32,7 +32,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
 
 # Alice network
 def create_networks(public_bits, private_bits, dropout_rate):
-    learning_rate = 0.0001
+    learning_rate = 0.00001
 
     # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
     # Plaintext 1 and 2
@@ -119,8 +119,10 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
 
+    boutput = Lambda(lambda x: x * 2)(bflattened)
+
     bob = Model(inputs=[binput0, binput1, bnonce_input],
-                outputs=bflattened, name='bob')
+                outputs=boutput, name='bob')
 
 
     # Eve network
@@ -147,7 +149,10 @@ def create_networks(public_bits, private_bits, dropout_rate):
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
 
-    eve = Model([einput0, einput1, enonce_input], eflattened, name='eve')
+    eoutput = Lambda(lambda x: x * 2)(eflattened)
+
+
+    eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
 
     # Loss and optimizer
 
