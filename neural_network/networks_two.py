@@ -26,7 +26,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='sigmoid')(aconv3)
+                    padding=pad, activation='hard_sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
@@ -114,7 +114,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(bconv2)
     bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='sigmoid')(bconv3)
+                    padding=pad, activation='hard_sigmoid')(bconv3)
 
     # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
@@ -144,7 +144,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
     econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(econv2)
     econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='sigmoid')(econv3)
+                    padding=pad, activation='hard_sigmoid')(econv3)
 
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
