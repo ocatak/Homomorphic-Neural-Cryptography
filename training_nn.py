@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -8,7 +8,7 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from neural_network.networks_two import create_networks
+from neural_network.networks_two_meta import create_networks
 from key.EllipticCurve import generate_key_pair, set_curve, get_key_shape
 from data_utils.dataset_generator import generate_static_dataset, generate_cipher_dataset
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -30,7 +30,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-and-addition-in-different-models-lr0.00005-RMS-20"
+test_type = f"multiplication-and-addition-in-different-models-operation-lr00005-RMS-28"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -71,9 +71,10 @@ HO_model_addition.trainable = True
 # Train HO model to do addition
 X1_train_a, X2_train_a, y_train_a = generate_static_dataset(task_a, c3_bits, batch_size, seed=0)
 X1_test_a, X2_test_a, y_test_a = generate_static_dataset(task_a, c3_bits, batch_size, mode="extrapolation", seed=0)
+op_a = np.zeros(X1_train_a.shape)
 
-HO_model_addition.fit([X1_train_a, X2_train_a], y_train_a, batch_size=128, epochs=512,
-    verbose=2, validation_data=([X1_test_a, X2_test_a], y_test_a))
+HO_model_addition.fit([op_a, X1_train_a, X2_train_a], y_train_a, batch_size=128, epochs=512,
+    verbose=2, validation_data=([op_a, X1_test_a, X2_test_a], y_test_a))
 
 checkpoint = ModelCheckpoint(HO_weights_addition_path, monitor='val_loss',
                             verbose=1, save_weights_only=True, save_best_only=True)
@@ -83,9 +84,10 @@ callbacks = [checkpoint]
 _, public_arr = generate_key_pair(batch_size, curve)
 X1_cipher_train_a, X2_cipher_train_a, y_cipher_train_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits, 0)
 X1_cipher_test_a, X2_cipher_test_a, y_cipher_test_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits, 1)
+op_a = np.zeros(X1_cipher_train_a.shape)
 
-HO_model_addition.fit([X1_cipher_train_a, X2_cipher_train_a], y_cipher_train_a, batch_size=128, epochs=512,
-    verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test_a, X2_cipher_test_a], y_cipher_test_a))
+HO_model_addition.fit([op_a, X1_cipher_train_a, X2_cipher_train_a], y_cipher_train_a, batch_size=128, epochs=512,
+    verbose=2, callbacks=callbacks, validation_data=([op_a, X1_cipher_test_a, X2_cipher_test_a], y_cipher_test_a))
 
 # Save weights
 HO_model_addition.trainable = False
@@ -94,9 +96,10 @@ HO_model_multiplication.trainable = True
 
 X1_train_m, X2_train_m, y_train_m = generate_static_dataset(task_m, c3_bits, batch_size, seed=1)
 X1_test_m, X2_test_m, y_test_m = generate_static_dataset(task_m, c3_bits, batch_size, mode="extrapolation", seed=0)
+op_m = np.ones(X1_train_m.shape)
 
-HO_model_multiplication.fit([X1_train_m, X2_train_m], y_train_m, batch_size=128, epochs=512,
-    verbose=2, validation_data=([X1_test_m, X2_test_m], y_test_m))
+HO_model_multiplication.fit([op_m, X1_train_m, X2_train_m], y_train_m, batch_size=128, epochs=512,
+    verbose=2, validation_data=([op_m, X1_test_m, X2_test_m], y_test_m))
 
 checkpoint = ModelCheckpoint(HO_weights_multiplication_path, monitor='val_loss',
                             verbose=1, save_weights_only=True, save_best_only=True)
@@ -105,9 +108,10 @@ callbacks = [checkpoint]
 # Train HO model with Alice to do mulitplication on encrypted data
 X1_cipher_train_m, X2_cipher_train_m, y_cipher_train_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits, 2)
 X1_cipher_test_m, X2_cipher_test_m, y_cipher_test_m = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_m, nonce_bits, 3)
+op_m = np.ones(X1_cipher_train_m.shape)
 
-HO_model_multiplication.fit([X1_cipher_train_m, X2_cipher_train_m], y_cipher_train_m, batch_size=128, epochs=512,
-    verbose=2, callbacks=callbacks, validation_data=([X1_cipher_test_m, X2_cipher_test_m], y_cipher_test_m))
+HO_model_multiplication.fit([op_m, X1_cipher_train_m, X2_cipher_train_m], y_cipher_train_m, batch_size=128, epochs=512,
+    verbose=2, callbacks=callbacks, validation_data=([op_m, X1_cipher_test_m, X2_cipher_test_m], y_cipher_test_m))
 
 # Save weights
 HO_model_multiplication.trainable = False
@@ -132,8 +136,11 @@ while epoch < n_epochs:
 
             nonce = np.random.rand(batch_size, nonce_bits)
 
+            operation_a = np.zeros((batch_size, c3_bits))
+            operation_m = np.ones((batch_size, c3_bits))
+
             loss = abhemodel.train_on_batch(
-                [public_arr, p1_batch, p2_batch, nonce, private_arr], None)  # calculate the loss
+                [public_arr, p1_batch, p2_batch, nonce, private_arr, operation_a, operation_m], None)  # calculate the loss
             
         # How well Alice's encryption and Bob's decryption work together
         abelosses0.append(loss)
@@ -142,8 +149,8 @@ while epoch < n_epochs:
 
          # Evaluate Bob's ability to decrypt a message
         m1_enc, m2_enc = alice.predict([public_arr, p1_batch, p2_batch, nonce])
-        m3_enc_a = HO_model_addition.predict([m1_enc, m2_enc])
-        m3_enc_m = HO_model_multiplication.predict([m1_enc, m2_enc])
+        m3_enc_a = HO_model_addition.predict([operation_a, m1_enc, m2_enc])
+        m3_enc_m = HO_model_multiplication.predict([operation_m, m1_enc, m2_enc])
 
         m3_dec_a = bob.predict([m3_enc_a, private_arr, nonce])
         loss_m3_a = np.mean(np.sum(np.abs(p1_batch + p2_batch - m3_dec_a), axis=-1))
@@ -176,7 +183,10 @@ while epoch < n_epochs:
 
             nonce = np.random.rand(batch_size, nonce_bits)
 
-            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce], None)
+            operation_a = np.zeros((batch_size, c3_bits))
+            operation_m = np.ones((batch_size, c3_bits))
+
+            loss = evemodel.train_on_batch([public_arr, p1_batch, p2_batch, nonce, operation_a, operation_m], None)
 
         evelosses0.append(loss)
         evelosses.append(loss)
@@ -251,8 +261,11 @@ with open(f'results/results-{test_type}.txt', "a") as f:
 
     cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 
-    cipher_add = HO_model_addition.predict([cipher1, cipher2])
-    cipher_mu = HO_model_multiplication.predict([cipher1, cipher2])
+    operation_a = np.zeros(cipher1.shape)
+    operation_m = np.ones(cipher1.shape)
+
+    cipher_add = HO_model_addition.predict([operation_a, cipher1, cipher2])
+    cipher_mu = HO_model_multiplication.predict([operation_m, cipher1, cipher2])
 
     print("cipher1 + cipher2")
     print(cipher1+cipher2)

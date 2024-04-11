@@ -1,10 +1,11 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout
+from tensorflow.keras.layers import Reshape, Flatten, Input, Dense, Conv1D, concatenate, Lambda, Dropout, Activation
 from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
 from neural_network.nalu import NALU
 from neural_network.nac import NAC
+from tensorflow.keras.activations import relu
 
 # Process plaintexts
 def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
@@ -26,13 +27,15 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(aconv3)
+                    padding=pad)(aconv3)
+    
+    aactive = Activation(lambda x: relu(x, max_value=1))(aconv4)
 
-    return Flatten()(aconv4)
+    return Flatten()(aactive)
 
 # Alice network
 def create_networks(public_bits, private_bits, dropout_rate):
-    learning_rate = 0.00005  # Adam and 0.0008
+    learning_rate = 0.0001  # Adam and 0.0008
 
     # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
     # Plaintext 1 and 2
@@ -114,15 +117,16 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(bconv2)
     bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(bconv3)
+                    padding=pad)(bconv3)
+    bactive = Activation(lambda x: relu(x, max_value=2))(bconv4)
 
     # Output corresponding to shape of p1 + p2
-    bflattened = Flatten()(bconv4)
+    bflattened = Flatten()(bactive)
 
-    boutput = Lambda(lambda x: x * 2)(bflattened)
+    # boutput = Lambda(lambda x: x * 2)(bflattened)
 
     bob = Model(inputs=[binput0, binput1, bnonce_input],
-                outputs=boutput, name='bob')
+                outputs=bflattened, name='bob')
 
 
     # Eve network
@@ -144,15 +148,17 @@ def create_networks(public_bits, private_bits, dropout_rate):
     econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(econv2)
     econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(econv3)
+                    padding=pad)(econv3)
+    
+    eactive = Activation(lambda x: relu(x, max_value=2))(econv4)
 
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
-    eflattened = Flatten()(econv4)
+    eflattened = Flatten()(eactive)
 
-    eoutput = Lambda(lambda x: x * 2)(eflattened)
+    # eoutput = Lambda(lambda x: x * 2)(eflattened)
 
 
-    eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
+    eve = Model([einput0, einput1, enonce_input], eflattened, name='eve')
 
     # Loss and optimizer
 
@@ -197,6 +203,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     eveloss = (eveloss_addition+eveloss_multiplication+eveloss_alice+eveloss_alice2)/4
     bobloss = (bobloss_addition+bobloss_multiplication+bobloss_alice+bobloss_alice2)/4
 
+    # eveloss = (eveloss_addition+eveloss_multiplication)/2
+    # bobloss = (bobloss_addition+bobloss_multiplication)/2
     # Build and compile the ABHE model, used for training Alice, Bob and HE networks
     abheloss = bobloss + K.square((p1_bits+p2_bits)/2 - eveloss) / ((p1_bits+p2_bits//2)**2)
     abhemodel.add_loss(abheloss)
