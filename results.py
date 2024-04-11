@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from networks_functions import create_networks
-from calculations.randomness import plot_standard_deviation
+from calculations.randomness import plot_std_and_mean
 from tensorflow.keras.models import Model
 
 batch_size = 512
@@ -56,7 +56,7 @@ for curve in curves:
         results[curve][rate]['p1+p2'] = decryption_accurancy(bob, cipher3, private_arr, nonce, p1_batch+p2_batch)
         results[curve][rate]['p1'] = decryption_accurancy(bob, cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(bob, cipher2, private_arr, nonce, p2_batch)
-    plot_standard_deviation(curve)
+    plot_std_and_mean(curve)
 
 for curve in results:
     print(curve)
