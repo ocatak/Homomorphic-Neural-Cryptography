@@ -127,10 +127,16 @@ def plot_std_and_mean(curve):
 
     # Plotting
     plt.figure(figsize=(10, 6))
+    plt.rc('font', size=12)  # controls default text size
+    plt.rc('axes', titlesize=16)  # fontsize of the axes title
+    plt.rc('axes', labelsize=25)  # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=25)  # fontsize of the tick labels
+    plt.rc('ytick', labelsize=25)  # fontsize of the tick labels
+    plt.rc('legend', fontsize=18)  # fontsize of the legend
+    plt.ylim(0, 0.25)
     sns.lineplot(data=df, x='dropout_rate', y='value', hue='type', style='type', markers=True, dashes=False)
     plt.xlabel('Dropout Rate')
     plt.ylabel('Value')
-    plt.title('Mean and Standard Deviation of Standard Deviation by Dropout Rate')
     plt.legend(title='Type')
     plt.grid(True)
     plt.savefig(f"pdf-figures/{curve}-std-sns.pdf", bbox_inches='tight')
