@@ -6288,4 +6288,156 @@ New best Bob loss 2.052817979801148 at epoch 45
 New best Bob loss 2.0314461937873602 at epoch 46
 Epoch  47:   0% | abe: 1.380 | eve: 11.164 | bob: 2.048Epoch  47:   0% | abe: 1.377 | eve: 11.144 | bob: 2.032Epoch  47:   1% | abe: 1.373 | eve: 11.139 | bob: 2.036Epoch  47:   2% | abe: 1.366 | eve: 11.137 | bob: 2.025Epoch  47:   3% | abe: 1.364 | eve: 11.144 | bob: 2.022Epoch  47:   3% | abe: 1.362 | eve: 11.142 | bob: 2.017Epoch  47:   4% | abe: 1.366 | eve: 11.139 | bob: 2.028Epoch  47:   5% | abe: 1.368 | eve: 11.145 | bob: 2.027Epoch  47:   6% | abe: 1.368 | eve: 11.144 | bob: 2.029Epoch  47:   7% | abe: 1.367 | eve: 11.150 | bob: 2.028Epoch  47:   7% | abe: 1.366 | eve: 11.144 | bob: 2.028Epoch  47:   8% | abe: 1.368 | eve: 11.147 | bob: 2.027Epoch  47:   9% | abe: 1.366 | eve: 11.152 | bob: 2.028Epoch  47:  10% | abe: 1.366 | eve: 11.156 | bob: 2.026Epoch  47:  10% | abe: 1.365 | eve: 11.154 | bob: 2.025Epoch  47:  11% | abe: 1.363 | eve: 11.157 | bob: 2.023Epoch  47:  12% | abe: 1.364 | eve: 11.160 | bob: 2.023Epoch  47:  13% | abe: 1.363 | eve: 11.159 | bob: 2.023Epoch  47:  14% | abe: 1.362 | eve: 11.159 | bob: 2.021Epoch  47:  14% | abe: 1.362 | eve: 11.159 | bob: 2.020Epoch  47:  15% | abe: 1.363 | eve: 11.155 | bob: 2.023Epoch  47:  16% | abe: 1.363 | eve: 11.157 | bob: 2.022Epoch  47:  17% | abe: 1.363 | eve: 11.157 | bob: 2.022Epoch  47:  17% | abe: 1.363 | eve: 11.157 | bob: 2.022Epoch  47:  18% | abe: 1.362 | eve: 11.155 | bob: 2.021Epoch  47:  19% | abe: 1.363 | eve: 11.155 | bob: 2.021Epoch  47:  20% | abe: 1.362 | eve: 11.154 | bob: 2.021Epoch  47:  21% | abe: 1.362 | eve: 11.155 | bob: 2.022Epoch  47:  21% | abe: 1.362 | eve: 11.156 | bob: 2.021Epoch  47:  22% | abe: 1.362 | eve: 11.157 | bob: 2.021Epoch  47:  23% | abe: 1.362 | eve: 11.156 | bob: 2.022Epoch  47:  24% | abe: 1.362 | eve: 11.157 | bob: 2.022Epoch  47:  25% | abe: 1.361 | eve: 11.159 | bob: 2.022Epoch  47:  25% | abe: 1.361 | eve: 11.159 | bob: 2.022Epoch  47:  26% | abe: 1.361 | eve: 11.158 | bob: 2.022Epoch  47:  27% | abe: 1.361 | eve: 11.156 | bob: 2.022Epoch  47:  28% | abe: 1.360 | eve: 11.160 | bob: 2.021Epoch  47:  28% | abe: 1.358 | eve: 11.159 | bob: 2.020Epoch  47:  29% | abe: 1.357 | eve: 11.160 | bob: 2.019Epoch  47:  30% | abe: 1.357 | eve: 11.160 | bob: 2.019Epoch  47:  31% | abe: 1.357 | eve: 11.160 | bob: 2.018Epoch  47:  32% | abe: 1.356 | eve: 11.159 | bob: 2.017Epoch  47:  32% | abe: 1.356 | eve: 11.159 | bob: 2.017Epoch  47:  33% | abe: 1.356 | eve: 11.160 | bob: 2.017Epoch  47:  34% | abe: 1.356 | eve: 11.159 | bob: 2.017Epoch  47:  35% | abe: 1.356 | eve: 11.159 | bob: 2.017Epoch  47:  35% | abe: 1.355 | eve: 11.160 | bob: 2.016Epoch  47:  36% | abe: 1.355 | eve: 11.160 | bob: 2.016Epoch  47:  37% | abe: 1.354 | eve: 11.160 | bob: 2.015Epoch  47:  38% | abe: 1.354 | eve: 11.160 | bob: 2.014Epoch  47:  39% | abe: 1.354 | eve: 11.157 | bob: 2.015Epoch  47:  39% | abe: 1.354 | eve: 11.157 | bob: 2.014Epoch  47:  40% | abe: 1.354 | eve: 11.159 | bob: 2.014Epoch  47:  41% | abe: 1.354 | eve: 11.160 | bob: 2.014Epoch  47:  42% | abe: 1.354 | eve: 11.160 | bob: 2.013Epoch  47:  42% | abe: 1.353 | eve: 11.160 | bob: 2.013Epoch  47:  43% | abe: 1.354 | eve: 11.161 | bob: 2.013Epoch  47:  44% | abe: 1.354 | eve: 11.162 | bob: 2.013Epoch  47:  45% | abe: 1.354 | eve: 11.162 | bob: 2.013Epoch  47:  46% | abe: 1.353 | eve: 11.163 | bob: 2.012Epoch  47:  46% | abe: 1.353 | eve: 11.162 | bob: 2.011Epoch  47:  47% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  48% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  49% | abe: 1.353 | eve: 11.163 | bob: 2.012Epoch  47:  50% | abe: 1.353 | eve: 11.163 | bob: 2.012Epoch  47:  50% | abe: 1.353 | eve: 11.163 | bob: 2.012Epoch  47:  51% | abe: 1.353 | eve: 11.163 | bob: 2.011Epoch  47:  52% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  53% | abe: 1.353 | eve: 11.163 | bob: 2.012Epoch  47:  53% | abe: 1.353 | eve: 11.165 | bob: 2.012Epoch  47:  54% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  55% | abe: 1.352 | eve: 11.164 | bob: 2.011Epoch  47:  56% | abe: 1.352 | eve: 11.164 | bob: 2.011Epoch  47:  57% | abe: 1.352 | eve: 11.164 | bob: 2.011Epoch  47:  57% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  58% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  59% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  60% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  60% | abe: 1.352 | eve: 11.165 | bob: 2.011Epoch  47:  61% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  62% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  63% | abe: 1.352 | eve: 11.164 | bob: 2.011Epoch  47:  64% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  64% | abe: 1.353 | eve: 11.166 | bob: 2.011Epoch  47:  65% | abe: 1.353 | eve: 11.165 | bob: 2.011Epoch  47:  66% | abe: 1.353 | eve: 11.165 | bob: 2.011Epoch  47:  67% | abe: 1.353 | eve: 11.165 | bob: 2.011Epoch  47:  67% | abe: 1.353 | eve: 11.165 | bob: 2.012Epoch  47:  68% | abe: 1.353 | eve: 11.164 | bob: 2.012Epoch  47:  69% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  70% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  71% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  71% | abe: 1.353 | eve: 11.164 | bob: 2.011Epoch  47:  72% | abe: 1.353 | eve: 11.163 | bob: 2.011Epoch  47:  73% | abe: 1.352 | eve: 11.163 | bob: 2.011Epoch  47:  74% | abe: 1.353 | eve: 11.163 | bob: 2.011Epoch  47:  75% | abe: 1.352 | eve: 11.163 | bob: 2.011Epoch  47:  75% | abe: 1.352 | eve: 11.163 | bob: 2.010Epoch  47:  76% | abe: 1.352 | eve: 11.163 | bob: 2.010Epoch  47:  77% | abe: 1.352 | eve: 11.163 | bob: 2.010Epoch  47:  78% | abe: 1.351 | eve: 11.163 | bob: 2.009Epoch  47:  78% | abe: 1.351 | eve: 11.163 | bob: 2.009Epoch  47:  79% | abe: 1.352 | eve: 11.163 | bob: 2.010Epoch  47:  80% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  81% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  82% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  82% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  83% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  84% | abe: 1.351 | eve: 11.163 | bob: 2.009Epoch  47:  85% | abe: 1.350 | eve: 11.164 | bob: 2.009Epoch  47:  85% | abe: 1.350 | eve: 11.164 | bob: 2.009Epoch  47:  86% | abe: 1.350 | eve: 11.164 | bob: 2.009Epoch  47:  87% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  88% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  89% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  89% | abe: 1.351 | eve: 11.165 | bob: 2.009Epoch  47:  90% | abe: 1.351 | eve: 11.165 | bob: 2.009Epoch  47:  91% | abe: 1.351 | eve: 11.164 | bob: 2.009Epoch  47:  92% | abe: 1.350 | eve: 11.165 | bob: 2.008Epoch  47:  92% | abe: 1.350 | eve: 11.165 | bob: 2.008Epoch  47:  93% | abe: 1.349 | eve: 11.166 | bob: 2.007Epoch  47:  94% | abe: 1.349 | eve: 11.166 | bob: 2.007Epoch  47:  95% | abe: 1.349 | eve: 11.167 | bob: 2.007Epoch  47:  96% | abe: 1.349 | eve: 11.168 | bob: 2.007Epoch  47:  96% | abe: 1.349 | eve: 11.168 | bob: 2.007Epoch  47:  97% | abe: 1.349 | eve: 11.168 | bob: 2.006Epoch  47:  98% | abe: 1.349 | eve: 11.168 | bob: 2.006Epoch  47:  99% | abe: 1.349 | eve: 11.168 | bob: 2.007
 New best Bob loss 2.0065762711553816 at epoch 47
-Epoch  48:   0% | abe: 1.361 | eve: 11.228 | bob: 2.039Epoch  48:   0% | abe: 1.359 | eve: 11.195 | bob: 2.019Epoch  48:   1% | abe: 1.355 | eve: 11.174 | bob: 2.015Epoch  48:   2% | abe: 1.355 | eve: 11.166 | bob: 2.007Epoch  48:   3% | abe: 1.352 | eve: 11.156 | bob: 2.007Epoch  48:   3% | abe: 1.354 | eve: 11.162 | bob: 2.009Epoch  48:   4% | abe: 1.352 | eve: 11.163 | bob: 2.011Epoch  48:   5% | abe: 1.355 | eve: 11.162 | bob: 2.013Epoch  48:   6% | abe: 1.354 | eve: 11.162 | bob: 2.012Epoch  48:   7% | abe: 1.355 | eve: 11.159 | bob: 2.013Epoch  48:   7% | abe: 1.352 | eve: 11.158 | bob: 2.009Epoch  48:   8% | abe: 1.354 | eve: 11.158 | bob: 2.010Epoch  48:   9% | abe: 1.353 | eve: 11.160 | bob: 2.007Epoch  48:  10% | abe: 1.355 | eve: 11.154 | bob: 2.010Epoch  48:  10% | abe: 1.353 | eve: 11.156 | bob: 2.008Epoch  48:  11% | abe: 1.352 | eve: 11.158 | bob: 2.007Epoch  48:  12% | abe: 1.351 | eve: 11.161 | bob: 2.007Epoch  48:  13% | abe: 1.349 | eve: 11.163 | bob: 2.004Epoch  48:  14% | abe: 1.349 | eve: 11.167 | bob: 2.003Epoch  48:  14% | abe: 1.349 | eve: 11.165 | bob: 2.003Epoch  48:  15% | abe: 1.349 | eve: 11.166 | bob: 2.004Epoch  48:  16% | abe: 1.348 | eve: 11.166 | bob: 2.003Epoch  48:  17% | abe: 1.347 | eve: 11.167 | bob: 2.003Epoch  48:  17% | abe: 1.347 | eve: 11.169 | bob: 2.003Epoch  48:  18% | abe: 1.347 | eve: 11.168 | bob: 2.001Epoch  48:  19% | abe: 1.345 | eve: 11.168 | bob: 2.000Epoch  48:  20% | abe: 1.345 | eve: 11.170 | bob: 1.998Epoch  48:  21% | abe: 1.344 | eve: 11.169 | bob: 1.998Epoch  48:  21% | abe: 1.344 | eve: 11.166 | bob: 1.998Epoch  48:  22% | abe: 1.343 | eve: 11.167 | bob: 1.997Epoch  48:  23% | abe: 1.342 | eve: 11.168 | bob: 1.997Epoch  48:  24% | abe: 1.341 | eve: 11.168 | bob: 1.995Epoch  48:  25% | abe: 1.342 | eve: 11.169 | bob: 1.996Epoch  48:  25% | abe: 1.342 | eve: 11.168 | bob: 1.996
+Epoch  48:   0% | abe: 1.361 | eve: 11.228 | bob: 2.039Epoch  48:   0% | abe: 1.359 | eve: 11.195 | bob: 2.019Epoch  48:   1% | abe: 1.355 | eve: 11.174 | bob: 2.015Epoch  48:   2% | abe: 1.355 | eve: 11.166 | bob: 2.007Epoch  48:   3% | abe: 1.352 | eve: 11.156 | bob: 2.007Epoch  48:   3% | abe: 1.354 | eve: 11.162 | bob: 2.009Epoch  48:   4% | abe: 1.352 | eve: 11.163 | bob: 2.011Epoch  48:   5% | abe: 1.355 | eve: 11.162 | bob: 2.013Epoch  48:   6% | abe: 1.354 | eve: 11.162 | bob: 2.012Epoch  48:   7% | abe: 1.355 | eve: 11.159 | bob: 2.013Epoch  48:   7% | abe: 1.352 | eve: 11.158 | bob: 2.009Epoch  48:   8% | abe: 1.354 | eve: 11.158 | bob: 2.010Epoch  48:   9% | abe: 1.353 | eve: 11.160 | bob: 2.007Epoch  48:  10% | abe: 1.355 | eve: 11.154 | bob: 2.010Epoch  48:  10% | abe: 1.353 | eve: 11.156 | bob: 2.008Epoch  48:  11% | abe: 1.352 | eve: 11.158 | bob: 2.007Epoch  48:  12% | abe: 1.351 | eve: 11.161 | bob: 2.007Epoch  48:  13% | abe: 1.349 | eve: 11.163 | bob: 2.004Epoch  48:  14% | abe: 1.349 | eve: 11.167 | bob: 2.003Epoch  48:  14% | abe: 1.349 | eve: 11.165 | bob: 2.003Epoch  48:  15% | abe: 1.349 | eve: 11.166 | bob: 2.004Epoch  48:  16% | abe: 1.348 | eve: 11.166 | bob: 2.003Epoch  48:  17% | abe: 1.347 | eve: 11.167 | bob: 2.003Epoch  48:  17% | abe: 1.347 | eve: 11.169 | bob: 2.003Epoch  48:  18% | abe: 1.347 | eve: 11.168 | bob: 2.001Epoch  48:  19% | abe: 1.345 | eve: 11.168 | bob: 2.000Epoch  48:  20% | abe: 1.345 | eve: 11.170 | bob: 1.998Epoch  48:  21% | abe: 1.344 | eve: 11.169 | bob: 1.998Epoch  48:  21% | abe: 1.344 | eve: 11.166 | bob: 1.998Epoch  48:  22% | abe: 1.343 | eve: 11.167 | bob: 1.997Epoch  48:  23% | abe: 1.342 | eve: 11.168 | bob: 1.997Epoch  48:  24% | abe: 1.341 | eve: 11.168 | bob: 1.995Epoch  48:  25% | abe: 1.342 | eve: 11.169 | bob: 1.996Epoch  48:  25% | abe: 1.342 | eve: 11.168 | bob: 1.996Epoch  48:  26% | abe: 1.343 | eve: 11.168 | bob: 1.997Epoch  48:  27% | abe: 1.343 | eve: 11.169 | bob: 1.997Epoch  48:  28% | abe: 1.343 | eve: 11.169 | bob: 1.997Epoch  48:  28% | abe: 1.344 | eve: 11.170 | bob: 1.997Epoch  48:  29% | abe: 1.343 | eve: 11.169 | bob: 1.996Epoch  48:  30% | abe: 1.342 | eve: 11.170 | bob: 1.995Epoch  48:  31% | abe: 1.342 | eve: 11.169 | bob: 1.995Epoch  48:  32% | abe: 1.342 | eve: 11.168 | bob: 1.995Epoch  48:  32% | abe: 1.342 | eve: 11.166 | bob: 1.995Epoch  48:  33% | abe: 1.342 | eve: 11.165 | bob: 1.996Epoch  48:  34% | abe: 1.342 | eve: 11.164 | bob: 1.996Epoch  48:  35% | abe: 1.342 | eve: 11.164 | bob: 1.997Epoch  48:  35% | abe: 1.341 | eve: 11.164 | bob: 1.996Epoch  48:  36% | abe: 1.341 | eve: 11.165 | bob: 1.996Epoch  48:  37% | abe: 1.341 | eve: 11.166 | bob: 1.996Epoch  48:  38% | abe: 1.340 | eve: 11.167 | bob: 1.996Epoch  48:  39% | abe: 1.340 | eve: 11.166 | bob: 1.996Epoch  48:  39% | abe: 1.340 | eve: 11.166 | bob: 1.996Epoch  48:  40% | abe: 1.339 | eve: 11.167 | bob: 1.995Epoch  48:  41% | abe: 1.340 | eve: 11.168 | bob: 1.996Epoch  48:  42% | abe: 1.339 | eve: 11.169 | bob: 1.995Epoch  48:  42% | abe: 1.340 | eve: 11.168 | bob: 1.996Epoch  48:  43% | abe: 1.339 | eve: 11.168 | bob: 1.995Epoch  48:  44% | abe: 1.339 | eve: 11.168 | bob: 1.995Epoch  48:  45% | abe: 1.340 | eve: 11.168 | bob: 1.996Epoch  48:  46% | abe: 1.339 | eve: 11.167 | bob: 1.996Epoch  48:  46% | abe: 1.340 | eve: 11.168 | bob: 1.996Epoch  48:  47% | abe: 1.340 | eve: 11.168 | bob: 1.996Epoch  48:  48% | abe: 1.339 | eve: 11.168 | bob: 1.996Epoch  48:  49% | abe: 1.339 | eve: 11.169 | bob: 1.995Epoch  48:  50% | abe: 1.339 | eve: 11.169 | bob: 1.995Epoch  48:  50% | abe: 1.339 | eve: 11.169 | bob: 1.996Epoch  48:  51% | abe: 1.339 | eve: 11.168 | bob: 1.996Epoch  48:  52% | abe: 1.339 | eve: 11.168 | bob: 1.996Epoch  48:  53% | abe: 1.340 | eve: 11.167 | bob: 1.996Epoch  48:  53% | abe: 1.340 | eve: 11.166 | bob: 1.997Epoch  48:  54% | abe: 1.340 | eve: 11.166 | bob: 1.997Epoch  48:  55% | abe: 1.340 | eve: 11.167 | bob: 1.997Epoch  48:  56% | abe: 1.341 | eve: 11.166 | bob: 1.997Epoch  48:  57% | abe: 1.341 | eve: 11.165 | bob: 1.997Epoch  48:  57% | abe: 1.341 | eve: 11.165 | bob: 1.997Epoch  48:  58% | abe: 1.340 | eve: 11.165 | bob: 1.997Epoch  48:  59% | abe: 1.341 | eve: 11.165 | bob: 1.998Epoch  48:  60% | abe: 1.341 | eve: 11.165 | bob: 1.997Epoch  48:  60% | abe: 1.341 | eve: 11.165 | bob: 1.998Epoch  48:  61% | abe: 1.341 | eve: 11.165 | bob: 1.998Epoch  48:  62% | abe: 1.342 | eve: 11.165 | bob: 1.998Epoch  48:  63% | abe: 1.342 | eve: 11.165 | bob: 1.998Epoch  48:  64% | abe: 1.342 | eve: 11.165 | bob: 1.999Epoch  48:  64% | abe: 1.342 | eve: 11.166 | bob: 1.999Epoch  48:  65% | abe: 1.342 | eve: 11.166 | bob: 1.999Epoch  48:  66% | abe: 1.342 | eve: 11.166 | bob: 1.999Epoch  48:  67% | abe: 1.342 | eve: 11.166 | bob: 1.999Epoch  48:  67% | abe: 1.342 | eve: 11.167 | bob: 1.998Epoch  48:  68% | abe: 1.342 | eve: 11.167 | bob: 1.999Epoch  48:  69% | abe: 1.342 | eve: 11.166 | bob: 1.998Epoch  48:  70% | abe: 1.342 | eve: 11.166 | bob: 1.998Epoch  48:  71% | abe: 1.342 | eve: 11.167 | bob: 1.998Epoch  48:  71% | abe: 1.342 | eve: 11.166 | bob: 1.998Epoch  48:  72% | abe: 1.342 | eve: 11.166 | bob: 1.998Epoch  48:  73% | abe: 1.342 | eve: 11.166 | bob: 1.998Epoch  48:  74% | abe: 1.342 | eve: 11.167 | bob: 1.998Epoch  48:  75% | abe: 1.343 | eve: 11.166 | bob: 1.999Epoch  48:  75% | abe: 1.343 | eve: 11.166 | bob: 1.999Epoch  48:  76% | abe: 1.343 | eve: 11.166 | bob: 2.000Epoch  48:  77% | abe: 1.343 | eve: 11.166 | bob: 1.999Epoch  48:  78% | abe: 1.343 | eve: 11.167 | bob: 1.999Epoch  48:  78% | abe: 1.343 | eve: 11.167 | bob: 1.999Epoch  48:  79% | abe: 1.343 | eve: 11.167 | bob: 1.999Epoch  48:  80% | abe: 1.343 | eve: 11.167 | bob: 2.000Epoch  48:  81% | abe: 1.343 | eve: 11.168 | bob: 2.000Epoch  48:  82% | abe: 1.343 | eve: 11.168 | bob: 1.999Epoch  48:  82% | abe: 1.343 | eve: 11.168 | bob: 1.999Epoch  48:  83% | abe: 1.343 | eve: 11.169 | bob: 2.000Epoch  48:  84% | abe: 1.343 | eve: 11.170 | bob: 1.999Epoch  48:  85% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  85% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  86% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  87% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  88% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  89% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  89% | abe: 1.343 | eve: 11.170 | bob: 1.999Epoch  48:  90% | abe: 1.343 | eve: 11.170 | bob: 2.000Epoch  48:  91% | abe: 1.343 | eve: 11.170 | bob: 1.999Epoch  48:  92% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  92% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  93% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  94% | abe: 1.342 | eve: 11.170 | bob: 1.999Epoch  48:  95% | abe: 1.342 | eve: 11.170 | bob: 1.999Epoch  48:  96% | abe: 1.342 | eve: 11.169 | bob: 1.999Epoch  48:  96% | abe: 1.342 | eve: 11.169 | bob: 1.998Epoch  48:  97% | abe: 1.341 | eve: 11.169 | bob: 1.998Epoch  48:  98% | abe: 1.342 | eve: 11.169 | bob: 1.998Epoch  48:  99% | abe: 1.341 | eve: 11.170 | bob: 1.998
+New best Bob loss 1.998017714618527 at epoch 48
+Epoch  49:   0% | abe: 1.347 | eve: 11.217 | bob: 2.005Epoch  49:   0% | abe: 1.345 | eve: 11.213 | bob: 1.988Epoch  49:   1% | abe: 1.335 | eve: 11.202 | bob: 1.980Epoch  49:   2% | abe: 1.341 | eve: 11.175 | bob: 1.983Epoch  49:   3% | abe: 1.342 | eve: 11.181 | bob: 1.985Epoch  49:   3% | abe: 1.344 | eve: 11.159 | bob: 1.986Epoch  49:   4% | abe: 1.341 | eve: 11.160 | bob: 1.986Epoch  49:   5% | abe: 1.339 | eve: 11.159 | bob: 1.987Epoch  49:   6% | abe: 1.338 | eve: 11.164 | bob: 1.988Epoch  49:   7% | abe: 1.336 | eve: 11.171 | bob: 1.986Epoch  49:   7% | abe: 1.335 | eve: 11.172 | bob: 1.986Epoch  49:   8% | abe: 1.335 | eve: 11.174 | bob: 1.988Epoch  49:   9% | abe: 1.334 | eve: 11.174 | bob: 1.985Epoch  49:  10% | abe: 1.331 | eve: 11.172 | bob: 1.985Epoch  49:  10% | abe: 1.334 | eve: 11.169 | bob: 1.987Epoch  49:  11% | abe: 1.336 | eve: 11.171 | bob: 1.989Epoch  49:  12% | abe: 1.336 | eve: 11.173 | bob: 1.992Epoch  49:  13% | abe: 1.338 | eve: 11.174 | bob: 1.991Epoch  49:  14% | abe: 1.337 | eve: 11.172 | bob: 1.991Epoch  49:  14% | abe: 1.338 | eve: 11.174 | bob: 1.992Epoch  49:  15% | abe: 1.338 | eve: 11.174 | bob: 1.993Epoch  49:  16% | abe: 1.338 | eve: 11.172 | bob: 1.993Epoch  49:  17% | abe: 1.338 | eve: 11.171 | bob: 1.992Epoch  49:  17% | abe: 1.339 | eve: 11.171 | bob: 1.993Epoch  49:  18% | abe: 1.338 | eve: 11.169 | bob: 1.993Epoch  49:  19% | abe: 1.338 | eve: 11.168 | bob: 1.992Epoch  49:  20% | abe: 1.338 | eve: 11.170 | bob: 1.993Epoch  49:  21% | abe: 1.337 | eve: 11.170 | bob: 1.991Epoch  49:  21% | abe: 1.337 | eve: 11.172 | bob: 1.991Epoch  49:  22% | abe: 1.337 | eve: 11.174 | bob: 1.991Epoch  49:  23% | abe: 1.337 | eve: 11.173 | bob: 1.991Epoch  49:  24% | abe: 1.336 | eve: 11.173 | bob: 1.991Epoch  49:  25% | abe: 1.336 | eve: 11.175 | bob: 1.990Epoch  49:  25% | abe: 1.335 | eve: 11.175 | bob: 1.990Epoch  49:  26% | abe: 1.334 | eve: 11.174 | bob: 1.989Epoch  49:  27% | abe: 1.335 | eve: 11.173 | bob: 1.991Epoch  49:  28% | abe: 1.335 | eve: 11.173 | bob: 1.991Epoch  49:  28% | abe: 1.335 | eve: 11.172 | bob: 1.991Epoch  49:  29% | abe: 1.335 | eve: 11.171 | bob: 1.990Epoch  49:  30% | abe: 1.334 | eve: 11.171 | bob: 1.990Epoch  49:  31% | abe: 1.335 | eve: 11.171 | bob: 1.990Epoch  49:  32% | abe: 1.334 | eve: 11.170 | bob: 1.990Epoch  49:  32% | abe: 1.334 | eve: 11.169 | bob: 1.990Epoch  49:  33% | abe: 1.334 | eve: 11.169 | bob: 1.990Epoch  49:  34% | abe: 1.333 | eve: 11.170 | bob: 1.989Epoch  49:  35% | abe: 1.333 | eve: 11.170 | bob: 1.989Epoch  49:  35% | abe: 1.333 | eve: 11.170 | bob: 1.989Epoch  49:  36% | abe: 1.332 | eve: 11.171 | bob: 1.989Epoch  49:  37% | abe: 1.332 | eve: 11.169 | bob: 1.989Epoch  49:  38% | abe: 1.331 | eve: 11.170 | bob: 1.988Epoch  49:  39% | abe: 1.332 | eve: 11.170 | bob: 1.989Epoch  49:  39% | abe: 1.332 | eve: 11.171 | bob: 1.989Epoch  49:  40% | abe: 1.331 | eve: 11.172 | bob: 1.988Epoch  49:  41% | abe: 1.331 | eve: 11.170 | bob: 1.988Epoch  49:  42% | abe: 1.330 | eve: 11.173 | bob: 1.987Epoch  49:  42% | abe: 1.329 | eve: 11.172 | bob: 1.987Epoch  49:  43% | abe: 1.329 | eve: 11.173 | bob: 1.987Epoch  49:  44% | abe: 1.329 | eve: 11.172 | bob: 1.987Epoch  49:  45% | abe: 1.328 | eve: 11.172 | bob: 1.986Epoch  49:  46% | abe: 1.328 | eve: 11.172 | bob: 1.986Epoch  49:  46% | abe: 1.328 | eve: 11.172 | bob: 1.985Epoch  49:  47% | abe: 1.327 | eve: 11.172 | bob: 1.985Epoch  49:  48% | abe: 1.326 | eve: 11.172 | bob: 1.984Epoch  49:  49% | abe: 1.325 | eve: 11.172 | bob: 1.983Epoch  49:  50% | abe: 1.325 | eve: 11.173 | bob: 1.983Epoch  49:  50% | abe: 1.325 | eve: 11.173 | bob: 1.983Epoch  49:  51% | abe: 1.324 | eve: 11.174 | bob: 1.983Epoch  49:  52% | abe: 1.324 | eve: 11.174 | bob: 1.983Epoch  49:  53% | abe: 1.324 | eve: 11.173 | bob: 1.983Epoch  49:  53% | abe: 1.323 | eve: 11.174 | bob: 1.982Epoch  49:  54% | abe: 1.323 | eve: 11.174 | bob: 1.982Epoch  49:  55% | abe: 1.323 | eve: 11.174 | bob: 1.982Epoch  49:  56% | abe: 1.323 | eve: 11.175 | bob: 1.982Epoch  49:  57% | abe: 1.323 | eve: 11.175 | bob: 1.982Epoch  49:  57% | abe: 1.323 | eve: 11.175 | bob: 1.982Epoch  49:  58% | abe: 1.322 | eve: 11.175 | bob: 1.981Epoch  49:  59% | abe: 1.322 | eve: 11.175 | bob: 1.981Epoch  49:  60% | abe: 1.322 | eve: 11.175 | bob: 1.981Epoch  49:  60% | abe: 1.322 | eve: 11.175 | bob: 1.981Epoch  49:  61% | abe: 1.322 | eve: 11.175 | bob: 1.981Epoch  49:  62% | abe: 1.323 | eve: 11.175 | bob: 1.981Epoch  49:  63% | abe: 1.322 | eve: 11.174 | bob: 1.981Epoch  49:  64% | abe: 1.322 | eve: 11.173 | bob: 1.981Epoch  49:  64% | abe: 1.322 | eve: 11.173 | bob: 1.980Epoch  49:  65% | abe: 1.322 | eve: 11.173 | bob: 1.980Epoch  49:  66% | abe: 1.321 | eve: 11.174 | bob: 1.979Epoch  49:  67% | abe: 1.321 | eve: 11.173 | bob: 1.979Epoch  49:  67% | abe: 1.321 | eve: 11.173 | bob: 1.979Epoch  49:  68% | abe: 1.321 | eve: 11.173 | bob: 1.979Epoch  49:  69% | abe: 1.321 | eve: 11.173 | bob: 1.979Epoch  49:  70% | abe: 1.321 | eve: 11.173 | bob: 1.979Epoch  49:  71% | abe: 1.320 | eve: 11.173 | bob: 1.979Epoch  49:  71% | abe: 1.320 | eve: 11.172 | bob: 1.979Epoch  49:  72% | abe: 1.320 | eve: 11.173 | bob: 1.979Epoch  49:  73% | abe: 1.320 | eve: 11.172 | bob: 1.979Epoch  49:  74% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  75% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  75% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  76% | abe: 1.320 | eve: 11.172 | bob: 1.980Epoch  49:  77% | abe: 1.320 | eve: 11.172 | bob: 1.980Epoch  49:  78% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  78% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  79% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  80% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  81% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  82% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  82% | abe: 1.321 | eve: 11.173 | bob: 1.980Epoch  49:  83% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  84% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  85% | abe: 1.321 | eve: 11.172 | bob: 1.980Epoch  49:  85% | abe: 1.320 | eve: 11.172 | bob: 1.979Epoch  49:  86% | abe: 1.320 | eve: 11.172 | bob: 1.979Epoch  49:  87% | abe: 1.319 | eve: 11.172 | bob: 1.979Epoch  49:  88% | abe: 1.319 | eve: 11.172 | bob: 1.978Epoch  49:  89% | abe: 1.319 | eve: 11.172 | bob: 1.978Epoch  49:  89% | abe: 1.318 | eve: 11.172 | bob: 1.978Epoch  49:  90% | abe: 1.318 | eve: 11.172 | bob: 1.978Epoch  49:  91% | abe: 1.318 | eve: 11.172 | bob: 1.977Epoch  49:  92% | abe: 1.317 | eve: 11.172 | bob: 1.977Epoch  49:  92% | abe: 1.318 | eve: 11.172 | bob: 1.977Epoch  49:  93% | abe: 1.317 | eve: 11.172 | bob: 1.977Epoch  49:  94% | abe: 1.317 | eve: 11.171 | bob: 1.977Epoch  49:  95% | abe: 1.317 | eve: 11.171 | bob: 1.977Epoch  49:  96% | abe: 1.317 | eve: 11.172 | bob: 1.977Epoch  49:  96% | abe: 1.316 | eve: 11.171 | bob: 1.976Epoch  49:  97% | abe: 1.316 | eve: 11.172 | bob: 1.976Epoch  49:  98% | abe: 1.316 | eve: 11.172 | bob: 1.976Epoch  49:  99% | abe: 1.316 | eve: 11.172 | bob: 1.976
+New best Bob loss 1.9761861619817864 at epoch 49
+Training complete.
+cipher1 + cipher2
+[[1.2448595  1.1485705  1.0137428  ... 0.15318179 0.1576789  0.24844351]
+ [1.362293   1.1091008  1.051631   ... 0.13149303 0.1324113  0.27045158]
+ [1.0825553  0.945237   0.83942306 ... 0.12950093 0.12828806 0.2779512 ]
+ ...
+ [1.1873437  1.0445724  0.944462   ... 0.1283845  0.12828821 0.24766782]
+ [1.0911441  0.95340586 0.9787507  ... 0.15383905 0.15516648 0.25759363]
+ [1.1755087  1.0843354  1.0738103  ... 0.13283953 0.17310053 0.46668577]]
+HO addition:
+[[1.244377   1.1481428  1.0133883  ... 0.15313618 0.15763068 0.24834695]
+ [1.3617506  1.1087003  1.051228   ... 0.13146076 0.1323788  0.27034765]
+ [1.0821723  0.94491976 0.83909327 ... 0.12946914 0.12825657 0.27783784]
+ ...
+ [1.186901   1.0442089  0.9441309  ... 0.12835298 0.12825672 0.2475717 ]
+ [1.0907546  0.9530904  0.9784136  ... 0.15379307 0.15511969 0.2574919 ]
+ [1.1750728  1.08395    1.073407   ... 0.13280584 0.17304686 0.46651545]]
+cipher1 * cipher2
+[[3.8166651e-01 3.1448266e-01 2.2441208e-01 ... 3.1800703e-03
+  3.7704823e-03 1.5225548e-02]
+ [4.6248996e-01 2.8242287e-01 2.7036396e-01 ... 0.0000000e+00
+  0.0000000e+00 1.7916726e-02]
+ [2.6096129e-01 1.7942289e-01 1.7475501e-01 ... 0.0000000e+00
+  0.0000000e+00 1.9314043e-02]
+ ...
+ [3.3647710e-01 2.3604743e-01 1.9550663e-01 ... 0.0000000e+00
+  0.0000000e+00 1.5118041e-02]
+ [2.6875010e-01 1.7638703e-01 2.0339908e-01 ... 3.2655767e-03
+  3.4481648e-03 1.6493328e-02]
+ [3.2792255e-01 2.6365310e-01 2.7711067e-01 ... 4.3235245e-04
+  4.7863112e-03 5.0717264e-02]]
+HO multiplication
+[[3.81659687e-01 3.14482003e-01 2.24413753e-01 ... 3.27041280e-03
+  3.85646475e-03 1.52327344e-02]
+ [4.62471306e-01 2.82423854e-01 2.70366162e-01 ... 1.06312793e-04
+  1.06048406e-04 1.79133136e-02]
+ [2.60962844e-01 1.79422200e-01 1.74755722e-01 ... 1.06737149e-04
+  1.06892316e-04 1.93077549e-02]
+ ...
+ [3.36474717e-01 2.36049071e-01 1.95507556e-01 ... 1.06883817e-04
+  1.06892745e-04 1.51256733e-02]
+ [2.68751502e-01 1.76385820e-01 2.03400046e-01 ... 3.35529353e-03
+  3.53660155e-03 1.64957307e-02]
+ [3.27920854e-01 2.63654590e-01 2.77112365e-01 ... 5.37986984e-04
+  4.85677784e-03 5.06960452e-02]]
+HO model Accuracy Percentage Addition: 100.00%
+HO model Accuracy Percentage Multiplication: 100.00%
+Bob decrypted addition: [[0.         1.774934   0.8584976  ... 0.96741545 0.89346397 1.8621446 ]
+ [0.         0.         0.75128347 ... 0.         1.0367444  0.9861268 ]
+ [1.1594343  0.79431975 1.8073194  ... 0.867703   0.8408218  0.        ]
+ ...
+ [0.85259736 0.9402765  1.0464875  ... 0.961598   0.87640315 1.7764695 ]
+ [1.484484   0.9196361  0.97365165 ... 0.98450035 1.7865462  0.8257028 ]
+ [0.9604145  1.8038628  1.935145   ... 1.0199808  1.0512956  0.86759883]]
+Bob decrypted bits addition: [[0 2 1 ... 1 1 2]
+ [0 0 1 ... 0 1 1]
+ [1 1 2 ... 1 1 0]
+ ...
+ [1 1 1 ... 1 1 2]
+ [1 1 1 ... 1 2 1]
+ [1 2 2 ... 1 1 1]]
+Number of correctly decrypted bits addition: 7725
+Total number of bits addition: 8192
+Decryption accuracy addition: 94.29931640625%
+Bob decrypted multiplication: [[0.         0.95460624 0.11946827 ... 0.02751207 0.5783013  0.71261364]
+ [0.         0.0045225  0.10404402 ... 0.         0.52658606 0.38292968]
+ [0.2249707  0.29249555 0.63167703 ... 0.         0.39731932 0.05253965]
+ ...
+ [0.02630049 0.23289764 0.30727297 ... 0.09107399 0.31265116 0.870026  ]
+ [0.57342386 0.5667755  0.16014862 ... 0.         0.7609474  0.48093563]
+ [0.04579324 0.9242446  0.6853221  ... 0.04859543 0.30515802 0.24714667]]
+Bob decrypted bits multiplication: [[0 1 0 ... 0 1 1]
+ [0 0 0 ... 0 1 0]
+ [0 0 1 ... 0 0 0]
+ ...
+ [0 0 0 ... 0 0 1]
+ [1 1 0 ... 0 1 0]
+ [0 1 1 ... 0 0 0]]
+Number of correctly decrypted bits multiplication: 6943
+Total number of bits multiplication: 8192
+Decryption accuracy multiplication: 84.75341796875%
+Eve decrypted addition: [[1.4084085 1.4045967 1.2310911 ... 1.458187  1.5291743 1.4380028]
+ [1.4181907 1.4344635 1.2745633 ... 1.433307  1.5137649 1.436158 ]
+ [1.4217824 1.4378809 1.2782222 ... 1.4274035 1.506032  1.434542 ]
+ ...
+ [1.4087582 1.3967823 1.2165407 ... 1.4655371 1.5321126 1.4401767]
+ [1.4144868 1.4241209 1.2604816 ... 1.4426734 1.5180688 1.4362948]
+ [1.419     1.4301702 1.2679573 ... 1.4388361 1.5135496 1.4378295]]
+Eve decrypted bits addition: [[1 1 1 ... 1 2 1]
+ [1 1 1 ... 1 2 1]
+ [1 1 1 ... 1 2 1]
+ ...
+ [1 1 1 ... 1 2 1]
+ [1 1 1 ... 1 2 1]
+ [1 1 1 ... 1 2 1]]
+Number of correctly decrypted bits by Eve addition: 4001
+Total number of bits addition: 8192
+Decryption accuracy by Eve addition: 48.84033203125%
+Eve decrypted mulitplication: [[1.4216338 1.386821  1.1945163 ... 1.4518152 1.4870697 1.4386649]
+ [1.4191134 1.3951278 1.2054219 ... 1.4413772 1.4853896 1.4393051]
+ [1.4182335 1.3933201 1.1984851 ... 1.4360325 1.4869771 1.44104  ]
+ ...
+ [1.4238074 1.3947988 1.204052  ... 1.4473317 1.4857002 1.4390707]
+ [1.4193882 1.3887279 1.1975842 ... 1.4522076 1.4873562 1.4398203]
+ [1.4215959 1.3948343 1.2063373 ... 1.4497354 1.4850316 1.4388356]]
+Eve decrypted bits mulitplication: [[1 1 1 ... 1 1 1]
+ [1 1 1 ... 1 1 1]
+ [1 1 1 ... 1 1 1]
+ ...
+ [1 1 1 ... 1 1 1]
+ [1 1 1 ... 1 1 1]
+ [1 1 1 ... 1 1 1]]
+Number of correctly decrypted bits by Eve mulitplication: 1987
+Total number of bits mulitplication: 8192
+Decryption accuracy by Eve mulitplication: 24.25537109375%
+Bob decrypted P1: [[0.         1.0294787  0.9549315  ... 0.98244923 0.         0.8638069 ]
+ [0.         0.         0.89736366 ... 0.         0.         0.94314873]
+ [1.0902799  0.9115807  0.96488345 ... 0.8449239  1.0213362  0.        ]
+ ...
+ [0.84015113 0.9477769  0.         ... 0.         0.         0.88806206]
+ [0.9914812  0.         0.94099635 ... 0.94381285 0.89783156 0.        ]
+ [0.9702541  0.9536741  0.99699724 ... 0.         1.1114537  0.912535  ]]
+Bob decrypted bits P1: [[0 1 1 ... 1 0 1]
+ [0 0 1 ... 0 0 1]
+ [1 1 1 ... 1 1 0]
+ ...
+ [1 1 0 ... 0 0 1]
+ [1 0 1 ... 1 1 0]
+ [1 1 1 ... 0 1 1]]
+Number of correctly decrypted bits P1: 7927
+Total number of bits P1: 8192
+Decryption accuracy P1: 96.76513671875%
+Bob decrypted P2: [[0.         1.0639144  0.         ... 0.         1.0863442  0.89510876]
+ [0.         0.         0.         ... 0.         0.9132079  0.        ]
+ [0.         0.         0.8822053  ... 0.         0.         0.        ]
+ ...
+ [0.         0.         1.0332266  ... 1.0143546  0.97194314 0.9574102 ]
+ [0.79474175 1.0345984  0.         ... 0.         0.84141165 0.93258125]
+ [0.         1.0219836  0.9576238  ... 0.86689794 0.         0.        ]]
+Bob decrypted bits P2: [[0 1 0 ... 0 1 1]
+ [0 0 0 ... 0 1 0]
+ [0 0 1 ... 0 0 0]
+ ...
+ [0 0 1 ... 1 1 1]
+ [1 1 0 ... 0 1 1]
+ [0 1 1 ... 1 0 0]]
+Number of correctly decrypted bits P2: 7934
+Total number of bits P2: 8192
+Decryption accuracy P2: 96.8505859375%

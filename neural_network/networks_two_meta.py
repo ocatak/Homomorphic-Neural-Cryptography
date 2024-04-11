@@ -33,7 +33,7 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
 
 # Alice network
 def create_networks(public_bits, private_bits, dropout_rate):
-    learning_rate = 0.00005  # Adam and 0.0008
+    learning_rate = 0.0001  # Adam and 0.0008
 
     # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
     # Plaintext 1 and 2
@@ -207,8 +207,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     abhemodel.add_loss(abheloss)
 
     # Set the Adam optimizer
-    beoptim = RMSprop(learning_rate=learning_rate)
-    eveoptim = RMSprop(learning_rate=learning_rate)
+    beoptim = Adam(learning_rate=learning_rate)
+    eveoptim = Adam(learning_rate=learning_rate)
     optimizer = RMSprop(0.1)
     HO_model_addition.compile(optimizer, 'mse')
     HO_model_multiplication.compile(optimizer, 'mse')
