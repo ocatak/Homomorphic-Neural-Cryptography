@@ -26,13 +26,13 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
                     padding=pad, activation='tanh')(aconv2)
 
     aconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(aconv3)
+                    padding=pad, activation='sigmoid')(aconv3)
 
     return Flatten()(aconv4)
 
 # Alice network
 def create_networks(public_bits, private_bits, dropout_rate):
-    learning_rate = 0.0001
+    learning_rate = 0.00005  # Adam and 0.0008
 
     # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
     # Plaintext 1 and 2
@@ -114,13 +114,15 @@ def create_networks(public_bits, private_bits, dropout_rate):
     bconv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(bconv2)
     bconv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(bconv3)
+                    padding=pad, activation='sigmoid')(bconv3)
 
     # Output corresponding to shape of p1 + p2
     bflattened = Flatten()(bconv4)
 
+    boutput = Lambda(lambda x: x * 2)(bflattened)
+
     bob = Model(inputs=[binput0, binput1, bnonce_input],
-                outputs=bflattened, name='bob')
+                outputs=boutput, name='bob')
 
 
     # Eve network
@@ -142,12 +144,15 @@ def create_networks(public_bits, private_bits, dropout_rate):
     econv3 = Conv1D(filters=4, kernel_size=1, strides=1,
                     padding=pad, activation='tanh')(econv2)
     econv4 = Conv1D(filters=1, kernel_size=1, strides=1,
-                    padding=pad, activation='hard_sigmoid')(econv3)
+                    padding=pad, activation='sigmoid')(econv3)
 
     # Eve's attempt at guessing the plaintext, corresponding to shape of p1 + p2
     eflattened = Flatten()(econv4)
 
-    eve = Model([einput0, einput1, enonce_input], eflattened, name='eve')
+    eoutput = Lambda(lambda x: x * 2)(eflattened)
+
+
+    eve = Model([einput0, einput1, enonce_input], eoutput, name='eve')
 
     # Loss and optimizer
 
@@ -197,8 +202,8 @@ def create_networks(public_bits, private_bits, dropout_rate):
     abhemodel.add_loss(abheloss)
 
     # Set the Adam optimizer
-    beoptim = Adam(learning_rate=learning_rate)
-    eveoptim = Adam(learning_rate=learning_rate)
+    beoptim = RMSprop(learning_rate=learning_rate)
+    eveoptim = RMSprop(learning_rate=learning_rate)
     optimizer = RMSprop(0.1)
     HO_model_addition.compile(optimizer, 'mse')
     HO_model_multiplication.compile(optimizer, 'mse')
