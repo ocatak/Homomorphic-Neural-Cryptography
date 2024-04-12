@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -30,7 +30,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}"
+test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-0.0001-1"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
@@ -199,13 +199,13 @@ while epoch < n_epochs:
     if epoch_abeloss < best_abeloss:
         best_abeloss = epoch_abeloss
         best_epoch = epoch
+        alice.save_weights(alice_weights_path)
+        bob.save_weights(bob_weights_path)
+        eve.save_weights(eve_weights_path)
         print(f"\nNew best Bob loss {best_abeloss} at epoch {epoch}")
     
     if epoch - best_epoch > patience_epochs:
         print(f"\nEarly stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best Bob loss: {best_abeloss}")
-        alice.save_weights(alice_weights_path)
-        bob.save_weights(bob_weights_path)
-        eve.save_weights(eve_weights_path)
         break
 
     epoch += 1
