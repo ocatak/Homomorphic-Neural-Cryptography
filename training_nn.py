@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "8"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -30,7 +30,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-and-addition-in-different-models-operation-00005-RMS-31"
+test_type = f"multiplication-and-addition-in-different-models-operation-00005-{args.rate}rate-36"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
