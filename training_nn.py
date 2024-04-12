@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "8"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -30,13 +30,13 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"multiplication-and-addition-in-different-models-operation-00005-{args.rate}rate-36"
+test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-test-2"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
 best_abeloss = float('inf')
 best_epoch = 0
-patience_epochs = 5
+patience_epochs = 2
 
 evelosses = []
 boblosses = []
@@ -45,6 +45,7 @@ abelosses = []
 n_epochs = args.epoch # number of training epochs
 batch_size = args.batch  # number of training examples utilized in one iteration
 n_batches = m_train // args.batch # iterations per epoch, training examples divided by batch size
+n_batches = 128
 abecycles = 1  # number of times Alice and Bob network train per iteration
 evecycles = 1  # number of times Eve network train per iteration, use 1 or 2.
 task_name = 'multiplication'
@@ -115,7 +116,6 @@ HO_model_multiplication.fit([op_m, X1_cipher_train_m, X2_cipher_train_m], y_ciph
 
 # Save weights
 HO_model_multiplication.trainable = False
-
 
 while epoch < n_epochs:
     evelosses0 = []
@@ -205,13 +205,17 @@ while epoch < n_epochs:
     
     if epoch - best_epoch > patience_epochs:
         print(f"\nEarly stopping: No improvement after {patience_epochs} epochs since epoch {best_epoch}. Best Bob loss: {best_abeloss}")
+        alice.save_weights(alice_weights_path)
+        bob.save_weights(bob_weights_path)
+        eve.save_weights(eve_weights_path)
         break
 
     epoch += 1
 
-alice.save_weights(alice_weights_path)
-bob.save_weights(bob_weights_path)
-eve.save_weights(eve_weights_path)
+if not os.path.exists(alice_weights_path):
+    alice.save_weights(alice_weights_path)
+    bob.save_weights(bob_weights_path)
+    eve.save_weights(eve_weights_path)
 
 print("Training complete.")
 steps = -1
