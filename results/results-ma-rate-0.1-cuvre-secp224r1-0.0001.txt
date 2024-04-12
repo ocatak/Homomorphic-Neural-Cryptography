@@ -1,0 +1,15 @@
+Training complete.
+learning rate 0.0001
+Optimizer: Adam
+Activation: tanh-hard-sigmoid-lambda
+Curve: secp224r1Dropout rate: 0.1Epochs: 80
+Batch size: 512
+Iterations per epoch: 128
+Alice-Bob cycles per iteration: 1
+Eve cycles per iteration: 1
+Decryption accuracy by HO addition: 98.75%
+Decryption accuracy by HO multiplication: 100.00%
+Decryption accuracy by Bob Addition: 99.98779296875%
+Decryption accuracy by Bob Multiplication: 90.80810546875%
+Decryption accuracy by Eve Addition: 49.169921875%
+Decryption accuracy by Eve Multiplication: 25.244140625%
