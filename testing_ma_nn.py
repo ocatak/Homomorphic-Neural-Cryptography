@@ -13,7 +13,7 @@ curve = set_curve(args.curve)
 rate = args.rate
 
 batch_size = 512
-test_type = "multiplication-and-addition-in-different-models-operation-00005-30"
+test_type = "ma-rate-0.1-cuvre-secp224r1-0.0001"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
@@ -29,8 +29,8 @@ p1_batch = np.random.randint(
 p2_batch = np.random.randint(
     0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
 
-HO_a_weights_path = f'weights/weights-{test_type}/multiplication_addition_weights.h5'
-HO_m_weights_path = f'weights/weights-{test_type}/multiplication_multiplication_weights.h5'
+HO_a_weights_path = f'weights/weights-{test_type}/addition_weights.h5'
+HO_m_weights_path = f'weights/weights-{test_type}/multiplication_weights.h5'
 alice_weights_path = f'weights/weights-{test_type}/alice_weights.h5'
 bob_weights_path = f'weights/weights-{test_type}/bob_weights.h5'
 eve_weights_path = f'weights/weights-{test_type}/eve_weights.h5'
