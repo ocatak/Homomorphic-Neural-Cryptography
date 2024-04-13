@@ -967,3 +967,129 @@ Epoch 462/512
 512/512 - 0s - loss: 5.1490e-08 - val_loss: 4.8214e-10
 Epoch 463/512
 512/512 - 0s - loss: 4.8468e-08 - val_loss: 4.6736e-10
+Epoch 464/512
+512/512 - 0s - loss: 4.7681e-08 - val_loss: 4.4484e-10
+Epoch 465/512
+512/512 - 0s - loss: 4.5013e-08 - val_loss: 4.2716e-10
+Epoch 466/512
+512/512 - 0s - loss: 4.3815e-08 - val_loss: 4.1015e-10
+Epoch 467/512
+512/512 - 0s - loss: 4.1689e-08 - val_loss: 3.9508e-10
+Epoch 468/512
+512/512 - 0s - loss: 4.0343e-08 - val_loss: 3.8595e-10
+Epoch 469/512
+512/512 - 0s - loss: 3.9236e-08 - val_loss: 3.7011e-10
+Epoch 470/512
+512/512 - 0s - loss: 3.7099e-08 - val_loss: 3.5662e-10
+Epoch 471/512
+512/512 - 0s - loss: 3.6674e-08 - val_loss: 3.3627e-10
+Epoch 472/512
+512/512 - 0s - loss: 3.4222e-08 - val_loss: 3.2397e-10
+Epoch 473/512
+512/512 - 0s - loss: 3.3074e-08 - val_loss: 3.1948e-10
+Epoch 474/512
+512/512 - 0s - loss: 3.2604e-08 - val_loss: 3.0872e-10
+Epoch 475/512
+512/512 - 0s - loss: 3.1223e-08 - val_loss: 2.8742e-10
+Epoch 476/512
+512/512 - 0s - loss: 2.9056e-08 - val_loss: 2.7819e-10
+Epoch 477/512
+512/512 - 0s - loss: 2.8780e-08 - val_loss: 2.7252e-10
+Epoch 478/512
+512/512 - 0s - loss: 2.7757e-08 - val_loss: 2.6095e-10
+Epoch 479/512
+512/512 - 0s - loss: 2.6515e-08 - val_loss: 2.5138e-10
+Epoch 480/512
+512/512 - 0s - loss: 2.5717e-08 - val_loss: 2.4012e-10
+Epoch 481/512
+512/512 - 0s - loss: 2.4372e-08 - val_loss: 2.3431e-10
+Epoch 482/512
+512/512 - 0s - loss: 2.3968e-08 - val_loss: 2.2710e-10
+Epoch 483/512
+512/512 - 0s - loss: 2.2965e-08 - val_loss: 2.1670e-10
+Epoch 484/512
+512/512 - 0s - loss: 2.2034e-08 - val_loss: 2.0697e-10
+Epoch 485/512
+512/512 - 0s - loss: 2.1176e-08 - val_loss: 1.9964e-10
+Epoch 486/512
+512/512 - 0s - loss: 2.0323e-08 - val_loss: 1.9621e-10
+Epoch 487/512
+512/512 - 0s - loss: 1.9948e-08 - val_loss: 1.8883e-10
+Epoch 488/512
+512/512 - 0s - loss: 1.9186e-08 - val_loss: 1.7871e-10
+Epoch 489/512
+512/512 - 0s - loss: 1.8058e-08 - val_loss: 1.7198e-10
+Epoch 490/512
+512/512 - 0s - loss: 1.7587e-08 - val_loss: 1.6998e-10
+Epoch 491/512
+512/512 - 0s - loss: 1.7448e-08 - val_loss: 1.6194e-10
+Epoch 492/512
+512/512 - 0s - loss: 1.6410e-08 - val_loss: 1.5249e-10
+Epoch 493/512
+512/512 - 0s - loss: 1.5538e-08 - val_loss: 1.4970e-10
+Epoch 494/512
+512/512 - 0s - loss: 1.5480e-08 - val_loss: 1.4586e-10
+Epoch 495/512
+512/512 - 0s - loss: 1.4871e-08 - val_loss: 1.4042e-10
+Epoch 496/512
+512/512 - 0s - loss: 1.4225e-08 - val_loss: 1.3391e-10
+Epoch 497/512
+512/512 - 0s - loss: 1.3722e-08 - val_loss: 1.2925e-10
+Epoch 498/512
+512/512 - 0s - loss: 1.3245e-08 - val_loss: 1.2651e-10
+Epoch 499/512
+512/512 - 0s - loss: 1.2987e-08 - val_loss: 1.2175e-10
+Epoch 500/512
+512/512 - 0s - loss: 1.2341e-08 - val_loss: 1.1651e-10
+Epoch 501/512
+512/512 - 0s - loss: 1.2000e-08 - val_loss: 1.1232e-10
+Epoch 502/512
+512/512 - 0s - loss: 1.1519e-08 - val_loss: 1.0749e-10
+Epoch 503/512
+512/512 - 0s - loss: 1.1053e-08 - val_loss: 1.0550e-10
+Epoch 504/512
+512/512 - 0s - loss: 1.0870e-08 - val_loss: 1.0249e-10
+Epoch 505/512
+512/512 - 0s - loss: 1.0447e-08 - val_loss: 9.8242e-11
+Epoch 506/512
+512/512 - 0s - loss: 1.0021e-08 - val_loss: 9.6579e-11
+Epoch 507/512
+512/512 - 0s - loss: 9.8727e-09 - val_loss: 9.2544e-11
+Epoch 508/512
+512/512 - 0s - loss: 9.4332e-09 - val_loss: 8.8459e-11
+Epoch 509/512
+512/512 - 0s - loss: 9.0323e-09 - val_loss: 8.6345e-11
+Epoch 510/512
+512/512 - 0s - loss: 8.8766e-09 - val_loss: 8.4479e-11
+Epoch 511/512
+512/512 - 0s - loss: 8.6717e-09 - val_loss: 8.0927e-11
+Epoch 512/512
+512/512 - 0s - loss: 8.2458e-09 - val_loss: 7.7221e-11
+2024-04-13 10:24:27.966392: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2024-04-13 10:24:27.981131: E tensorflow/stream_executor/cuda/cuda_dnn.cc:329] Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR
+2024-04-13 10:24:27.988892: E tensorflow/stream_executor/cuda/cuda_dnn.cc:329] Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR
+2024-04-13 10:24:28.001821: E tensorflow/stream_executor/cuda/cuda_dnn.cc:329] Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR
+2024-04-13 10:24:28.008999: E tensorflow/stream_executor/cuda/cuda_dnn.cc:329] Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR
+Traceback (most recent call last):
+  File "training_nn.py", line 84, in <module>
+    X1_cipher_train_a, X2_cipher_train_a, y_cipher_train_a = generate_cipher_dataset(p1_bits, p2_bits, batch_size, public_arr, alice, task_a, nonce_bits, 0)
+  File "/mnt/beegfs/home/minawoi/master-thesis/data_utils/dataset_generator.py", line 88, in generate_cipher_dataset
+    cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
+  File "/home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training.py", line 908, in predict
+    use_multiprocessing=use_multiprocessing)
+  File "/home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training_arrays.py", line 723, in predict
+    callbacks=callbacks)
+  File "/home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training_arrays.py", line 394, in model_iteration
+    batch_outs = f(ins_batch)
+  File "/home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/keras/backend.py", line 3476, in __call__
+    run_metadata=self.run_metadata)
+  File "/home/stud/minawoi/miniconda3/envs/conda-venv/lib/python3.7/site-packages/tensorflow_core/python/client/session.py", line 1472, in __call__
+    run_metadata_ptr)
+tensorflow.python.framework.errors_impl.UnknownError: 2 root error(s) found.
+  (0) Unknown: Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.
+	 [[{{node conv1d/conv1d}}]]
+	 [[flatten/Reshape/_203]]
+  (1) Unknown: Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.
+	 [[{{node conv1d/conv1d}}]]
+0 successful operations.
+0 derived errors ignored.
