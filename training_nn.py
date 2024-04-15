@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
@@ -14,11 +14,16 @@ from data_utils.dataset_generator import generate_static_dataset, generate_ciphe
 from tensorflow.keras.callbacks import ModelCheckpoint
 from argparse import ArgumentParser
 import tensorflow as tf
+import numpy as np
 import random
 
-seed = 42
-random.seed(seed)
+# Set the seed for TensorFlow and any other random operation
+seed = 0
+tf.compat.v1.set_random_seed(seed)
 np.random.seed(seed)
+random.seed(seed)
+
+
 
 parser = ArgumentParser()
 parser.add_argument('-rate', type=float, default=0.1, help='Dropout rate')
@@ -36,7 +41,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-batch-{args.batch}-0.00005-random-52"
+test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-batch-{args.batch}-0.00005-rrandom-0-65"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
