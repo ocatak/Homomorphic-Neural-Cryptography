@@ -27,8 +27,8 @@ random.seed(seed)
 
 parser = ArgumentParser()
 parser.add_argument('-rate', type=float, default=0.1, help='Dropout rate')
-parser.add_argument('-epoch', type=int, default=50, help='Number of epochs')
-parser.add_argument('-batch', type=int, default=512, help='Batch size')
+parser.add_argument('-epoch', type=int, default=100, help='Number of epochs')
+parser.add_argument('-batch', type=int, default=448, help='Batch size')
 parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
 args = parser.parse_args()
 
@@ -41,7 +41,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-batch-{args.batch}-0.00005-rrandom-0-65"
+test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}-69"
 optimizer = "Adam"
 activation = "tanh-hard-sigmoid-lambda"
 
