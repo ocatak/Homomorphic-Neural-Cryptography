@@ -1,26 +1,64 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey, EllipticCurvePublicKey
+from typing import Tuple
 import numpy as np
 
-# Set the elliptic curve
-# curve = ec.SECP224R1() #secp224r1
-# curve = ec.SECP256K1() # secp256k1
-# curve = ec.SECP256R1() #secp256r1
-curve = ec.SECP384R1() #secp384r1
-# curve = ec.SECP521R1() #secp521r1
 
-# Get the public key and private key shape in bits
-def get_key_shape():
+def set_curve(curve_name: str) -> ec.EllipticCurve:
+    """Sets the elliptic curve based on the given name.
+
+    Args:
+        curve_name: The name of the curve to set.
+
+    Returns:
+        An instance of an elliptic curve class.
+
+    Raises:
+        ValueError: If an invalid curve name is provided.
+    """
+    if curve_name == "secp224r1":
+        return ec.SECP224R1()
+    elif curve_name == "secp256k1":
+        return ec.SECP256K1()
+    elif curve_name == "secp256r1":
+        return ec.SECP256R1()
+    elif curve_name == "secp384r1":
+        return ec.SECP384R1()
+    elif curve_name == "secp521r1":
+        return ec.SECP521R1()
+    else:
+        raise ValueError("Invalid curve name")
+
+
+def get_key_shape(curve: ec.EllipticCurve) -> Tuple[int, int]:
+    """Gets the public key and private key shape.
+
+    Args:
+        curve: The elliptic curve.
+
+    Returns:
+        A tuple of the private key shape and public key shape.
+    """
     private_key = ec.generate_private_key(
             curve, default_backend())
     public_key = private_key.public_key()
     pr, pu = convert_key_to_pem(private_key, public_key)
-    return len(pr),len(pu)
+    return pr.size, pu.size
 
 
-def generate_key_pair(batch_size):
-    size = get_key_shape()
+def generate_key_pair(batch_size: int, curve: ec.EllipticCurve) -> Tuple[np.ndarray, np.ndarray]:
+    """Generates a batch of private and public keys.
+    
+    Args:
+        batch_size: The number of keys to generate.
+        curve: The elliptic curve.
+        
+    Returns:
+        A tuple of private keys and public keys.
+    """
+    size = get_key_shape(curve)
     pr_arr = np.empty((batch_size, size[0]))
     pu_arr = np.empty((batch_size, size[1]))
     for i in range(batch_size):
@@ -32,8 +70,16 @@ def generate_key_pair(batch_size):
     return pr_arr, pu_arr
 
 
-def convert_key_to_pem(private_key, public_key):
-    # Convert keys to PEM format
+def convert_key_to_pem(private_key: EllipticCurvePrivateKey, public_key: EllipticCurvePublicKey) -> Tuple[np.ndarray, np.ndarray]:
+    """Convert keys to PEM format.
+
+    Args:
+        private_key: The private key.
+        public_key: The public key.
+    
+    Returns:
+        A tuple containing the bit representations of the private and public keys as NumPy arrays
+    """
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
@@ -46,13 +92,23 @@ def convert_key_to_pem(private_key, public_key):
     return convert_key_to_bit(private_pem), convert_key_to_bit(public_pem)
 
 
-def convert_key_to_bit(pem):
+def convert_key_to_bit(pem: str) -> np.ndarray:
+    """ Converts a PEM-encoded key string to its bit representation as a NumPy array.
+    
+    Args:
+        pem: The PEM-encoded key string.
+    
+    Returns:
+        A NumPy array representing the key in bits.
+    """
     # Convert PEM string to a bit string
     bits = ''.join([format(ord(c), '08b') for c in pem])
     arr = np.array([int(bit) for bit in bits])
     return arr
 
 if __name__ == "__main__":
-    private_key, public_key = generate_key_pair(512)
-    np.save(f"key/private_key-{curve.name}.npy", private_key)
-    np.save(f"key/public_key-{curve.name}.npy", public_key)
+    curve = set_curve("secp521r1")
+    batch_size = 448
+    private_key, public_key = generate_key_pair(batch_size, curve)
+    np.save(f"key/private_key-{curve.name}-{batch_size}.npy", private_key)
+    np.save(f"key/public_key-{curve.name}-{batch_size}.npy", public_key)

@@ -1,6 +1,23 @@
-from networks import HO_model, alice, bob, eve, p1_bits, p2_bits, nonce_bits, dropout_rate
+from neural_network.networks_functions import create_networks
 import numpy as np
-from key.EllipticCurve import generate_key_pair, curve
+from key.EllipticCurve import set_curve
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-rate', type=float, default=0.5, help='Dropout rate')
+parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
+args = parser.parse_args()
+
+curve = set_curve(args.curve)
+
+dropout_rate = args.rate
+
+p1_batch = np.load("plaintext/p1_batch.npy")
+p2_batch = np.load("plaintext/p2_batch.npy")
+public_arr = np.load(f"key/public_key-{curve.name}.npy")
+private_arr = np.load(f"key/private_key-{curve.name}.npy")
+
+alice, bob, HO_model, eve, _, _, _, _, _, _, _, nonce_bits = create_networks(public_arr.shape[1], private_arr.shape[1], dropout_rate)
 
 batch_size = 512
 test_type = f"rate-{dropout_rate}-curve-{curve.name}"
@@ -16,15 +33,12 @@ alice.load_weights(alice_weights_path)
 bob.load_weights(bob_weights_path)
 eve.load_weights(eve_weights_path)
 
-p1_batch = np.load("plaintext/p1_batch.npy")
-p2_batch = np.load("plaintext/p2_batch.npy")
-public_arr = np.load(f"key/public_key-{curve.name}.npy")
-private_arr = np.load(f"key/private_key-{curve.name}.npy")
 nonce = np.random.rand(batch_size, nonce_bits)
 
 # Alice encrypts the message
 cipher1, cipher2 = alice.predict([public_arr, p1_batch, p2_batch, nonce])
 print(f"Cipher1: {cipher1}")
+exit()
 np.save(f"ciphertext/{test_type}-1.npy", cipher1)
 
 print(f"Cipher2: {cipher2}")

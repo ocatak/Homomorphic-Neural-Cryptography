@@ -1,7 +1,7 @@
 import os
 import numpy as np
-from networks_functions import create_networks
-from calculations.randomness import plot_std_and_mean
+from neural_network.networks_functions import create_networks
+from data_utils.analyse_cipher import plot_std_and_mean
 from tensorflow.keras.models import Model
 
 batch_size = 512
