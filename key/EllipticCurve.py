@@ -107,8 +107,8 @@ def convert_key_to_bit(pem: str) -> np.ndarray:
     return arr
 
 if __name__ == "__main__":
-    curve = set_curve("secp521r1")
-    batch_size = 448
+    curve = set_curve("secp256r1")
+    batch_size = 1
     private_key, public_key = generate_key_pair(batch_size, curve)
     np.save(f"key/private_key-{curve.name}-{batch_size}.npy", private_key)
     np.save(f"key/public_key-{curve.name}-{batch_size}.npy", public_key)

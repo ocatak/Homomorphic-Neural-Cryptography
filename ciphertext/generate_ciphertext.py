@@ -1,5 +1,5 @@
 import numpy as np
-from neural_network.networks_functions import create_networks
+from neural_network.networks import create_networks
 from typing import List
 
 def save_generated_ciphertexts(dropout_rates: List[str], curves: List[str], batch_size: int, i: int):
@@ -13,24 +13,23 @@ def save_generated_ciphertexts(dropout_rates: List[str], curves: List[str], batc
         i: A number to append to the filename to differentiate between different runs.
     """
     nonce_bits = 64
-    p1_batch = np.load("plaintext/p1_batch.npy")
-    p2_batch = np.load("plaintext/p2_batch.npy")
-
+    p1_batch = np.load(f"plaintext/p1-{batch_size}.npy")
+    p2_batch = np.load(f"plaintext/p2-1.npy")
     for curve in curves:
-        public_arr = np.load(f"key/public_key-{curve}.npy")
-        private_arr = np.load(f"key/private_key-{curve}.npy")
+        public_arr = np.load(f"key/public_key-{curve}-{batch_size}.npy")
+        private_arr = np.load(f"key/private_key-{curve}-{batch_size}.npy")
         nonce = np.random.rand(batch_size, nonce_bits)
         for rate in dropout_rates:
-            alice, _, _, _, _, _, _, _, _, _, _, _ = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
-            path_name = f"rate-{rate}-curve-{curve}"
+            alice, _, _, _, _, _, _, _, _, _, _, _, _= create_networks(public_arr.shape[1], private_arr.shape[1], rate)
+            path_name = f"ma-rate-{rate}-cuvre-{curve}"
             weights_path = f'weights/weights-{path_name}'
             alice.load_weights(f'{weights_path}/alice_weights.h5')
             cipher1, _ = alice.predict([public_arr, p1_batch, p2_batch, nonce])
-            np.save(f"ciphertext/rate-{rate}-curve-{curve}-{i}.npy", cipher1)
+            np.save(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-{i}.npy", cipher1)
 
 if __name__ == "__main__":
-    i = 3
-    batch_size = 512
-    dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-    curves = ["secp224r1"]
+    i = 1
+    batch_size = 1
+    dropout_rates = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+    curves = ["secp256r1"]
     save_generated_ciphertexts(dropout_rates, curves, batch_size, i)

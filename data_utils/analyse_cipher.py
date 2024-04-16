@@ -5,43 +5,44 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def probabilistic_encryption_analysis(rate: float, curve: str) -> Tuple[float, float]:
+def probabilistic_encryption_analysis(rate: float, curve: str, batch_size: int) -> Tuple[float, float]:
     """Calculates the mean and standard deviation of five ciphertexts given a dropout rate and curve.
     Used to calculate the mean and standard deviation of the ciphertexts to compare the probabilistic encryption.
     
     Args:
         rate: Dropout rate.
         curve: Elliptic curve.
+        batch_size: Number of samples in the dataset.
     
     Returns:
         mean_std: Mean of the standard deviation of the ciphertexts.
         std_std: Standard deviation of the standard deviation of the ciphertexts.
     """
-    C1 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-1.npy")
-    C2 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-2.npy")
-    C3 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-3.npy")
-    C4 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-4.npy")
-    C5 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-5.npy")
+    C1 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-1.npy")
+    C2 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-2.npy")
+    C3 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-3.npy")
+    C4 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-4.npy")
+    C5 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-5.npy")
     stacked_arrays = np.stack((C1, C2, C3, C4, C5))
     std = np.std(stacked_arrays, axis=0)
     return std[0]
 
-def plot_std_and_mean(curve: str):
+def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
     """Plots the mean and standard deviation of the standard deviation of five ciphertexts for a given curve. 
     Saves the plot as a pdf file.
 
     Args:
+        dropout_rates: List of dropout rates.
         curve: Elliptic curve.
+        batch_size: Number of samples in the dataset.
     """
     sns.set_theme(style="darkgrid")
 
-    dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-
     data = []
     for rate in dropout_rates:
-        std = probabilistic_encryption_analysis(rate, curve)
+        std = probabilistic_encryption_analysis(rate, curve, batch_size)
         for s in std:
-            data.append({'value': s, 'type': 'mean of std', 'dropout_rate': rate})
+            data.append({'value': s, 'type': 'Standard Diviation', 'dropout_rate': rate})
 
     df = pd.DataFrame(data)
 
