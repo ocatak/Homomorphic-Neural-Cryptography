@@ -19,4 +19,4 @@ def save_generated_plaintext(p1_bits: int, p2_bits: int, batch_size: int):
 if __name__ == "__main__":
     p1_bits = 16
     p2_bits = 16
-    batch_size = 1
+    batch_size = 448

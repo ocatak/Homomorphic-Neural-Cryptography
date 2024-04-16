@@ -13,7 +13,7 @@ curve = set_curve(args.curve)
 rate = args.rate
 
 batch_size = 448
-test_type = "ma-rate-0.2-cuvre-secp224r1-batch-448-0.00005-rrandom-0-6"
+test_type = "ma-rate-0.1-cuvre-secp224r1"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
