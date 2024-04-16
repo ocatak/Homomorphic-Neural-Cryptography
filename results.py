@@ -6,8 +6,8 @@ from tensorflow.keras.models import Model
 
 batch_size = 1
 nonce_bits = 64
-dropout_rates = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-curves = ["secp224r1", "secp256r1"]
+dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+curves = ["secp224r1"]
 
 p1_batch = np.load(f"plaintext/p1-{batch_size}.npy")
 p2_batch = np.load(f"plaintext/p2-{batch_size}.npy")
@@ -60,8 +60,8 @@ for curve in curves:
         results[curve][rate]['p1'] = decryption_accurancy(bob, cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(bob, cipher2, private_arr, nonce, p2_batch)
         std = probabilistic_encryption_analysis(rate, curve, batch_size)
-        results[curve][rate]['std_std'] = np.std(std)
-        results[curve][rate]['mean_std'] = np.mean(std)
+        results[curve][rate]['std_std'] = round(np.std(std), 4)
+        results[curve][rate]['mean_std'] = round(np.mean(std), 4)
     plot_std_and_mean(dropout_rates, curve, batch_size)
 
 for curve in results:
