@@ -1,9 +1,8 @@
 import os
 import numpy as np
 from neural_network.networks_functions import create_networks
-from data_utils.analyse_cipher import plot_std, probabilistic_encryption_analysis
+from data_utils.analyse_cipher import plot_std_and_mean
 from tensorflow.keras.models import Model
-
 
 batch_size = 512
 nonce_bits = 64
@@ -57,12 +56,7 @@ for curve in curves:
         results[curve][rate]['p1+p2'] = decryption_accurancy(bob, cipher3, private_arr, nonce, p1_batch+p2_batch)
         results[curve][rate]['p1'] = decryption_accurancy(bob, cipher1, private_arr, nonce, p1_batch)
         results[curve][rate]['p2'] = decryption_accurancy(bob, cipher2, private_arr, nonce, p2_batch)
-        results[curve][rate]['mean_std'], results[curve][rate]['std_std'] = probabilistic_encryption_analysis(rate, curve)
-        results[curve]['std_std'].append(results[curve][rate]['std_std'])
-        results[curve]['mean_std'].append(results[curve][rate]['mean_std'])
-
-plot_std(dropout_rates, (results['secp224r1']['std_std'], results['secp224r1']['mean_std']), (results['secp256k1']['std_std'], results['secp256k1']['mean_std']), (results['secp256r1']['std_std'], results['secp256r1']['mean_std']), (results['secp384r1']['std_std'], results['secp384r1']['mean_std']), (results['secp521r1']['std_std'], results['secp521r1']['mean_std']))
-
+    plot_std_and_mean(curve)
 
 for curve in results:
     print(curve)
