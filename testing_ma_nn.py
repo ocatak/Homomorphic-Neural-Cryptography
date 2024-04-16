@@ -16,18 +16,18 @@ batch_size = 448
 test_type = f"ma-rate-{args.rate}-cuvre-{args.curve}"
 print(f"Testing with {test_type}...")
 
-# p1_batch = np.load("plaintext/p1_batch.npy")
-# p2_batch = np.load("plaintext/p2_batch.npy")
-# public_arr = np.load(f"key/public_key-{curve.name}.npy")
-# private_arr = np.load(f"key/private_key-{curve.name}.npy")
-private_arr, public_arr = generate_key_pair(batch_size, curve)
+p1_batch = np.load("plaintext/p1-448.npy")
+p2_batch = np.load("plaintext/p2-448.npy")
+public_arr = np.load(f"key/public_key-{curve.name}-448.npy")
+private_arr = np.load(f"key/private_key-{curve.name}-448.npy")
+# private_arr, public_arr = generate_key_pair(batch_size, curve)
 
 alice, bob, HO_model_addition, eve, _, _, p1_bits, _, p2_bits, _, _, nonce_bits, HO_model_multiplication = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
 
-p1_batch = np.random.randint(
-    0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
-p2_batch = np.random.randint(
-    0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
+# p1_batch = np.random.randint(
+#     0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
+# p2_batch = np.random.randint(
+#     0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
 
 HO_a_weights_path = f'weights/weights-{test_type}/addition_weights.h5'
 HO_m_weights_path = f'weights/weights-{test_type}/multiplication_weights.h5'

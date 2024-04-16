@@ -13,10 +13,11 @@ def save_generated_plaintext(p1_bits: int, p2_bits: int, batch_size: int):
         0, 2, p1_bits * batch_size).reshape(batch_size, p1_bits).astype('float32')
     p2_batch = np.random.randint(
         0, 2, p2_bits * batch_size).reshape(batch_size, p2_bits).astype('float32')
-    np.save("plaintext/p1.npy", p1_batch)
-    np.save("plaintext/p2.npy", p2_batch)
+    np.save(f"plaintext/p1-{batch_size}.npy", p1_batch)
+    np.save(f"plaintext/p2-{batch_size}.npy", p2_batch)
 
 if __name__ == "__main__":
     p1_bits = 16
     p2_bits = 16
     batch_size = 448
+    save_generated_plaintext(p1_bits, p2_bits, batch_size)
