@@ -12,8 +12,8 @@ curve = set_curve(args.curve)
 
 rate = args.rate
 
-batch_size = 512
-test_type = "ma-rate-0.1-cuvre-secp224r1-0.0001"
+batch_size = 448
+test_type = "ma-rate-0.2-cuvre-secp224r1-batch-448-0.00005-rrandom-0-6"
 print(f"Testing with {test_type}...")
 
 # p1_batch = np.load("plaintext/p1_batch.npy")
@@ -96,12 +96,6 @@ print("---Bob decryption P1+P2---")
 print(f"Number of correctly decrypted bits by Bob: {correct_bits}")
 print(f"Total number of bits: {total_bits}")
 print(f"Decryption accuracy Bob: {accuracy_a}%")
-print(np.any(decrypted_bits == 2))
-two = np.where(decrypted_bits == 2)
-print("Antall 2ere: ", len(two[0]))
-correct = p1_batch+p2_batch
-two_c = np.where(correct == 2)
-print("Antall 2ere i riktig: ", len(two_c[0]))
 print(f"Bob decrypted: {decrypted_bits}")
 print(f"P1+P2: {p1_batch+p2_batch}")
 
@@ -114,6 +108,22 @@ correct_bits = np.sum(decrypted_bits == (p1_batch*p2_batch))
 total_bits = np.prod(decrypted_bits.shape)
 accuracy = correct_bits / total_bits * 100
 
+# # Eve attempt to decrypt C3
+eve_decrypted = eve.predict([cipher3_m, public_arr, nonce])
+eve_decrypted_bits = np.round(eve_decrypted).astype(int)
+print(eve_decrypted_bits)
+
+# Calculate Eve's decryption accuracy
+correct_bits_eve = np.sum(eve_decrypted_bits == (p1_batch*p2_batch))
+total_bits = np.prod(eve_decrypted_bits.shape)
+accuracy_eve_m = correct_bits_eve / total_bits * 100
+
+print()
+print("Eve decryption of P1+P2")
+print(f"Number of correctly decrypted bits by Eve: {correct_bits_eve}")
+print(f"Total number of bits: {total_bits}")
+print(f"Decryption accuracy by Eve: {accuracy_eve_m}%")
+
 print()
 print("---Bob decryption P1*P2---")
 print(f"Number of correctly decrypted bits by Bob: {correct_bits}")
@@ -122,34 +132,23 @@ print(f"Decryption accuracy Bob: {accuracy}%")
 print(f"Bob decrypted: {decrypted_bits}")
 print(f"P1*P2: {p1_batch*p2_batch}")
 print()
-print(decrypted_a)
-print(decrypted_m)
 
-print(f"HO model Addition: {accuracy_percentage_add:.2f}%")
-print(f"HO model Multiplication: {accuracy_percentage:.2f}%")
-print(f"Decryption accuracy Bob Addition: {accuracy_a}%")
-print(f"Decryption accuracy Bob Multiplication: {accuracy}%")
-
-
-# print(f"Bob decrypted bits: {decrypted_bits}")
-
-# # Eve attempt to decrypt C3
+# Eve attempt to decrypt C3
 eve_decrypted = eve.predict([cipher3_a, public_arr, nonce])
 eve_decrypted_bits = np.round(eve_decrypted).astype(int)
-print(eve_decrypted_bits)
 
-# # Calculate Eve's decryption accuracy
+
+# Calculate Eve's decryption accuracy
 correct_bits_eve = np.sum(eve_decrypted_bits == (p1_batch+p2_batch))
 total_bits = np.prod(eve_decrypted_bits.shape)
-accuracy_eve = correct_bits_eve / total_bits * 100
+accuracy_eve_a = correct_bits_eve / total_bits * 100
 
-# print()
-print("Eve decryption of P1+P2")
+print()
+print("Eve decryption of P1*P2")
 print(f"Number of correctly decrypted bits by Eve: {correct_bits_eve}")
 print(f"Total number of bits: {total_bits}")
-print(f"Decryption accuracy by Eve: {accuracy_eve}%")
-# print(f"Eve decrypted: {eve_decrypted}")
-# print(f"Eve decrypted bits: {eve_decrypted_bits}")
+print(f"Decryption accuracy by Eve: {accuracy_eve_a}%")
+print(f"Eve decrypted bits: {eve_decrypted_bits}")
 
 
 # # Bob attempt to decrypt C1
@@ -161,10 +160,7 @@ correct_bits_p1 = np.sum(decrypted_bits_c1 == (p1_batch))
 total_bits_p1 = np.prod(decrypted_bits_c1.shape)
 accuracy_p1 = correct_bits_p1 / total_bits_p1 * 100
 
-# print()
-# print("Bob decryption of P1")
-# print(f"Number of correctly decrypted bits P1: {correct_bits_p1}")
-# print(f"Total number of bits P1: {total_bits_p1}")
+print()
 print(f"Decryption accuracy P1: {accuracy_p1}%")
 print(f" P1: {p1_batch}")
 print(f"Bob decrypted bits P1: {decrypted_bits_c1}")
@@ -181,11 +177,8 @@ accuracy_p1_eve = correct_bits_p1_eve / total_bits_p1_eve * 100
 
 print()
 print("Eve decryption of P1")
-print(f"Number of correctly decrypted bits P1: {correct_bits_p1_eve}")
-print(f"Total number of bits P1: {total_bits_p1_eve}")
 print(f"Decryption accuracy P1: {accuracy_p1_eve}%")
-# print(f"Eve decrypted P1: {decrypted_c1_eve}")
-# print(f"Eve decrypted bits P1: {decrypted_bits_c1_eve}")
+print(f"Eve decrypted bits P1: {decrypted_bits_c1_eve}")
 
 
 # Bob attempt to decrypt C2
@@ -197,10 +190,7 @@ correct_bits_p2 = np.sum(decrypted_bits_c2 == (p2_batch))
 total_bits_p2 = np.prod(decrypted_bits_c2.shape)
 accuracy_p2 = correct_bits_p2 / total_bits_p2 * 100
 
-# print()
-# print("Bob decryption P2")
-# print(f"Number of correctly decrypted bits P2: {correct_bits_p2}")
-# print(f"Total number of bits P2: {total_bits_p2}")
+print()
 print(f"Decryption accuracy P2: {accuracy_p2}%")
 print(f" P2: {p2_batch}")
 print(f"Bob decrypted bits P2: {decrypted_bits_c2}")
@@ -216,8 +206,21 @@ accuracy_p2_eve = correct_bits_p2_eve / total_bits_p2_eve * 100
 
 print()
 print("Eve decryption of P2")
-print(f"Number of correctly decrypted bits P2: {correct_bits_p2_eve}")
-print(f"Total number of bits P2: {total_bits_p2_eve}")
 print(f"Decryption accuracy P2: {accuracy_p2_eve}%")
-# print(f"Eve decrypted P1: {decrypted_c2_eve}")
-# print(f"Eve decrypted bits P1: {decrypted_bits_c2_eve}")
+print(f"Eve decrypted bits P1: {decrypted_bits_c2_eve}")
+
+print()
+print(f"HO model Addition: {accuracy_percentage_add:.2f}%")
+print(f"HO model Multiplication: {accuracy_percentage:.2f}%")
+
+print()
+print(f"Decryption accuracy Bob Addition: {accuracy_a}%")
+print(f"Decryption accuracy Bob Multiplication: {accuracy}%")
+print(f"Decryption accuracy P1: {accuracy_p1}%")
+print(f"Decryption accuracy P2: {accuracy_p2}%")
+
+print()
+print(f"Decryption accuracy Eve Addition: {accuracy_eve_a}%")
+print(f"Decryption accuracy Eve Multiplication: {accuracy_eve_m}%")
+print(f"Decryption accuracy P1: {accuracy_p1_eve}%")
+print(f"Decryption accuracy P2: {accuracy_p2_eve}%")
