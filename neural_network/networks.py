@@ -184,7 +184,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
     eveout_alice2 = eve([aliceout2, ainput0, anonce_input])
 
     abhemodel = Model([ainput0, ainput1, ainput2, anonce_input, binput1, HOinput0_addition, HOinput0_multiplication],
-                    [bobout_addition, bobout_multiplication], name='abhemodel')
+                    [bobout_addition, bobout_multiplication, bobout_alice1, bobout_alice2], name='abhemodel')
 
     # Loss functions
     eveloss_addition = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout_addition), axis=-1))
@@ -216,7 +216,7 @@ def create_networks(public_bits, private_bits, dropout_rate):
 
     # Build and compile the Eve model, used for training Eve net (with Alice frozen)
     alice.trainable = False
-    evemodel = Model([ainput0, ainput1, ainput2, anonce_input, HOinput0_addition, HOinput0_multiplication], [eveout_addition, eveout_multiplication], name='evemodel')
+    evemodel = Model([ainput0, ainput1, ainput2, anonce_input, HOinput0_addition, HOinput0_multiplication], [eveout_addition, eveout_multiplication, eveout_alice1, eveout_alice2], name='evemodel')
     evemodel.add_loss(eveloss)
     evemodel.compile(optimizer=eveoptim)
 

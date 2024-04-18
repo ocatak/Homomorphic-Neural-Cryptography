@@ -39,7 +39,7 @@ dropout_rate = args.rate
 alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
 # used to save the results to a different file
-test_type = f"ma-rate-{args.rate}-curve-{args.curve}"
+test_type = f"ma-rate-{args.rate}-curve-{args.curve}-extra-out"
 
 best_abeloss = float('inf')
 best_epoch = 0
