@@ -14,7 +14,7 @@ def save_generated_ciphertexts(dropout_rates: List[str], curves: List[str], batc
     """
     nonce_bits = 64
     p1_batch = np.load(f"plaintext/p1-{batch_size}.npy")
-    p2_batch = np.load(f"plaintext/p2-1.npy")
+    p2_batch = np.load(f"plaintext/p2-{batch_size}.npy")
     for curve in curves:
         public_arr = np.load(f"key/public_key-{curve}-{batch_size}.npy")
         private_arr = np.load(f"key/private_key-{curve}-{batch_size}.npy")
