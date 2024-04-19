@@ -59,7 +59,7 @@ def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
     plt.ylabel('Value')
     plt.legend(title='Type')
     plt.grid(True)
-    plt.savefig(f"pdf-figures/{curve}-std-sns.pdf", bbox_inches='tight')
+    plt.savefig(f"pdf-figures/{curve}-std-sns-2.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
     rate = 0.01

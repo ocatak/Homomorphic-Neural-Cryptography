@@ -13,7 +13,7 @@ curve = set_curve(args.curve)
 rate = args.rate
 
 batch_size = 448
-test_type = f"ma-rate-{args.rate}-curve-{args.curve}"
+test_type = f"ma-rate-{args.rate}-curve-{args.curve}-extra-out"
 print(f"Testing with {test_type}...")
 
 p1_batch = np.load("plaintext/p1-448.npy")
