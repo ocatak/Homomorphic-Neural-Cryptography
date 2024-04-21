@@ -28,8 +28,8 @@ def save_generated_ciphertexts(dropout_rates: List[str], curves: List[str], batc
             np.save(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-{i}.npy", cipher1)
 
 if __name__ == "__main__":
-    i = 1
+    i = 5
     batch_size = 1
-    dropout_rates = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-    curves = ["secp256r1"]
+    dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+    curves = ["secp224r1", "secp256k1"]
     save_generated_ciphertexts(dropout_rates, curves, batch_size, i)
