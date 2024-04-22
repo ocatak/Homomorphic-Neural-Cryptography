@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model
 batch_size = 1
 nonce_bits = 64
 dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-curves = ["secp224r1", "secp256k1"]
+curves = ["secp224r1", "secp256k1", "secp256r1", "secp384r1", "secp521r1"]
 
 p1_batch = np.load(f"plaintext/p1-{batch_size}.npy")
 p2_batch = np.load(f"plaintext/p2-{batch_size}.npy")
