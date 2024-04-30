@@ -48,20 +48,18 @@ def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
 
     plt.figure(figsize=(10, 6))
     plt.rc('font', size=12)  
-    plt.rc('axes', titlesize=16)  
-    plt.rc('axes', labelsize=25) 
+    plt.rc('axes', labelsize=30) 
     plt.rc('xtick', labelsize=25)  
-    plt.rc('ytick', labelsize=25)  
-    plt.rc('legend', fontsize=18)  
+    plt.rc('ytick', labelsize=25)   
     plt.ylim(0, 0.3)
-    sns.lineplot(data=df, x='dropout_rate', y='value', hue='type', style='type', markers=True, dashes=False, errorbar='sd')
+    sns.lineplot(data=df, x='dropout_rate', y='value', hue='type', style='type', markers=True, dashes=False, errorbar='sd', legend=False)
     plt.xlabel('Dropout Rate')
-    plt.ylabel('Value')
-    plt.legend(title='Type')
+    plt.ylabel('Standard Deviation')
     plt.grid(True)
-    plt.savefig(f"pdf-figures/{curve}-std-sns-2.pdf", bbox_inches='tight')
+    plt.savefig(f"pdf-figures/{curve}-std.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
     rate = 0.01
     curve = "secp224r1"
-    print(probabilistic_encryption_analysis(rate, curve)[0].shape)
+    # print(probabilistic_encryption_analysis(rate, curve)[0].shape)
+    plot_std_and_mean([0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7], curve, 1)

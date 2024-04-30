@@ -14,7 +14,7 @@ plt.ylim(0, 10)
 # x is the same for all datasets
 x = list(range(0, 14599))
 
-df = pd.read_csv(f'dataset/ma-rate-0.1-curve-secp224r1.csv')
+df = pd.read_csv(f'dataset/ma-rate-0.3-curve-secp224r1-extra-out.csv')
 
 # ABloss
 y_ab = df['ABloss']
@@ -26,7 +26,7 @@ y_eve = df['Eveloss']
 plt.plot(x, y_ab, color='blue', linewidth=1, label='AB')
 plt.plot(x, y_bob, color='green', linewidth=1,
          label='Bob')
-plt.plot(x, y_eve, color='red', linewidth=1,
+plt.plot(x, y_eve, color='orange', linewidth=1,
          label='Eve')
 
 plt.grid(True, which='both', linestyle='--', linewidth=0.5)
