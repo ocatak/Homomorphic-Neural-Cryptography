@@ -33,7 +33,7 @@ def plot_loss(rate: float, curve: str):
     plt.xlabel('Iterations') 
     plt.ylabel('Loss') 
     plt.legend()
-    plt.savefig(f"pdf-figures/training_loss.pdf", bbox_inches='tight')
+    plt.savefig(f"figures/training_loss.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
     plot_loss(0.1, "secp256k1")
