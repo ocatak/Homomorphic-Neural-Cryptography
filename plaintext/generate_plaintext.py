@@ -1,4 +1,5 @@
 import numpy as np
+from argparse import ArgumentParser
 
 def save_generated_plaintext(p1_bits: int, p2_bits: int, batch_size: int):
     """Generates two batches of plaintexts and saves them.
@@ -17,7 +18,9 @@ def save_generated_plaintext(p1_bits: int, p2_bits: int, batch_size: int):
     np.save(f"plaintext/p2-{batch_size}.npy", p2_batch)
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('-batch', type=int, default=448, help='Batch size')
+    args = parser.parse_args()
     p1_bits = 16
     p2_bits = 16
-    batch_size = 448
-    save_generated_plaintext(p1_bits, p2_bits, batch_size)
+    save_generated_plaintext(p1_bits, p2_bits, args.batch)

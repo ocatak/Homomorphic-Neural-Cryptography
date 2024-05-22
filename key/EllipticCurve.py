@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from typing import Tuple
 import numpy as np
 from numpy.typing import NDArray
-
+from argparse import ArgumentParser
 
 def set_curve(curve_name: str) -> ec.EllipticCurve:
     """Sets the elliptic curve based on the given name.
@@ -108,8 +108,11 @@ def convert_key_to_bit(pem: str) -> NDArray[np.int64]:
     return arr
 
 if __name__ == "__main__":
-    curve = set_curve("secp256r1")
-    batch_size = 1
-    private_key, public_key = generate_key_pair(batch_size, curve)
-    np.save(f"key/private_key-{curve.name}-{batch_size}.npy", private_key)
-    np.save(f"key/public_key-{curve.name}-{batch_size}.npy", public_key)
+    parser = ArgumentParser()
+    parser.add_argument('-batch', type=int, default=1, help='Batch size')
+    parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
+    args = parser.parse_args()
+    curve = set_curve(args.curve)
+    private_key, public_key = generate_key_pair(args.batch, curve)
+    np.save(f"key/private_key-{args.curve}-{args.batch}.npy", private_key)
+    np.save(f"key/public_key-{args.curve}-{args.batch}.npy", public_key)

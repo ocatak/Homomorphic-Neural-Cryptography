@@ -1,6 +1,7 @@
 import numpy as np
 from neural_network.networks import create_networks
 from typing import List
+from argparse import ArgumentParser
 
 def save_generated_ciphertexts(dropout_rates: List[float], curves: List[str], batch_size: int, i: int):
     """Generates a batch of ciphertexts given a dropout rate and curve and saves them.
@@ -28,8 +29,10 @@ def save_generated_ciphertexts(dropout_rates: List[float], curves: List[str], ba
             np.save(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-{i}.npy", cipher1)
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('-batch', type=int, default=1, help='Batch size')
+    args = parser.parse_args()
     i = 1
-    batch_size = 1
     dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
     curves = ["secp224r1", "secp256k1", "secp256r1", "secp384r1", "secp521r1"]
-    save_generated_ciphertexts(dropout_rates, curves, batch_size, i)
+    save_generated_ciphertexts(dropout_rates, curves, args.batch, i)
