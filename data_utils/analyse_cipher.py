@@ -57,7 +57,7 @@ def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
     plt.xlabel('Dropout Rate')
     plt.ylabel('Standard Deviation')
     plt.grid(True)
-    plt.savefig(f"pdf-figures/{curve}-std.pdf", bbox_inches='tight')
+    plt.savefig(f"figures/{curve}-std.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
     rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
