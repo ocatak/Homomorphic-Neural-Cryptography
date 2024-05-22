@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey, EllipticCurvePublicKey
 from typing import Tuple
 import numpy as np
+from numpy.typing import NDArray
 
 
 def set_curve(curve_name: str) -> ec.EllipticCurve:
@@ -48,7 +49,7 @@ def get_key_shape(curve: ec.EllipticCurve) -> Tuple[int, int]:
     return pr.size, pu.size
 
 
-def generate_key_pair(batch_size: int, curve: ec.EllipticCurve) -> Tuple[np.ndarray, np.ndarray]:
+def generate_key_pair(batch_size: int, curve: ec.EllipticCurve) -> Tuple[NDArray[np.object_], NDArray[np.object_]]:
     """Generates a batch of private and public keys.
     
     Args:
@@ -56,7 +57,7 @@ def generate_key_pair(batch_size: int, curve: ec.EllipticCurve) -> Tuple[np.ndar
         curve: The elliptic curve.
         
     Returns:
-        A tuple of private keys and public keys.
+        A tuple of private keys and public keys, each a numpy array of numpy arrays containing float64 elements.
     """
     size = get_key_shape(curve)
     pr_arr = np.empty((batch_size, size[0]))
@@ -70,7 +71,7 @@ def generate_key_pair(batch_size: int, curve: ec.EllipticCurve) -> Tuple[np.ndar
     return pr_arr, pu_arr
 
 
-def convert_key_to_pem(private_key: EllipticCurvePrivateKey, public_key: EllipticCurvePublicKey) -> Tuple[np.ndarray, np.ndarray]:
+def convert_key_to_pem(private_key: EllipticCurvePrivateKey, public_key: EllipticCurvePublicKey) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Convert keys to PEM format.
 
     Args:
@@ -78,7 +79,7 @@ def convert_key_to_pem(private_key: EllipticCurvePrivateKey, public_key: Ellipti
         public_key: The public key.
     
     Returns:
-        A tuple containing the bit representations of the private and public keys as NumPy arrays
+        A tuple containing the bit representations of the private and public keys as numpy arrays of numpy arrays containing float64 elements.
     """
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -92,14 +93,14 @@ def convert_key_to_pem(private_key: EllipticCurvePrivateKey, public_key: Ellipti
     return convert_key_to_bit(private_pem), convert_key_to_bit(public_pem)
 
 
-def convert_key_to_bit(pem: str) -> np.ndarray:
-    """ Converts a PEM-encoded key string to its bit representation as a NumPy array.
+def convert_key_to_bit(pem: str) -> NDArray[np.int64]:
+    """ Converts a PEM-encoded key string to its bit representation as a numpy array.
     
     Args:
         pem: The PEM-encoded key string.
     
     Returns:
-        A NumPy array representing the key in bits.
+        A numpy array of int64 elements representing the key in bits.
     """
     # Convert PEM string to a bit string
     bits = ''.join([format(ord(c), '08b') for c in pem])

@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Callable, Tuple
 from tensorflow.keras.models import Model
+from numpy.typing import NDArray
 
 # Make index selection deterministic as well
 np.random.seed(0)
@@ -12,21 +13,22 @@ np.random.shuffle(static_index)
 
 # Generates a static dataset based on an operation function 
 def generate_static_dataset(
-        op_fn: Callable[[np.ndarray, np.ndarray], np.ndarray], 
+        op_fn: Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.float64]], 
         num_samples: int = 16, 
         batch_size: int = 512, 
         seed: int = 0,
         mode: str = "interpolation"
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+) -> Tuple[NDArray[np.object_], NDArray[np.object_], NDArray[np.object_]]:
     """Generates a dataset given an operation. Used to generate static dataset for training.
 
     Args:
         op_fn: A function which accepts 2 numpy arrays as arguments and returns a single numpy array as the result.
-        num_samples: Number of samples for the dataset.
+        num_samples: Size of the input and output arrays.
         batch_size: Number of samples in the dataset.
         seed: random seed
 
-    Returns: Dataset x1, x2 and y, where y is the result of the operation on x1 and x2.
+    Returns: Tuple of (X1, X2, y), where X1, X2 and y are numpy arrays of numpy arrays containing float64 elements. 
+        y is the result of the operation on X1 and X2.
     """
     assert callable(op_fn)
 
@@ -61,24 +63,25 @@ def generate_cipher_dataset(
     p1_bits: int, 
     p2_bits: int, 
     batch_size: int, 
-    public_arr: np.ndarray, 
+    public_arr: NDArray[np.object_], 
     alice: Model, 
-    task_fn: Callable[[np.ndarray, np.ndarray], np.ndarray], 
+    task_fn: Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.float64]], 
     nonce_bits: int,
     seed: int = 0,
-)-> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Generates a dataset with ciphertext given an operation. Used to generate a dataset of plaintexts encrypted by Alice.
+)-> Tuple[NDArray[np.object_], NDArray[np.object_], NDArray[np.object_]]:
+    """Generates a dataset with ciphertext given an operation. Used to generate a dataset of ciphertexts encrypted by Alice.
 
     Args:
         p1_bits: Number of bits in plaintext 1.
         p2_bits: Number of bits in plaintext 2. 
         batch_size: Number of samples in the dataset. 
-        public_arr: Public key. 
+        public_arr: Public key, an numpy array of numpy arrays containing float64 elements. 
         alice: Alice Model.
-        task_fn: A function which accepts 2 numpy arrays as arguments and returns a single numpy array as the result., 
+        task_fn: A function which accepts 2 numpy arrays as arguments and returns a single numpy array as the result. 
         nonce_bits: Number of bits in nonce.
 
-    Returns: Dataset cipher1, cipher2 and cipher3, where cipher3 is the result of the operation on cipher1 and cipher2.
+    Returns: Tuple of (cipher1, cipher2, cipher3), where cipher1, cipher2 and cipher3 are numpy arrays of numpy arrays containing float64 elements. 
+        cipher3 is the result of the operation on cipher1 and cipher2.
     
     """
     np.random.seed(seed)
@@ -103,6 +106,3 @@ def generate_cipher_dataset(
 
 if __name__ == "__main__":
     x1, x2, y = generate_static_dataset(lambda x, y: x + y, 4, 4)
-    print(x1)
-    print(x2)
-    print(y)

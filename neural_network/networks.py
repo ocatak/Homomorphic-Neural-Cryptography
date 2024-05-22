@@ -5,10 +5,26 @@ from tensorflow.keras.optimizers import RMSprop, Adam
 from key.EllipticCurve import get_key_shape, set_curve
 from neural_network.nalu import NALU
 from neural_network.nac import NAC
-from tensorflow.keras.activations import relu
+from typing import Tuple
+from tensorflow import Tensor
 
 # Process plaintexts
-def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce_bits, dropout_rate, pad):
+def process_plaintext(ainput0: Tensor, ainput1: Tensor, anonce_input: Tensor, p_bits: int, public_bits: int, nonce_bits: int, dropout_rate: float, pad: str) -> Tensor:
+    """Alice network process a plaintext.
+
+    Args:
+        ainput0: Public key input.
+        ainput1: Plaintext input.
+        anonce_input: Nonce input.
+        p_bits: Number of bits in the plaintext.
+        public_bits: Number of bits in the public key.
+        nonce_bits: Number of bits in the nonce.
+        dropout_rate: Dropout rate.
+        pad: Padding type.
+    
+    Returns:
+        The output of the Alice network.
+    """
     ainput = concatenate([ainput0, ainput1, anonce_input], axis=1)
 
     adense1 = Dense(units=(p_bits + public_bits + nonce_bits), activation='tanh')(ainput)
@@ -32,7 +48,18 @@ def process_plaintext(ainput0, ainput1, anonce_input, p_bits, public_bits, nonce
     return Flatten()(aconv4)
 
 # Alice network
-def create_networks(public_bits, private_bits, dropout_rate):
+def create_networks(public_bits: int, private_bits: int, dropout_rate: float
+) -> Tuple[Model, Model, Model, Model, Model, int, int, Model, int, float, int, int, Model]:
+    """Creates the Alice, Bob, HO and Eve networks.
+    
+    Args:
+        public_bits: Number of bits in the public key.
+        private_bits: Number of bits in the private key.
+        dropout_rate: Dropout rate.
+    
+    Returns: 
+        alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits and HO_model_multiplication.
+    """
     learning_rate = 0.00005  # Adam and 0.0008
 
     # Set up the crypto parameters: plaintext, key, and ciphertext bit lengths
@@ -228,4 +255,4 @@ if __name__ == "__main__":
     public_bits = get_key_shape(curve)[1]  
     private_bits = get_key_shape(curve)[0]
     dropout_rate = 0.6
-    create_networks(public_bits, private_bits, dropout_rate) 
+    alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)

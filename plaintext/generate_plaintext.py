@@ -2,7 +2,7 @@ import numpy as np
 
 def save_generated_plaintext(p1_bits: int, p2_bits: int, batch_size: int):
     """Generates two batches of plaintexts and saves them.
-    Used to save plaintexts to calculate the mean and standard deviation.
+    Used to save plaintexts to calculate the mean and standard deviation of these plaintexts when encrypted multiple times using the same key.
 
     Args:
         p1_bits: Size of the plaintext 1 in bits.

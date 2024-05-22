@@ -1,13 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Tuple, List, Dict
+from typing import List
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
+from numpy.typing import NDArray
 
-def probabilistic_encryption_analysis(rate: float, curve: str, batch_size: int) -> Tuple[float, float]:
-    """Calculates the mean and standard deviation of five ciphertexts given a dropout rate and curve.
-    Used to calculate the mean and standard deviation of the ciphertexts to compare the probabilistic encryption.
+def probabilistic_encryption_analysis(rate: float, curve: str, batch_size: int) -> NDArray[np.float32]:
+    """Calculates the standard deviation of five ciphertexts given a dropout rate and curve.
+    Used to calculate the standard deviation of the ciphertexts to evaluate the probabilistic encryption.
     
     Args:
         rate: Dropout rate.
@@ -15,8 +17,7 @@ def probabilistic_encryption_analysis(rate: float, curve: str, batch_size: int) 
         batch_size: Number of samples in the dataset.
     
     Returns:
-        mean_std: Mean of the standard deviation of the ciphertexts.
-        std_std: Standard deviation of the standard deviation of the ciphertexts.
+        std: Standard deviation of the ciphertexts.
     """
     C1 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-1.npy")
     C2 = np.load(f"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-2.npy")
@@ -42,7 +43,7 @@ def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
     for rate in dropout_rates:
         std = probabilistic_encryption_analysis(rate, curve, batch_size)
         for s in std:
-            data.append({'value': s, 'type': 'Standard Diviation', 'dropout_rate': rate})
+            data.append({'value': s, 'type': 'Standard Deviation', 'dropout_rate': rate})
 
     df = pd.DataFrame(data)
 
@@ -59,7 +60,7 @@ def plot_std_and_mean(dropout_rates: List[float], curve: str, batch_size: int):
     plt.savefig(f"pdf-figures/{curve}-std.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
-    rate = 0.01
+    rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
     curve = "secp224r1"
-    # print(probabilistic_encryption_analysis(rate, curve)[0].shape)
-    plot_std_and_mean([0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7], curve, 1)
+    batch_size = 1
+    plot_std_and_mean(rates, curve, batch_size)

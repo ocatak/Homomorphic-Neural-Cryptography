@@ -6,7 +6,6 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 import pandas as pd
 import sys
-import matplotlib.pyplot as plt
 import numpy as np
 from neural_network.networks import create_networks
 from key.EllipticCurve import generate_key_pair, set_curve, get_key_shape
@@ -233,15 +232,3 @@ Biodata = {'ABloss': abelosses[:steps],
 df = pd.DataFrame(Biodata)
 
 df.to_csv(f'dataset/{test_type}.csv', mode='a', index=False)
-
-plt.figure(figsize=(7, 4))
-plt.plot(abelosses[:steps], label='A-B')
-plt.plot(evelosses[:steps], label='Eve')
-plt.plot(boblosses[:steps], label='Bob')
-plt.xlabel("Iterations", fontsize=13)
-plt.ylabel("Loss", fontsize=13)
-plt.legend(fontsize=13)
-
-# save the figure for the loss
-plt.savefig(
-    f'figures/{test_type}.png')

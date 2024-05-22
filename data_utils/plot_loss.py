@@ -1,38 +1,39 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Initialize a figure
-plt.figure(figsize=(10, 6))
-plt.rc('font', size=12)  # controls default text size
-plt.rc('axes', titlesize=16)  # fontsize of the axes title
-plt.rc('axes', labelsize=25)  # fontsize of the x and y labels
-plt.rc('xtick', labelsize=25)  # fontsize of the tick labels
-plt.rc('ytick', labelsize=25)  # fontsize of the tick labels
-plt.rc('legend', fontsize=25)  # fontsize of the legend
-plt.ylim(0, 10)
+def plot_loss(rate: float, curve: str):
+    """Plots the loss of the ABHE, Bob and Eve models during training and save the plot as a pdf file.
 
-# x is the same for all datasets
-x = list(range(0, 14599))
+    Args:
+        rate: Dropout rate.
+        curve: Elliptic curve.
+    """
+    plt.figure(figsize=(10, 6))
+    plt.rc('font', size=12)
+    plt.rc('axes', titlesize=16)
+    plt.rc('axes', labelsize=25)
+    plt.rc('xtick', labelsize=25)
+    plt.rc('ytick', labelsize=25)
+    plt.rc('legend', fontsize=25)
+    plt.ylim(0, 10)
 
-df = pd.read_csv(f'dataset/ma-rate-0.3-curve-secp224r1-extra-out.csv')
+    df = pd.read_csv(f'dataset/ma-rate-{rate}-curve-{curve}-extra-out.csv')
 
-# ABloss
-y_ab = df['ABloss']
+    x = list(range(0, len(df)))
 
-y_bob = df['Bobloss']
+    y_ab = df['ABloss']
+    y_bob = df['Bobloss']
+    y_eve = df['Eveloss']
 
-y_eve = df['Eveloss']
+    plt.plot(x, y_ab, color='blue', linewidth=1, label='ABHE')
+    plt.plot(x, y_bob, color='green', linewidth=1, label='Bob')
+    plt.plot(x, y_eve, color='orange', linewidth=1, label='Eve')
 
-plt.plot(x, y_ab, color='blue', linewidth=1, label='ABHE')
-plt.plot(x, y_bob, color='green', linewidth=1,
-         label='Bob')
-plt.plot(x, y_eve, color='orange', linewidth=1,
-         label='Eve')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.xlabel('Iterations') 
+    plt.ylabel('Loss') 
+    plt.legend()
+    plt.savefig(f"pdf-figures/training_loss.pdf", bbox_inches='tight')
 
-plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-
-# Customization and saving the figure
-plt.xlabel('Iterations') 
-plt.ylabel('Loss') 
-plt.legend()
-plt.savefig(f"pdf-figures/training_loss.pdf", bbox_inches='tight')
+if __name__ == "__main__":
+    plot_loss(0.1, "secp256k1")
