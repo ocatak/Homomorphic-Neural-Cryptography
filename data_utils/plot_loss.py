@@ -17,7 +17,7 @@ def plot_loss(rate: float, curve: str):
     plt.rc('legend', fontsize=25)
     plt.ylim(0, 10)
 
-    df = pd.read_csv(f'dataset/ma-rate-{rate}-curve-{curve}-extra-out.csv')
+    df = pd.read_csv(f'dataset/ma-rate-{rate}-curve-{curve}.csv')
 
     x = list(range(0, len(df)))
 

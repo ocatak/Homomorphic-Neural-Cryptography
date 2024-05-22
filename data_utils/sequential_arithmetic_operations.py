@@ -13,7 +13,7 @@ def sequential_arithmetic_operations(rate: float, batch_size: int, curve: str) -
         batch_size: The batch size
         curve: The curve
     """
-    test_type = f"ma-rate-{rate}-curve-{curve}-extra-out"
+    test_type = f"ma-rate-{rate}-curve-{curve}"
 
     public_arr = np.load(f"key/public_key-{curve}-{batch_size}.npy")
     private_arr = np.load(f"key/private_key-{curve}-{batch_size}.npy")

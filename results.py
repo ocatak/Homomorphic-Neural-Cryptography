@@ -46,7 +46,7 @@ def get_accuracy(batch_size: int, nonce_bits: int, dropout_rates: List[float], c
         for rate in dropout_rates:
             results[curve][rate] = {}
             alice, bob, HO_model_addition, eve, _, _, _, _, _, _, c3_bits, _, HO_model_multiplication = create_networks(public_arr.shape[1], private_arr.shape[1], rate)
-            path_name = f"ma-rate-{rate}-curve-{curve}-extra-out"
+            path_name = f"ma-rate-{rate}-curve-{curve}"
             weights_path = f'weights/weights-{path_name}'
             if not os.path.exists(weights_path):
                 continue
