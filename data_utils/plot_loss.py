@@ -23,7 +23,7 @@ y_bob = df['Bobloss']
 
 y_eve = df['Eveloss']
 
-plt.plot(x, y_ab, color='blue', linewidth=1, label='AB')
+plt.plot(x, y_ab, color='blue', linewidth=1, label='ABHE')
 plt.plot(x, y_bob, color='green', linewidth=1,
          label='Bob')
 plt.plot(x, y_eve, color='orange', linewidth=1,
