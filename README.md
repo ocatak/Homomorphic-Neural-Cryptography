@@ -1,9 +1,9 @@
-# Asymmetric Neural Cryptography with Homomorphic Operations
+# Asymmetric Neural Cryptography with Homomorphic and Probabilistic Properties
 
 This project builds an asymmetric neural network system with homomorphic operations. It is build on the project [Neural Cryptography](https://github.com/minawoien/Neural-Cryptography) and [Keras Neural Arithmatic and Logical Unit (NALU)](https://github.com/titu1994/keras-neural-alu/tree/master). 
 
 ## Table of Contents
-- [Asymmetric Neural Cryptography with Homomorphic Operations](#asymmetric-neural-cryptography-with-homomorphic-operations)
+- [Asymmetric Neural Cryptography with Homomorphic and Probabilistic Properties](#asymmetric-neural-cryptography-with-homomorphic-and-probabilistic-properties)
   - [Table of Contents](#table-of-contents)
   - [System](#system)
   - [Folder structure](#folder-structure)
