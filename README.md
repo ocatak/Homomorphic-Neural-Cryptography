@@ -11,10 +11,10 @@ This project builds an asymmetric neural network system with homomorphic operati
   - [Installation](#installation)
   - [Usage](#usage)
   - [Results](#results)
-  - [Generate new plaintexts, keys and ciphertexts:](#generate-new-plaintexts-keys-and-ciphertexts)
-    - [Generate plaintext:](#generate-plaintext)
-    - [Generate key pair:](#generate-key-pair)
-    - [Generate ciphertexts:](#generate-ciphertexts)
+  - [Generate new plaintexts, keys and ciphertexts](#generate-new-plaintexts-keys-and-ciphertexts)
+    - [Generate plaintext](#generate-plaintext)
+    - [Generate key pair](#generate-key-pair)
+    - [Generate ciphertexts](#generate-ciphertexts)
 
 ## System
 The system consist of five neural network, Alice, Bob, Eve and two Homomorphic Operation (HO) networks, the HO Addition network and the HO Multiplication network. An elliptic curve key pair is generated and Alice will use the public key to decrypt two plaintexts with a nonce for probabilistic encryption. The HO Addition network will do addition, while the HO Multiplication network will do multiplication on the two ciphertexts. Bob will decrypt the ciphertext produced by the HO networks using the private key, while Eve will attempt to decrypt the ciphertext without the private key. In addition Bob will be able to decrypt ciphertexts directly from Alice, while Eve is not.
@@ -87,9 +87,9 @@ To view the results:
 
 The results will be outputted in the console and figures will be saved in the `figures` folder.
 
-## Generate new plaintexts, keys and ciphertexts:
+## Generate new plaintexts, keys and ciphertexts
 
-### Generate plaintext:
+### Generate plaintext
 
 Optional arguments:
   ```
@@ -101,7 +101,7 @@ Optional arguments:
     python plaintext/generate_plaintext.py
 ```
 
-### Generate key pair:
+### Generate key pair
 Optional arguments:
   ```
   -h, --help    show this help message and exit
@@ -113,7 +113,7 @@ Optional arguments:
     python key/EllipticCurve.py
 ```
 
-### Generate ciphertexts:
+### Generate ciphertexts
 Optional arguments:
   ```
   -h, --help    show this help message and exit
