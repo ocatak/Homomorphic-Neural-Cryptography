@@ -236,9 +236,10 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
     # Set the Adam optimizer
     beoptim = Adam(learning_rate=learning_rate)
     eveoptim = Adam(learning_rate=learning_rate)
-    optimizer = RMSprop(0.1)
-    HO_model_addition.compile(optimizer, 'mse')
-    HO_model_multiplication.compile(optimizer, 'mse')
+    optimizer_a = RMSprop(0.1)
+    HO_model_addition.compile(optimizer_a, 'mse')
+    optimizer_m = RMSprop(0.1)
+    HO_model_multiplication.compile(optimizer_m, 'mse')
     abhemodel.compile(optimizer=beoptim)
 
     # Build and compile the Eve model, used for training Eve net (with Alice frozen)
