@@ -17,7 +17,7 @@ This project builds an asymmetric neural network system with homomorphic operati
     - [Generate ciphertexts](#generate-ciphertexts)
 
 ## System
-The system consist of five neural network, Alice, Bob, Eve and two Homomorphic Operation (HO) networks, the HO Addition network and the HO Multiplication network. An elliptic curve key pair is generated and Alice will use the public key to decrypt two plaintexts with a nonce for probabilistic encryption. The HO Addition network will do addition, while the HO Multiplication network will do multiplication on the two ciphertexts. Bob will decrypt the ciphertext produced by the HO networks using the private key, while Eve will attempt to decrypt the ciphertext without the private key. In addition Bob will be able to decrypt ciphertexts directly from Alice, while Eve is not.
+The system consists of five neural networks: Alice, Bob, Eve, and two  Homomorphic Operation (HO) networks, the HO Addition network and the HO  Multiplication network. An elliptic curve key pair is generated, and  Alice will use the public key to decrypt two plaintexts with a nonce for probabilistic encryption. The HO Addition network will add,  while the HO Multiplication network will multiply the two ciphertexts. Bob will decrypt the ciphertext produced by the HO networks using the private key, while Eve will attempt to decrypt the ciphertext without the private key. In addition, Bob can decrypt ciphertexts directly from Alice, while Eve is not.
 
 ![Cryptosystem](figures/cryptosystem.png)
 
