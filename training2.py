@@ -1,6 +1,6 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 from tensorflow.keras.models import Model
@@ -43,6 +43,9 @@ class Training:
         self.abelosses, self.boblosses, self.evelosses = [], [], []
         self.test_type = f"ma-rate-{rate}-curve-{self.curve.name}-2"
         self.path = f'weights/weights-{self.test_type}'
+        isExist = os.path.exists(self.path)
+        if not isExist:
+            os.makedirs(self.path)
 
     def train_HO_model(self, HO_model: Model, task: Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.float64]], op: NDArray[np.object_], filename: str):
         """Train the HO model.
