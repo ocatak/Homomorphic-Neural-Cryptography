@@ -15,9 +15,9 @@ def plot_loss(rate: float, curve: str):
     plt.rc('xtick', labelsize=25)
     plt.rc('ytick', labelsize=25)
     plt.rc('legend', fontsize=25)
-    plt.ylim(0, 10)
+    plt.ylim(0, 16)
 
-    df = pd.read_csv(f'dataset/ma-rate-{rate}-curve-{curve}.csv')
+    df = pd.read_csv(f'/Users/espensele/Desktop/Master/MasterOppg/Homomorphic-Neural-Cryptography/dataset/ma-rate-{rate}-curve-{curve}.csv')
 
     x = list(range(0, len(df)))
 
@@ -33,7 +33,7 @@ def plot_loss(rate: float, curve: str):
     plt.xlabel('Iterations') 
     plt.ylabel('Loss') 
     plt.legend()
-    plt.savefig(f"figures/training_loss.pdf", bbox_inches='tight')
+    plt.savefig(f"../figures/training_loss.pdf", bbox_inches='tight')
 
 if __name__ == "__main__":
-    plot_loss(0.1, "secp256k1")
+    plot_loss(0.3, "secp224r1-2")

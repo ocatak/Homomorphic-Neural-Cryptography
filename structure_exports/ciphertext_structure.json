@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "name": "ciphertext",
+    "path": "/Users/espensele/Desktop/Master/MasterOppg/Homomorphic-Neural-Cryptography/ciphertext",
+    "generated_at": "2025-01-23T16:13:01.932749",
+    "total_files": 202,
+    "total_size": 697663
+  },
+  "structure": {
+    "generate_ciphertext.py": {
+      "type": "file",
+      "info": {
+        "size": 1983,
+        "last_modified": "2025-01-23T16:13:01.864206",
+        "mime_type": "text/x-python",
+        "extension": ".py"
+      }
+    },
+    "files":
+    [
+      {"path": "generate_ciphertext.py",
+      "content": "import numpy as np\nfrom neural_network.networks import create_networks\nfrom typing import List\nfrom argparse import ArgumentParser\n\ndef save_generated_ciphertexts(dropout_rates: List[float], curves: List[str], batch_size: int, i: int):\n    \"\"\"Generates a batch of ciphertexts given a dropout rate and curve and saves them.\n    Used to create saved ciphertexts to calculate the mean and standard deviation.\n\n    Args:\n        dropout_rates: A list of dropout rates which the model was trained on.\n        curves: A list of elliptic curves which the model was trained on.\n        batch_size: Number of samples in the dataset.\n        i: A number to append to the filename to differentiate between different ciphertexts.\n    \"\"\"\n    nonce_bits = 64\n    p1_batch = np.load(f\"plaintext/p1-{batch_size}.npy\")\n    p2_batch = np.load(f\"plaintext/p2-{batch_size}.npy\")\n    for curve in curves:\n        public_arr = np.load(f\"key/public_key-{curve}-{batch_size}.npy\")\n        private_arr = np.load(f\"key/private_key-{curve}-{batch_size}.npy\")\n        nonce = np.random.rand(batch_size, nonce_bits)\n        for rate in dropout_rates:\n            alice, _, _, _, _, _, _, _, _, _, _, _, _= create_networks(public_arr.shape[1], private_arr.shape[1], rate)\n            path_name = f\"ma-rate-{rate}-curve-{curve}\"\n            weights_path = f'weights/weights-{path_name}'\n            alice.load_weights(f'{weights_path}/alice_weights.h5')\n            cipher1, _ = alice.predict([public_arr, p1_batch, p2_batch, nonce])\n            np.save(f\"ciphertext/rate-{rate}-curve-{curve}-batch-{batch_size}-{i}.npy\", cipher1)\n\nif __name__ == \"__main__\":\n    parser = ArgumentParser()\n    parser.add_argument('-batch', type=int, default=1, help='Batch size')\n    args = parser.parse_args()\n    i = 1\n    dropout_rates = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]\n    curves = [\"secp224r1\", \"secp256k1\", \"secp256r1\", \"secp384r1\", \"secp521r1\"]\n    save_generated_ciphertexts(dropout_rates, curves, args.batch, i)",
+      "info": {
+        "size": 1983,
+        "last_modified": "2025-01-23T16:13:01.864206",
+        "mime_type": "text/x-python",
+        "extension": ".py"
+        }},
+    ]
+  }

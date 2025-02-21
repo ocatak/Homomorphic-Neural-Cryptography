@@ -50,8 +50,13 @@ def generate_static_dataset(
         a[indices_to_zero] = 0
         b[indices_to_zero] = 0
 
+        # Apply the operation to the shuffled data
         Y = op_fn(a, b)  # Apply the operation
 
+        # Generating the data set, X1, X2
+        # X1 is the first input to the operation
+        # X2 is the second input to the operation
+        # Y is the output of the operation
         X1_dataset.append(a)
         X2_dataset.append(b)
         y_dataset.append(Y)

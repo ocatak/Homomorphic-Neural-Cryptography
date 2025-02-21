@@ -17,6 +17,141 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
+#  create method for bitwise add operation with support of multiple dimension arrays a and b
+def bitwise_add_carry_multi(a, b):
+    """
+    a, b: Multi-dimensional NumPy arrays of bits.
+    Return: Multi-dimensional NumPy array of bits with the final carry if necessary.
+    """
+    # Ensure both arrays are the same shape (if not, pad the smaller array)
+    print("Applying addition on::")
+    print("A")
+    print(a.shape)
+    print("Whole A")
+    print(a)
+    print("B")
+    print(b.shape)
+    print("Whole B\n")
+
+    if a.shape != b.shape:
+        max_shape = tuple(max(sa, sb) for sa, sb in zip(a.shape, b.shape))
+        a = np.pad(a, [(0, ms - s) for s, ms in zip(a.shape, max_shape)], 'constant', constant_values=0)
+        b = np.pad(b, [(0, ms - s) for s, ms in zip(b.shape, max_shape)], 'constant', constant_values=0)
+
+    # If we're at the base case of 1D arrays, use the original bitwise_add_carry function
+    if a.ndim == 1:
+        return bitwise_add_carry(a, b)
+
+    # Otherwise, recurse over the remaining dimensions
+    result = np.zeros_like(a)
+    for index in np.ndindex(a.shape[:-1]):  # Iterate over all sub-arrays except the last dimension
+        result[index] = bitwise_add_carry(a[index], b[index])
+
+    return result
+
+
+def bitwise_multiply_multi(a, b):
+    """
+    Perform bitwise (binary) multiplication on multi-dimensional NumPy arrays a and b of bits.
+    The operation is done element-by-element along the last dimension, assuming all preceding
+    dimensions match.
+    Returns the multi-dimensional array of the product.
+    """
+    print("Applying multiply_multi on::")
+    print("A")
+    print(a.shape)
+    print("Whole A")
+    print(a)
+    print("B")
+    print(b.shape)
+    print("Whole B\n")
+    # Ensure both arrays are the same shape by padding the smaller if necessary
+    if a.shape != b.shape:
+        max_shape = tuple(max(sa, sb) for sa, sb in zip(a.shape, b.shape))
+        a = np.pad(a, [(0, ms - s) for s, ms in zip(a.shape, max_shape)],
+                   'constant', constant_values=0)
+        b = np.pad(b, [(0, ms - s) for s, ms in zip(b.shape, max_shape)],
+                   'constant', constant_values=0)
+
+    # Base case: if 1D, use bitwise_multiply.
+    if a.ndim == 1:
+        return bitwise_multiply(a, b)
+
+    # Otherwise, recurse over the sub-arrays:
+    # We'll create an output array with "object" dtype for the last dimension,
+    # since each subarray may have different lengths (especially after multiplication).
+    # If you need a uniform shape in the last dimension, you might have to
+    # determine the maximum length from all sub-results and pad accordingly.
+    result_shape = a.shape  # shape for the "outer" dimensions
+
+    result = np.empty(result_shape, dtype=object)
+
+    for index in np.ndindex(result_shape[:-1]):
+        # Multiply along the last dimension
+        product_1d = bitwise_multiply(a[index], b[index])
+        result[index] = product_1d
+
+    print("Result")
+    print(result.shape)
+    return result
+
+def bitwise_add_carry(a, b): # Expects single dimension arrays
+    """
+    a, b: 1D NumPy arrays of bits.
+    Return: 1D NumPy array of bits with the final carry if necessary.
+    """
+    max_len = max(len(a), len(b))
+    a = np.pad(a, (max_len - len(a), 0), 'constant', constant_values=0)
+    b = np.pad(b, (max_len - len(b), 0), 'constant', constant_values=0)
+
+    carry = 0
+    result = []
+
+    for i in range(max_len - 1, -1, -1):
+        s = a[i] + b[i] + carry
+        bit = s % 2
+
+        carry = s // 2
+        result.append(bit)
+
+    if carry == 1:
+        result.append(carry)
+
+    result.reverse()
+    result_array = np.array(result, dtype=np.int64)
+
+    return result_array[-a.shape[0]:]
+
+def bitwise_multiply(a, b):
+    """
+    Perform bitwise (binary) multiplication on 1D NumPy arrays a and b of bits.
+    Returns the product as a 1D NumPy array of bits.
+    """
+    if len(a) == 0:
+        a = np.array([0], dtype=np.int64)
+    if len(b) == 0:
+        b = np.array([0], dtype=np.int64)
+
+    max_len = len(a) + len(b)
+    result = np.zeros(max_len, dtype=np.int64)
+
+    a_rev = a[::-1]
+    b_rev = b[::-1]
+
+    for i, bit_b in enumerate(b_rev):
+        if bit_b == 1:
+            shifted_a = np.concatenate([np.zeros(i, dtype=np.int64), a_rev])
+            shifted_a = np.pad(shifted_a, (0, max_len - len(shifted_a)), mode='constant', constant_values=0)
+            partial_sum = bitwise_add_carry(result[::-1], shifted_a[::-1])
+            result = partial_sum[::-1]
+
+    result = result[::-1]
+    idx = 0
+    while idx < len(result)-1 and result[idx] == 0:
+        idx += 1
+
+    return result[-a.shape[0]:]
+
 class Training:
     def __init__(self, batch_size: int, p1_bits: int, p2_bits: int, c3_bits: int, nonce_bits: int, curve: str, alice: Model, bob: Model, rate: float):
         """Initializes the Training class for training the HO models, Alice, Bob and Eve.
@@ -102,7 +237,7 @@ class Training:
 
         return p1_batch, p2_batch, private_arr, public_arr, nonce, operation_a, operation_m
     
-    def calculate_bob_loss(self, m_enc: NDArray[np.object_], private_arr: NDArray[np.object_], nonce: NDArray[np.object_], expected_output: NDArray[np.object_]) -> np.float64:
+    def calculate_bob_loss(self, m_enc: NDArray[np.object_], private_arr: NDArray[np.object_], nonce: NDArray[np.object_], expected_output: NDArray[np.object_], operation: str = "") -> np.float64:
         """Calculate the loss for Bob's decryption.
 
         Args:
@@ -115,7 +250,21 @@ class Training:
         Returns:
             The mean of the sum of the absolute differences between the expected output and the decrypted message.
         """
+        if operation:
+            print(f"\nOperation: {operation}")
+
         m_dec = self.bob.predict([m_enc, private_arr, nonce])
+
+        print(f"\nm_dec shape: {m_dec.shape}, expected_output shape: {expected_output.shape}")
+        print("m_dec0 TYPE")
+        print(type(m_dec[0]))
+        print("expected_output0 TYPE")
+        print(type(expected_output[-1]))
+        print(f"m_dec[0] shape: {m_dec[0].shape}, expected_output[0] shape: {expected_output[0].shape}")
+        print("\nm_dec[0]")
+        print(m_dec[0])
+        print("\nexpected_output[0]")
+        print(expected_output[0])
         return np.mean(np.sum(np.abs(expected_output - m_dec), axis=-1))
     
     def train(self, HO_model_addition: Model, HO_model_multiplication: Model, eve: Model, abhemodel: Model, evemodel: Model, n_epochs: int, m_train: int):
@@ -137,7 +286,7 @@ class Training:
         epoch = 0
         best_abeloss = float('inf')
         best_epoch = 0
-        patience_epochs = 5
+        patience_epochs = 20
         while epoch < n_epochs:
             evelosses0 = []
             boblosses0 = []
@@ -160,8 +309,8 @@ class Training:
                 m3_enc_a = HO_model_addition.predict([operation_a, m1_enc, m2_enc])
                 m3_enc_m = HO_model_multiplication.predict([operation_m, m1_enc, m2_enc])
 
-                loss_m3_a = self.calculate_bob_loss(m3_enc_a, private_arr, nonce, p1_batch + p2_batch)
-                loss_m3_m = self.calculate_bob_loss(m3_enc_m, private_arr, nonce, p1_batch * p2_batch)
+                loss_m3_a = self.calculate_bob_loss(m3_enc_a, private_arr, nonce, bitwise_add_carry_multi(p1_batch, p2_batch), "addition") # Apply same binary operation
+                loss_m3_m = self.calculate_bob_loss(m3_enc_m, private_arr, nonce, bitwise_multiply_multi(p1_batch, p2_batch), "multiplication")
                 loss_m1 = self.calculate_bob_loss(m1_enc, private_arr, nonce, p1_batch)
                 loss_m2 = self.calculate_bob_loss(m2_enc, private_arr, nonce, p2_batch)
                 loss = (loss_m3_a + loss_m3_m + loss_m1 + loss_m2) / 4
@@ -229,8 +378,8 @@ if __name__ == "__main__":
     random.seed(seed)
 
     parser = ArgumentParser()
-    parser.add_argument('-rate', type=float, default=0.1, help='Dropout rate')
-    parser.add_argument('-epoch', type=int, default=100, help='Number of epochs')
+    parser.add_argument('-rate', type=float, default=0.3, help='Dropout rate')
+    parser.add_argument('-epoch', type=int, default=1, help='Number of epochs')
     parser.add_argument('-batch', type=int, default=448, help='Batch size')
     parser.add_argument('-curve', type=str, default="secp224r1", help='Elliptic curve name')
     args = parser.parse_args()
@@ -244,9 +393,21 @@ if __name__ == "__main__":
     alice, bob, HO_model_addition, eve, abhemodel, m_train, p1_bits, evemodel, p2_bits, learning_rate, c3_bits, nonce_bits, HO_model_multiplication = create_networks(public_bits, private_bits, dropout_rate)
 
     training = Training(args.batch, p1_bits, p2_bits, c3_bits, nonce_bits, curve, alice, bob, args.rate)
-    training.train_HO_model(HO_model_addition, lambda x, y: x + y, np.zeros((args.batch, c3_bits)), "addition_weights.h5")
-    training.train_HO_model(HO_model_multiplication, lambda x, y: x * y, np.ones((args.batch, c3_bits)), "multiplication_weights.h5")
+    # Suspected culprit for bit addition error
+    # Current version has a problem with bit-wise operation.
+    # [0,0,0,1] + [0,0,1,1] = [0,0,1,2] (X) - That is x + y = [0,0,1,2]
+    # [0,0,0,1] + [0,0,1,1] = [0,1,0,0] (O) - That is, SHOULD BE -> x + y = [0,1,0,0]
+    # Create on bit-wise operation function for input. Input is an array
+    # Compare plaintext 1 and plaintext 2, and return the result of decrypted result of the addition operation.
+    training.train_HO_model(
+        HO_model_addition,
+        bitwise_add_carry,
+        np.zeros((args.batch, c3_bits)),
+        "addition_weights.h5"
+    )
+    training.train_HO_model(HO_model_multiplication,
+                            bitwise_multiply,
+                            np.ones((args.batch, c3_bits)),
+                            "multiplication_weights.h5")
     training.train(HO_model_addition, HO_model_multiplication, eve, abhemodel, evemodel, args.epoch, m_train)
     training.save_loss_values()
-
-

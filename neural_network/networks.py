@@ -214,6 +214,10 @@ def create_networks(public_bits: int, private_bits: int, dropout_rate: float
                     [bobout_addition, bobout_multiplication, bobout_alice1, bobout_alice2], name='abhemodel')
 
     # Loss functions
+    #ME
+    print("aiinput1", ainput1)
+    print("aiinput2", ainput2)
+    print("eveout_addition", eveout_addition)
     eveloss_addition = K.mean(K.sum(K.abs(ainput1 + ainput2 - eveout_addition), axis=-1))
     bobloss_addition = K.mean(K.sum(K.abs(ainput1 + ainput2 - bobout_addition), axis=-1))
 
